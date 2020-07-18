@@ -30,3 +30,6 @@ Desktop.ini
 
 # Dependency directory 
 node_modules/
+
+# npm
+node_modules
