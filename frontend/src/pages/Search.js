@@ -4,7 +4,6 @@ import RideList from "../components/RidesList/RideList";
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 
-
 class Search extends Component {
     constructor(props) {
         // new Date(year, month, date, hours, minutes, seconds, ms)
@@ -30,22 +29,24 @@ class Search extends Component {
         new Pikaday({
             field: this.startDateRef.current,
             format: 'MM/DD/YYYY',
-            onSelect: this.onChangeStart,
-            value: this.state.startDate,
+            onSelect: this.editStartDate,
         });
 
         new Pikaday({
             field: this.endDateRef.current,
             format: 'MM/DD/YYYY',
-            onSelect: this.onChangeStart,
-            value: this.state.endDate,
+            onSelect: this.editEndDate,
         });
     }
 
     editStart = (sd) => {this.setState({start: sd.target.value})};
     editEndDest = (ed) => {this.setState({endDest: ed.target.value})};
-    editStartDate = (date) => {this.setState({startDate: date.target.value})};
-    editEndDate = (date) =>{this.setState({endDate: date.target.value})};
+    editStartDate = (date) => {
+        this.setState({startDate: date})
+    };
+    editEndDate = (date) =>{
+        this.setState({endDate: date})
+    };
 
     /* for automatic ride filtering */
     ridefilter = () => {
@@ -57,11 +58,13 @@ class Search extends Component {
 
     /* filter upon button click */
     filterRides = () => {
+        // console.log('this.state.startDate: ' + this.state.startDate);
         this.setState({
             filteredRides: this.state.rides.filter(dest =>
                 (dest[0].toLowerCase().includes(this.state.start.toLowerCase()) &&
                     dest[1].toLowerCase().includes(this.state.endDest.toLowerCase()))
             )
+            // && dest[2].getTime() === this.state.startDate
         })
     };
 
@@ -79,15 +82,31 @@ class Search extends Component {
         return (
             <div>
                 <SearchBar
-                    dest={this.state.start}
+                    text={this.state.start}
                     editfn={this.editStart}
-                    placeholder='Choose Starting Point...'/>
+                    placeholder='Choose Starting Point...'
+                />
                 <SearchBar
-                    dest={this.state.endDest}
+                    text={this.state.endDest}
                     editfn={this.editEndDest}
-                    placeholder='Choose Destination...'/>
-                <input type="text" ref={this.startDateRef} onChange={this.editStartDate}/>
-                <input type="text" ref={this.endDateRef} onChange={this.editEndDate}/>
+                    placeholder='Choose Destination...'
+                />
+
+                <input
+                    type="text"
+                    ref={this.startDateRef}
+                    onChange={this.editStartDate}
+                    value={this.state.startDate}
+                    placeholder='Departure Date'
+                />
+                <input
+                    type="text"
+                    ref={this.endDateRef}
+                    onChange={this.editEndDate}
+                    value={this.state.endDate}
+                />
+
+
                 <button onClick={this.filterRides}>Search</button>
                 <button onClick={this.clearFilter}>Clear</button>
                 <h3>Available Rides</h3>
