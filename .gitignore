@@ -17,6 +17,7 @@ frontend/build
 .env.development.local
 .env.test.local
 .env.production.local
+apiKey.js
 
 npm-debug.log*
 yarn-debug.log*
@@ -28,7 +29,7 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# Dependency directory 
+# Dependency directory
 node_modules/
 
 # npm
