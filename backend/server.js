@@ -1,8 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const client = require('./db');
 
 const app = express();
 var apiRouter = require('./routes/api');
@@ -18,6 +18,17 @@ app.get('/', (req, res) => {
 
 //routes
 app.use('/api', apiRouter);
+
+//Connect to Mongo on start
+// const uri = "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true&w=majority";
+// const uri = "mongodb://localhost:27017"; //for local db
+const uri = "mongodb+srv://testuser:X19sp5j7kInOoyd1@cluster0.ftxhe.mongodb.net/test?retryWrites=true&w=majority";
+client.connect(uri, function(err) {
+    if(err) {
+        console.log("Unable to connect to Mongo");
+        process.exit(1);
+    }
+});
 
 //Catch 404
 app.use((req, res, next) => {
