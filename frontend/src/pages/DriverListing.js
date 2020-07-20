@@ -1,10 +1,6 @@
 import React from 'react';
 import SearchBar from '../components/SearchBar/SearchBar';
 
-{
-    /*TODO- add roundtrip option to form ,
-roundtrip would make two posts*/
-}
 class DriverListing extends React.Component {
     constructor(props) {
         super(props);
@@ -12,9 +8,8 @@ class DriverListing extends React.Component {
             startLocation: '',
             startDate: '',
             startTimeFrame: '',
-            //change from null
-            price: null,
-            capacity: null,
+            price: undefined,
+            capacity: undefined,
             isRoundTrip: false,
             errorMessage: '',
             step: 1,
@@ -44,23 +39,22 @@ class DriverListing extends React.Component {
         //   alert("Submitted " + JSON.stringify(this.state));
         // }
         alert('Submitted ' + JSON.stringify(this.state));
-        this.state = {
+        this.setState({
             startLocation: '',
             startDate: '',
             startTimeFrame: '',
-            //change from null
-            price: null,
-            capacity: null,
+            price: undefined,
+            capacity: undefined,
             isRoundTrip: false,
             errorMessage: '',
-            step: 1,
-        };
+            step: this.state.isRoundTrip ? 2 : 1,
+        });
     };
 
     render() {
         return (
             <div>
-                <h1>Create a Ride</h1>
+                {this.state.step === 1 ? <h1>Create a ride</h1> : <h1>Create a return ride</h1>}
                 <form onSubmit={this.handleSubmit} autoComplete="off">
                     {/* Add label? */}
                     {/* vvv Replace with location picker*/}
@@ -96,19 +90,25 @@ class DriverListing extends React.Component {
                         placeholder={'Capacity'}
                         name={'capacity'}
                     />
-                    <label>
-                        Round Trip
-                        <input
-                            type="checkbox"
-                            name="isRoundTrip"
-                            onChange={this.handleChange}
-                            checked={this.state.isRoundTrip}
-                        />
-                    </label>
+                    {this.state.step === 1 && (
+                        <label>
+                            Round Trip
+                            <input
+                                type="checkbox"
+                                name="isRoundTrip"
+                                onChange={this.handleChange}
+                                checked={this.state.isRoundTrip}
+                            />
+                        </label>
+                    )}
                     <br />
                     <input
                         type="submit"
-                        value={this.state.isRoundTrip ? 'Continue' : 'Submit'}
+                        value={
+                            this.state.isRoundTrip && this.state.step === 1
+                                ? 'Continue'
+                                : 'Submit'
+                        }
                     />
                 </form>
             </div>
