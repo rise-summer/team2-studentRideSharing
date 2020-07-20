@@ -9,7 +9,7 @@ class Ride extends Component {
 
     formatTime = (t) => {
         const year = t.getFullYear();
-        const month = t.getMonth();
+        const month = t.getMonth() + 1;
         const date = t.getDate();
         var hour = t.getHours();
 

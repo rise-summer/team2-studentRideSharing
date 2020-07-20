@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import SearchBar from '../components/SearchBar/SearchBar';
-import RideList from "../components/RidesList/RideList";
+import SearchBar from '../../components/SearchBar/SearchBar';
+import RideList from "../../components/RidesList/RideList";
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
+import moment from 'moment';
+import './Search.css'
 
 class Search extends Component {
     constructor(props) {
@@ -12,9 +14,9 @@ class Search extends Component {
             start: '',
             endDest: '',
             rides: [
-                ['UCI', 'UCB', new Date(2020, 7, 21, 10, 0)],
-                ['UCLA', 'UCSD', new Date(2020, 7, 24, 12, 15)],
-                ['USC', 'Stanford', new Date(2020, 7, 27, 14, 30)],
+                ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
+                ['UCLA', 'UCSD', new Date(2020, 6, 24, 12, 15)],
+                ['USC', 'Stanford', new Date(2020, 6, 27, 14, 30)],
             ],
             filteredRides: [],
             startDate: '',
@@ -28,23 +30,26 @@ class Search extends Component {
     componentDidMount () {
         new Pikaday({
             field: this.startDateRef.current,
-            format: 'MM/DD/YYYY',
             onSelect: this.editStartDate,
         });
 
         new Pikaday({
             field: this.endDateRef.current,
-            format: 'MM/DD/YYYY',
             onSelect: this.editEndDate,
         });
     }
 
     editStart = (sd) => {this.setState({start: sd.target.value})};
+
     editEndDest = (ed) => {this.setState({endDest: ed.target.value})};
-    editStartDate = (date) => {
+
+    editStartDate = (d) => {
+        var date = moment(d).format('MM/DD/YYYY') + ' ';
         this.setState({startDate: date})
     };
-    editEndDate = (date) =>{
+
+    editEndDate = (d) =>{
+        var date = moment(d).format('MM/DD/YYYY') + ' ';
         this.setState({endDate: date})
     };
 
@@ -58,14 +63,26 @@ class Search extends Component {
 
     /* filter upon button click */
     filterRides = () => {
-        // console.log('this.state.startDate: ' + this.state.startDate);
+        // split searched departure date into array
+        var dateArray  = this.state.startDate.split('/');
+        // create Date object from array information
+        // new Date(YYYY, MM, DD), month is 0-indexed
+        var date = new Date(dateArray[2], dateArray[0] - 1, dateArray[1]);
+
         this.setState({
-            filteredRides: this.state.rides.filter(dest =>
-                (dest[0].toLowerCase().includes(this.state.start.toLowerCase()) &&
-                    dest[1].toLowerCase().includes(this.state.endDest.toLowerCase()))
-            )
-            // && dest[2].getTime() === this.state.startDate
+            filteredRides: this.state.rides.filter(dest => this.checkMatch(dest, dateArray, date))
         })
+    };
+
+    // helper function for filterRides()
+    checkMatch = (dest, dateArray, date) => {
+        var startMatch = dest[0].toLowerCase().includes(this.state.start.toLowerCase());
+        var destMatch = dest[1].toLowerCase().includes(this.state.endDest.toLowerCase());
+        var dateMatch = dateArray.length === 1 ||
+            (date.getFullYear() === dest[2].getFullYear() &&
+            date.getMonth() === dest[2].getMonth() &&
+            date.getDate() === dest[2].getDate());
+        return startMatch && destMatch && dateMatch;
     };
 
     clearFilter = () => {
@@ -80,7 +97,7 @@ class Search extends Component {
 
     render() {
         return (
-            <div>
+            <div className='search-wrapper'>
                 <SearchBar
                     text={this.state.start}
                     editfn={this.editStart}
@@ -93,24 +110,18 @@ class Search extends Component {
                 />
 
                 <input
+                    className='date-picker-box'
                     type="text"
                     ref={this.startDateRef}
                     onChange={this.editStartDate}
                     value={this.state.startDate}
                     placeholder='Departure Date'
                 />
-                <input
-                    type="text"
-                    ref={this.endDateRef}
-                    onChange={this.editEndDate}
-                    value={this.state.endDate}
-                />
-
-
+                <br/>
                 <button onClick={this.filterRides}>Search</button>
                 <button onClick={this.clearFilter}>Clear</button>
                 <h3>Available Rides</h3>
-                {/*<RideList rides={this.ridefilter()}/>*/}
+                {/*<RideList rides={this.ridefilter}/>*/}
                 <RideList rides={this.state.filteredRides}/>
 
             </div>
