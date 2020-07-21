@@ -5,5 +5,5 @@ Traveling between points A and B has always been a challenge for students withou
 
 ### Project Instructions
 - Commit Messages
-  - When adding messages to commit, message should start of with Issue#XX. Number is given to corresponding issues on github
-  - E.g. -m "Issue#XX Adding broilerplate" 
+  - When adding messages to commit, message should start of with #XX. Number is given to corresponding issues on github
+  - E.g. -m "#XX Adding broilerplate" 
