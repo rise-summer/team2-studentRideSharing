@@ -32,8 +32,8 @@ function post(driverID, rideID, record, isTrue = true, callback=()=>{}) {
 
 function query(callback=()=>{}) {
   var query = {
-                originCoords: [-119.159392, 34.164958,],
-                destCoords:  [-117.221505, 32.873788, ], 
+                originCoords: [-119.159392, 34.164958],
+                // destCoords:  [-117.221505, 32.873788 ],
                 beginDate: new Date(2020, 6, 23, 13, 0),
                 endDate: new Date(2020, 6, 23, 14, 0),
                 distance: 5
@@ -57,8 +57,9 @@ var doc0 = {
     coordinates: [-119.159392, 34.164958]
   },//<longitude>, <latitude>
   destCoords: [-117.221505, 32.873788],
-  startDate: new Date(2020, 6, 23, 13, 0),//year, month (0 to 11), date, hours, minutes
-  endDate: new Date(2020, 6, 23, 14, 0),
+  time: new Date(2020, 6, 23, 13, 30),
+  // startDate: new Date(2020, 6, 23, 13, 0),//year, month (0 to 11), date, hours, minutes
+  // endDate: new Date(2020, 6, 23, 14, 0),
   price: 20.0,
   capacity: 3,
   car: {model: "Toyota", make: "Camry", color: "Black", plate: "365VKU"}
@@ -72,8 +73,9 @@ var doc1 = {
     coordinates: [-119.158323, 34.177169]
   },//<longitude>, <latitude>
   destCoords: [-117.274471, 32.832215],
-  startDate: new Date(2020, 6, 23, 14, 0),//year, month (0 to 11), date, hours, minutes
-  endDate: new Date(2020, 6, 23, 15, 0),
+  time: new Date(2020, 6, 23, 14, 30),
+  // startDate: new Date(2020, 6, 23, 14, 0),//year, month (0 to 11), date, hours, minutes
+  // endDate: new Date(2020, 6, 23, 15, 0),
   price: 15.0,
   capacity: 1,
   car: {model: "Toyota", make: "Camry", color: "White", plate: "7AVF369"}
@@ -87,8 +89,9 @@ var doc2 = {
     coordinates: [-118.111510, 34.095624]
   },//<longitude>, <latitude>
   destCoords: [-118.445198, 34.068854],
-  startDate: new Date(2020, 6, 23, 13, 0),//year, month (0 to 11), date, hours, minutes
-  endDate: new Date(2020, 6, 23, 13, 50),
+  Time: new Date(2020, 6, 23, 13, 00),
+  // startDate: new Date(2020, 6, 23, 13, 0),//year, month (0 to 11), date, hours, minutes
+  // endDate: new Date(2020, 6, 23, 13, 50),
   price: 10.0,
   capacity: 2,
   car: {model: "Ford", make: "Focus", color: "Grey", plate: "7AZM870"}
