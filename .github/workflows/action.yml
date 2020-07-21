@@ -23,8 +23,3 @@ jobs:
     - name: npm install on backend
       run: cd backend && npm install
 
-    - name: Run Backend for Dev
-      run: cd backend && npm run server
-
-    - name: Run Frontend
-      run: cd frontend && yarn start
