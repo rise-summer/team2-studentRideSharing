@@ -14,7 +14,7 @@ router.post('/rides/:userID/:rideID', async function(req, res, next){
   //TODO: validate input data - userID/rideID not existed in db, req body must include certain data
   const driverID = req.params.userID;
   const rideID = req.params.rideID;
-  const {origin, destination, originCoords, destCoords, startDate, endDate, price, capacity, car} = req.body;
+  const {origin, destination, originCoords, destCoords, time, price, capacity, car} = req.body;
   let rideDocument = {
     "driverID": Number(driverID),
     "rideID": Number(rideID),
@@ -22,8 +22,7 @@ router.post('/rides/:userID/:rideID', async function(req, res, next){
     "endLoc": destination,
     "originCoords": originCoords,
     "destCoords": destCoords,
-    "beginDate": startDate,//year, month (0 to 11), date, hours, minutes
-    "endDate": endDate,
+    "time": time,//year, month (0 to 11), date, hours, minutes
     "price": price,
     "capacity": capacity,
     "car": car
@@ -48,7 +47,7 @@ router.get('/rides', async function(req, res, next){
   const query = JSON.parse(req.query['query']);
   console.log(query);
   const originCoords = query['originCoords'];
-  const destCoords = query['destCoords'];
+  // const destCoords = query['destCoords'];
   const beginDate = query['beginDate'];
   const endDate = query['endDate'];
   const distance = query['distance']; // within x miles
@@ -56,8 +55,7 @@ router.get('/rides', async function(req, res, next){
   const METERS_PER_MILE = 1609.34;
 
   collection.find({
-    beginDate: {$lte: beginDate},
-    endDate: {$gte: endDate},
+    time: {$gte: beginDate, $lte: endDate},
     originCoords:
       {
         $near: {
