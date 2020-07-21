@@ -24,9 +24,10 @@ app.use('/api', apiRouter);
 // const uri = "mongodb://localhost:27017"; //for local db
 client.connect(apiKey.mongouri, function(err) {
     if(err) {
-        console.log("Unable to connect to Mongo");
+        console.log(err);
         process.exit(1);
     }
+    console.log("DB Connected.");
 });
 
 //Catch 404

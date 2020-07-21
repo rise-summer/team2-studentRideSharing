@@ -13,6 +13,10 @@ This directory should only include backend project files
 - `/routes`
     - `api.js`
         - See [Interface Design](#Interface-Design) below for details.
+- `/test`
+    - `dbTest.js`
+        - Initialize Database with test data and test sample query
+
 ### Interface Design
 - POST /api/rides/:userID/:rideID
     - Add the ride info to database
@@ -29,5 +33,19 @@ This directory should only include backend project files
             "car": {"model": "Toyota", "make": "Camry", "color": "White", "plate": "7AVF369"}
         }
     ```
-- GET /api/rides?from=xxx&to=xx&time=xxx
+- GET /api/rides?query=xxxxxx
+    - use querystring Library to generate the query string in url
+        - check out [dbTest.js](./test/dbTest.js) for usage
+        - current query template
+            ```js
+              var query = {
+                            originCoords: [-119.159392, 34.164958,],
+                            destCoords:  [-117.221505, 32.873788, ],
+                            beginDate: new Date(2020, 6, 23, 13, 0),
+                            endDate: new Date(2020, 6, 23, 14, 0),
+                            distance: 5
+                          };
+            ```
     - Return rides that leave from xxx for xx at the specified time
+        - currently only filter rides with originCoords within queried distance.
+        - comparison between two date range is unclear (need further specification)
