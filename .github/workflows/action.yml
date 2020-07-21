@@ -18,15 +18,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: yarn install on frontend
-      run: cd frontend
-      run: yarn install
+      run: cd frontend && yarn install
 
     - name: npm install on backend
-      run: cd .. && cd backend
-      run: npm install
+      run: cd .. && cd backend && npm install
 
-    - name: Run Server
+    - name: Run Backend
       run: npm start
 
     - name: Run Frontend
-      run: yarn start
+      run: cd .. && cd frontend && yarn start
