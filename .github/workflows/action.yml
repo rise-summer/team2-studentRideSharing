@@ -2,7 +2,6 @@ name: "Github Actions Rise Team 2"
 
 on: push 
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
