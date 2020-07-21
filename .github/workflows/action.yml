@@ -21,10 +21,10 @@ jobs:
       run: cd frontend && yarn install
 
     - name: npm install on backend
-      run: cd .. && cd backend && npm install
+      run: cd backend && npm install
 
-    - name: Run Backend
-      run: npm start
+    - name: Run Backend for Dev
+      run: cd backend && npm run server
 
     - name: Run Frontend
-      run: cd .. && cd frontend && yarn start
+      run: cd frontend && yarn start
