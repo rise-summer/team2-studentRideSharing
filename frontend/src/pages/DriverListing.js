@@ -1,20 +1,40 @@
 import React from 'react';
 import SearchBar from '../components/SearchBar/SearchBar';
+import TimePicker from '../components/TimePicker/TimePicker';
+import NumberPicker from '../components/NumberPicker/NumberPicker';
+import Pikaday from 'pikaday';
+import 'pikaday/css/pikaday.css';
+import moment from 'moment';
 
 class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             startLocation: '',
+            endLocation: '',
             startDate: '',
-            startTimeFrame: '',
+            firstStartTime: '',
+            lastStartTime: '',
             price: undefined,
             capacity: undefined,
             isRoundTrip: false,
             errorMessage: '',
             step: 1,
         };
+        this.startDateRef = React.createRef();
     }
+
+    componentDidMount() {
+        new Pikaday({
+            field: this.startDateRef.current,
+            onSelect: this.editStartDate,
+        });
+    }
+
+    editStartDate = (d) => {
+        var date = moment(d).format('MM/DD/YYYY') + ' ';
+        this.setState({ startDate: date });
+    };
 
     handleChange = (event) => {
         const name = event.target.name;
@@ -25,82 +45,108 @@ class DriverListing extends React.Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        // let err = "";
-        // const price = this.state.price;
-        // const capacity = this.state.capacity;
-        // if (!Number(price)) {
-        //   err += "Price must be a number. ";
-        // }
-        // if (!Number(capacity)) {
-        //   err += "Capacity must be a number.";
-        // }
-        // this.setState({ errorMessage: err });
-        // if (!err) {
-        //   alert("Submitted " + JSON.stringify(this.state));
-        // }
-        alert('Submitted ' + JSON.stringify(this.state));
+        // console.log('Submitted ' + JSON.stringify(this.state));
+        const isRoundTrip = this.state.isRoundTrip;
+        const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
+        const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
+
         this.setState({
-            startLocation: '',
+            startLocation: nextStartLocation,
+            endLocation: nextEndLocation,
             startDate: '',
-            startTimeFrame: '',
-            price: undefined,
-            capacity: undefined,
-            isRoundTrip: false,
+            firstStartTime: '',
+            lastStartTime: '',
+            price: '',
+            capacity: '',
             errorMessage: '',
-            step: this.state.isRoundTrip ? 2 : 1,
+            isRoundTrip: false,
+            step: isRoundTrip ? 2 : 1,
         });
     };
 
     render() {
+        {
+            /*TODO: Refactor, it's pretty long 
+            -add required verification*/
+        }
         return (
             <div>
-                {this.state.step === 1 ? <h1>Create a ride</h1> : <h1>Create a return ride</h1>}
+                {this.state.step === 1 ? (
+                    <h1>Create a ride</h1>
+                ) : (
+                    <h1>Create a return ride</h1>
+                )}
                 <form onSubmit={this.handleSubmit} autoComplete="off">
-                    {/* Add label? */}
-                    {/* vvv Replace with location picker*/}
+                    {/* Replace with location picker*/}
                     <SearchBar
                         text={this.state.startLocation}
                         editfn={this.handleChange}
-                        placeholder={'Start location'}
-                        name={'startLocation'}
+                        placeholder="Start location"
+                        name="startLocation"
                     />
-                    {/* vvv Replace with pikaday */}
+                    {/* Replace with location picker */}
                     <SearchBar
-                        text={this.state.startDate}
+                        text={this.state.endLocation}
                         editfn={this.handleChange}
-                        placeholder={'Start date'}
-                        name={'startDate'}
+                        placeholder="End location"
+                        name="endLocation"
                     />
-                    {/* Probably replace with pikaday too */}
-                    <SearchBar
-                        text={this.state.startTimeFrame}
+                    <input
+                        className="date-picker-box"
+                        type="text"
+                        ref={this.startDateRef}
+                        onChange={this.editStartDate}
+                        value={this.state.startDate}
+                        placeholder="Start date"
+                        name="startDate"
+                    />
+                    <br />
+                    <label>
+                        Earliest start time
+                        <TimePicker
+                            name="firstStartTime"
+                            value={this.state.firstStartTime}
+                            editfn={this.handleChange}
+                        />
+                    </label>
+                    <label>
+                        Latest start time
+                        <TimePicker
+                            name="lastStartTime"
+                            value={this.state.lastStartTime}
+                            editfn={this.handleChange}
+                        />
+                    </label>
+                    <NumberPicker
+                        min={0}
+                        max={100}
+                        step={0.01}
+                        value={this.state.price}
+                        name="price"
+                        placeholder="Price"
                         editfn={this.handleChange}
-                        placeholder={'Start time frame'}
-                        name={'startTimeFrame'}
                     />
-                    <SearchBar
-                        text={this.state.price}
+                    <NumberPicker
+                        min={1}
+                        max={10}
+                        step={1}
+                        value={this.state.capacity}
+                        name="capacity"
+                        placeholder="Capacity"
                         editfn={this.handleChange}
-                        placeholder={'Price'}
-                        name={'price'}
                     />
-                    <SearchBar
-                        text={this.state.capacity}
-                        editfn={this.handleChange}
-                        placeholder={'Capacity'}
-                        name={'capacity'}
-                    />
-                    {this.state.step === 1 && (
-                        <label>
-                            Round Trip
-                            <input
-                                type="checkbox"
-                                name="isRoundTrip"
-                                onChange={this.handleChange}
-                                checked={this.state.isRoundTrip}
-                            />
-                        </label>
-                    )}
+                    <label>
+                        Round Trip
+                        <input
+                            type="checkbox"
+                            name="isRoundTrip"
+                            onChange={this.handleChange}
+                            checked={
+                                this.state.isRoundTrip || this.state.step === 2
+                            }
+                            disabled={this.state.step === 2}
+                        />
+                    </label>
                     <br />
                     <input
                         type="submit"

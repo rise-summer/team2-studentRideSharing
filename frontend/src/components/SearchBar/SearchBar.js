@@ -9,7 +9,6 @@ class SearchBar extends Component {
                 <input
                     className="inputbox"
                     type="text"
-                    // is value state necessary?
                     value={this.props.text}
                     onChange={this.props.editfn}
                     placeholder={this.props.placeholder}

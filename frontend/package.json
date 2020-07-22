@@ -8,6 +8,8 @@
     "@testing-library/user-event": "^7.1.2",
     "autoprefixer": "^9.8.5",
     "http-proxy-middleware": "^1.0.5",
+    "moment": "^2.27.0",
+    "pikaday": "^1.8.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"
