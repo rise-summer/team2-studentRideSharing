@@ -27,6 +27,7 @@ class Ride extends Component {
                 <div><b>Departing From: {this.props.start}</b></div>
                 <div><b>Departure Time: {this.formatTime(this.props.time)}</b></div>
                 <div><b>Destination: {this.props.dest}</b></div>
+                <button>View Ride</button>
             </div>
         )
     }
