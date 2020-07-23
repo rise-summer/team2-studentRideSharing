@@ -2,7 +2,7 @@ name: "Rise Team 2 CI"
 
 on: 
   pull_request:
-    branches: [master]
+     branches: [master] 
 
 jobs:
   build:
