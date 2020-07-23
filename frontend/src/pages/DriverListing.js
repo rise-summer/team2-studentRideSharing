@@ -43,9 +43,9 @@ class DriverListing extends React.Component {
         this.setState({ [name]: value });
     };
 
+    // TODO: Add verification to make sure all fields are filled
     handleSubmit = (event) => {
         event.preventDefault();
-        // console.log('Submitted ' + JSON.stringify(this.state));
         const isRoundTrip = this.state.isRoundTrip;
         const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
         const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
@@ -65,10 +65,6 @@ class DriverListing extends React.Component {
     };
 
     render() {
-        {
-            /*TODO: Refactor, it's pretty long 
-            -add required verification*/
-        }
         return (
             <div>
                 {this.state.step === 1 ? (
