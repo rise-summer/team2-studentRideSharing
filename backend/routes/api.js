@@ -1,7 +1,7 @@
-let express = require('express');
-let router = express.Router();
-let client = require('../db');
-let querystring = require('querystring');
+const express = require('express');
+const router = express.Router();
+const client = require('../db');
+const querystring = require('querystring');
 
 //(temporary) Admin API for testing
 router.delete('/:collectionName', async function(req, res, next){
@@ -9,6 +9,7 @@ router.delete('/:collectionName', async function(req, res, next){
   res.status(200).send("Collection " + req.params.collectionName + " is empty.");
 })
 
+//post a new ride
 router.post('/rides/:userID/:rideID', async function(req, res, next){
   //TODO: validate login state - login user = given userid
   //TODO: validate input data - userID/rideID not existed in db, req body must include certain data
@@ -35,12 +36,32 @@ router.post('/rides/:userID/:rideID', async function(req, res, next){
     }
     else {
       console.log("Record added as " + JSON.stringify(record.ops[0]));
-      res.status(201).send("Record added as " + JSON.stringify(record.ops[0]));//Created
+      res.status(201).send(JSON.stringify(record.ops[0]));//Created
       //TODO: location header -> link to the generated ride
     }
   });
 })
 
+//get a single ride
+router.get('/rides/:userID/:rideID', async function(req, res, next){
+  //should be available for all?
+  const driverID = req.params.userID;
+  const rideID = req.params.rideID;
+  const collection = client.dbCollection('Rides');
+  collection.findOne({
+    driverID: Number(driverID),
+    rideID: Number(rideID)
+  }).then(function(ride) {
+      if(ride){
+        res.status(200).json(ride);
+      }
+      else {
+        res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
+      }
+  });
+})
+
+//search rides
 router.get('/rides', async function(req, res, next){
   //TODO: validate login state - login user = given userid
   //TODO: search logic for begin and end date

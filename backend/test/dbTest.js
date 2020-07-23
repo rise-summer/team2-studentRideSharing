@@ -24,7 +24,7 @@ function post(driverID, rideID, record, isTrue = true, callback=()=>{}) {
         console.error(error);
         return;
       }
-      console.log(body);
+      console.log("Record added as:\n" + JSON.stringify(body,null,2));
     })
   }
   callback();
@@ -44,7 +44,24 @@ function query(callback=()=>{}) {
       console.error(error);
       return;
     }
-    console.log(body);
+    console.log("query result: " + body);
+  })
+  callback();
+}
+
+function getSingleRide(driverID, rideID, callback=()=>{}) {
+  const URL = "http://localhost:3000/api/rides/" + driverID + "/" + rideID;
+  request.get(URL, {}, (err, res, body) => {
+    if(err) {
+      console.error(err);
+      return;
+    }
+    if(res.statusCode == 200) {
+      console.log("Fetched " + driverID + "/" + rideID + ":\n" + JSON.stringify(JSON.parse(body),null,2));
+    }
+    else {
+      console.log("Fetched " + driverID + "/" + rideID + ":" + body);
+    }
   })
   callback();
 }
@@ -97,12 +114,16 @@ var doc2 = {
   car: {model: "Ford", make: "Focus", color: "Grey", plate: "7AZM870"}
 }
 
+// emptyCol(true).then
 emptyCol(true, function() {
   post(0, 0, doc0);
   post(1, 0, doc1);
   post(1, 1, doc2, true, function() {
     query( function() {
       console.log("DB Init is done.");
-    })
+    });
+    getSingleRide(0, 0);
+    getSingleRide(1, 0);
+    getSingleRide(1, 2);
   })
 });
