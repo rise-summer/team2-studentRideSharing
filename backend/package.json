@@ -14,7 +14,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongoose": "^5.9.24",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "concurrently": "^5.2.0",

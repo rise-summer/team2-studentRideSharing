@@ -1,0 +1,10 @@
+.search-wrapper {
+    padding: 10px;
+}
+
+.date-picker-box {
+    width: 300px;
+    height: 35px;
+    font-size: 20px;
+    padding-left: 5px;
+}
