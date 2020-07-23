@@ -1,6 +1,8 @@
-name: "Github Actions Rise Team 2"
+name: "Rise Team 2 CI"
 
-on: push 
+on: 
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
@@ -18,7 +20,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: yarn install on frontend
-      run: cd frontend && yarn install
+      run: cd frontend && yarn install 
+
+    - name: build frontend 
+      run: cd frontend && CI=true yarn build
+
+    - name: test frontend 
+      run: cd frontend && CI=true yarn test
 
     - name: npm install on backend
       run: cd backend && npm install
