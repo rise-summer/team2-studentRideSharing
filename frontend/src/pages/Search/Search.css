@@ -1,8 +1,8 @@
-.inputwrapper {
-    padding-bottom: 3px;
+.search-wrapper {
+    padding: 10px;
 }
 
-.inputbox {
+.date-picker-box {
     width: 300px;
     height: 35px;
     font-size: 20px;

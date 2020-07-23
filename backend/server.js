@@ -1,14 +1,14 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-const cors = require('cors');
-
+// const cors = require('cors');
+const client = require('./db');
+const apiKey = require('./apiKey');
 const app = express();
 var apiRouter = require('./routes/api');
 // configure app
 app.use(logger('dev'));
-app.use(cors());
+// app.use(cors());
 app.use(bodyParser.json());
 
 //Root Path
@@ -18,6 +18,17 @@ app.get('/', (req, res) => {
 
 //routes
 app.use('/api', apiRouter);
+
+//Connect to Mongo on start
+// const uri = "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true&w=majority";
+// const uri = "mongodb://localhost:27017"; //for local db
+client.connect(apiKey.mongouri, function(err) {
+    if(err) {
+        console.log(err);
+        process.exit(1);
+    }
+    console.log("DB Connected.");
+});
 
 //Catch 404
 app.use((req, res, next) => {
