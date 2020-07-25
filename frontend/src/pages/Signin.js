@@ -2,6 +2,12 @@ import React from 'react';
 import SearchBar from '../components/SearchBar/SearchBar';
 import login_image from './google-login.png';
 
+
+/* TODO: 
+-model layout after mockup
+
+*/
+
 class Signin extends React.Component {
     constructor(props) {
         super(props);
