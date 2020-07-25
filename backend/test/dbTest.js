@@ -4,7 +4,7 @@ const querystring = require('querystring');
 
 function emptyCol(isTrue, callback=()=>{}) {
   if(isTrue) {
-    request.delete('http://localhost:3000/api/Rides', {} ,(err, res, body) => {
+    request.delete('http://localhost:3000/api/rides', {} ,(err, res, body) => {
       if(err) {
         console.error(err);
         return
@@ -73,13 +73,16 @@ var doc0 = {
     type: "Point",
     coordinates: [-119.159392, 34.164958]
   },//<longitude>, <latitude>
-  destCoords: [-117.221505, 32.873788],
+  "destCoords": {
+    "type": "Point",
+    "coordinates": [-117.221505, 32.873788]
+  },//<longitude>, <latitude>
   time: new Date(2020, 6, 23, 13, 30),
   // startDate: new Date(2020, 6, 23, 13, 0),//year, month (0 to 11), date, hours, minutes
   // endDate: new Date(2020, 6, 23, 14, 0),
   price: 20.0,
   capacity: 3,
-  car: {model: "Toyota", make: "Camry", color: "Black", plate: "365VKU"}
+  car: {make: "Toyota", model: "Camry", color: "Black", plate: "365VKU"}
 }
 
 var doc1 = {
@@ -89,29 +92,33 @@ var doc1 = {
     type: "Point",
     coordinates: [-119.158323, 34.177169]
   },//<longitude>, <latitude>
-  destCoords: [-117.274471, 32.832215],
+  "destCoords": {
+    "type": "Point",
+    "coordinates": [-117.274471, 32.832215]
+  },//<longitude>, <latitude>
   time: new Date(2020, 6, 23, 14, 30),
   // startDate: new Date(2020, 6, 23, 14, 0),//year, month (0 to 11), date, hours, minutes
   // endDate: new Date(2020, 6, 23, 15, 0),
   price: 15.0,
   capacity: 1,
-  car: {model: "Toyota", make: "Camry", color: "White", plate: "7AVF369"}
+  car: { make: "Toyota", model: "Camry", color: "White", plate: "7AVF369"}
 }
 
 var doc2 = {
   origin: {"address": "833 W Santa Anita St", "city": "San Gabriel", "state": "CA", "zip": 91776},
   destination: {"city": "Los Angeles", "state": "CA", "zip": 90095},
-  originCoords: {
-    type: "Point",
-    coordinates: [-118.111510, 34.095624]
+  "originCoords": {
+    "type": "Point",
+    "coordinates": [-118.111510, 34.095624]
+  },
+  "destCoords": {
+    "type": "Point",
+    "coordinates": [-118.445198, 34.068854]
   },//<longitude>, <latitude>
-  destCoords: [-118.445198, 34.068854],
-  Time: new Date(2020, 6, 23, 13, 00),
-  // startDate: new Date(2020, 6, 23, 13, 0),//year, month (0 to 11), date, hours, minutes
-  // endDate: new Date(2020, 6, 23, 13, 50),
+  time: new Date(2020, 6, 23, 13, 00),
   price: 10.0,
   capacity: 2,
-  car: {model: "Ford", make: "Focus", color: "Grey", plate: "7AZM870"}
+  car: {make: "Ford", model: "Focus", color: "Grey", plate: "7AZM870"}
 }
 
 // emptyCol(true).then
