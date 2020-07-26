@@ -37,6 +37,83 @@ class DriverListing extends React.Component {
         this.setState({ startDate: date });
     };
 
+    postData = async () => {
+        const userId = 'abc';
+        const rideId = '123';
+        const url = `/api/rides/${userId}/${rideId}`;
+        const testBodyData = {
+            startLoc: {
+                address: '69 Division Ave',
+                city: 'Victorville',
+                state: 'CA',
+                zip: 92392,
+            },
+            endLoc: {
+                city: 'Los Angeles',
+                state: 'CA',
+                zip: 90095,
+                school: 'UCLA',
+            }, //school is optional
+            originCoords: {
+                type: 'Point',
+                coordinates: [-119.158323, 34.177169],
+            },
+            destCoords: [-117.274471, 32.832215],
+            time: new Date(2020, 6, 23, 13, 0), //year, month (0 to 11), date, hours, minutes
+            price: 20.0,
+            capacity: 3,
+            car: {
+                model: 'Toyota',
+                make: 'Camry',
+                color: 'White',
+                plate: '7AVF369',
+            },
+        };
+        const bodyData = {
+            startLoc: {
+                address: '69 Division Ave',
+                city: 'Victorville',
+                state: 'CA',
+                zip: 92392,
+            },
+            endLoc: {
+                city: 'Los Angeles',
+                state: 'CA',
+                zip: 90095,
+                school: 'UCLA',
+            }, //school is optional
+            originCoords: {
+                type: 'Point',
+                coordinates: [-119.158323, 34.177169],
+            },
+            destCoords: [-117.274471, 32.832215],
+            time: new Date(this.state.startDate + this.state.firstStartTime), //year, month (0 to 11), date, hours, minutes
+            price: this.state.price, // Do I need to cast it to a number?
+            capacity: this.state.capacity,
+            car: {
+                model: 'Toyota',
+                make: 'Camry',
+                color: 'White',
+                plate: '7AVF369',
+            },
+        };
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bodyData),
+            });
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                console.log(jsonResponse);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     handleChange = (event) => {
         const name = event.target.name;
         const value =
@@ -46,10 +123,8 @@ class DriverListing extends React.Component {
 
     // Handles custom validation. Some validation is done in the HTML
     handleValidation = (event) => {
-        const time1 = Date.parse(
-            '01/01/2000' + ' ' + this.state.firstStartTime
-        );
-        const time2 = Date.parse('01/01/2000' + ' ' + this.state.lastStartTime);
+        const time1 = Date.parse('01/01/2000' + this.state.firstStartTime);
+        const time2 = Date.parse('01/01/2000' + this.state.lastStartTime);
         if (time2 < time1) {
             console.log('this');
             this.setState({
@@ -61,7 +136,6 @@ class DriverListing extends React.Component {
             this.setState({ errorMessage: '' });
         }
         console.log('end of validation', this.state.errorMessage);
-
     };
 
     handleSubmit = (event) => {
@@ -73,6 +147,7 @@ class DriverListing extends React.Component {
         // this.handleValidation();
 
         if (this.state.errorMessage === '') {
+            this.postData();
             this.setState({
                 startLocation: nextStartLocation,
                 endLocation: nextEndLocation,
