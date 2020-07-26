@@ -13,6 +13,7 @@ class SearchBar extends Component {
                     onChange={this.props.editfn}
                     placeholder={this.props.placeholder}
                     name={this.props.name}
+                    required={this.props.required}
                 />
             </div>
         );

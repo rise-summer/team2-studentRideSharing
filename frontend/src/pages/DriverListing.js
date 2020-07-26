@@ -28,6 +28,7 @@ class DriverListing extends React.Component {
         new Pikaday({
             field: this.startDateRef.current,
             onSelect: this.editStartDate,
+            minDate: new Date(),
         });
     }
 
@@ -43,25 +44,47 @@ class DriverListing extends React.Component {
         this.setState({ [name]: value });
     };
 
-    // TODO: Add verification to make sure all fields are filled
+    // Handles custom validation. Some validation is done in the HTML
+    handleValidation = (event) => {
+        const time1 = Date.parse(
+            '01/01/2000' + ' ' + this.state.firstStartTime
+        );
+        const time2 = Date.parse('01/01/2000' + ' ' + this.state.lastStartTime);
+        if (time2 < time1) {
+            console.log('this');
+            this.setState({
+                errorMessage:
+                    'Earliest start time must come before latest start time',
+            });
+            console.log('state set', this.state.errorMessage);
+        } else {
+            this.setState({ errorMessage: '' });
+        }
+        console.log('end of validation', this.state.errorMessage);
+
+    };
+
     handleSubmit = (event) => {
         event.preventDefault();
         const isRoundTrip = this.state.isRoundTrip;
         const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
         const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
 
-        this.setState({
-            startLocation: nextStartLocation,
-            endLocation: nextEndLocation,
-            startDate: '',
-            firstStartTime: '',
-            lastStartTime: '',
-            price: '',
-            capacity: '',
-            errorMessage: '',
-            isRoundTrip: false,
-            step: isRoundTrip ? 2 : 1,
-        });
+        // this.handleValidation();
+
+        if (this.state.errorMessage === '') {
+            this.setState({
+                startLocation: nextStartLocation,
+                endLocation: nextEndLocation,
+                startDate: '',
+                firstStartTime: '',
+                lastStartTime: '',
+                price: '',
+                capacity: '',
+                isRoundTrip: false,
+                step: isRoundTrip ? 2 : 1,
+            });
+        }
     };
 
     render() {
@@ -79,6 +102,7 @@ class DriverListing extends React.Component {
                         editfn={this.handleChange}
                         placeholder="Start location"
                         name="startLocation"
+                        required
                     />
                     {/* Replace with location picker */}
                     <SearchBar
@@ -86,6 +110,7 @@ class DriverListing extends React.Component {
                         editfn={this.handleChange}
                         placeholder="End location"
                         name="endLocation"
+                        required
                     />
                     <input
                         className="date-picker-box"
@@ -95,14 +120,17 @@ class DriverListing extends React.Component {
                         value={this.state.startDate}
                         placeholder="Start date"
                         name="startDate"
+                        required
                     />
                     <br />
+                    {/* Not supported in safari, might change to module */}
                     <label>
                         Earliest start time
                         <TimePicker
                             name="firstStartTime"
                             value={this.state.firstStartTime}
                             editfn={this.handleChange}
+                            required
                         />
                     </label>
                     <label>
@@ -111,6 +139,7 @@ class DriverListing extends React.Component {
                             name="lastStartTime"
                             value={this.state.lastStartTime}
                             editfn={this.handleChange}
+                            required
                         />
                     </label>
                     <NumberPicker
@@ -121,6 +150,7 @@ class DriverListing extends React.Component {
                         name="price"
                         placeholder="Price"
                         editfn={this.handleChange}
+                        required
                     />
                     <NumberPicker
                         min={1}
@@ -130,6 +160,7 @@ class DriverListing extends React.Component {
                         name="capacity"
                         placeholder="Capacity"
                         editfn={this.handleChange}
+                        required
                     />
                     <label>
                         Round Trip
@@ -153,6 +184,7 @@ class DriverListing extends React.Component {
                         }
                     />
                 </form>
+                <h2>{this.state.errorMessage}</h2>
             </div>
         );
     }

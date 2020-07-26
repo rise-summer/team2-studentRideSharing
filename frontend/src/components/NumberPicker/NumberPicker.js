@@ -18,6 +18,7 @@ function NumberPicker(props) {
                 placeholder={props.placeholder}
                 value={numericalValue}
                 onChange={props.editfn}
+                required={props.required}
             />
         </div>
     );
