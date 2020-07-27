@@ -64,15 +64,15 @@ router.get('/', async function(req, res, next){
 })
 
 //post a new ride
-router.post('/:userID/:rideID', async function(req, res, next){
+router.post('/:userID', async function(req, res, next){
   //TODO: validate login state - login user = given userid
   //TODO: validate input data - userID/rideID not existed in db, req body must include certain data
   const driverID = req.params.userID;
-  const rideID = req.params.rideID;
+  // const rideID = req.params.rideID;
   const {origin, destination, originCoords, destCoords, time, price, capacity, car} = req.body;
   let rideDocument = {
     "driverID": driverID,
-    "rideID": Number(rideID),
+    // "rideID": Number(rideID),
     "startLoc": origin,
     "endLoc": destination,
     "originCoords": originCoords,
@@ -90,6 +90,7 @@ router.post('/:userID/:rideID', async function(req, res, next){
     }
     else {
       console.log("Record added as " + JSON.stringify(record.ops[0]));
+      res.setHeader("Location", "/api/rides/" + driverID + "/" + record.ops[0]["_id"]);
       res.status(201).send(JSON.stringify(record.ops[0]));//Created
       //TODO: location header -> link to the generated ride
     }
@@ -103,8 +104,8 @@ router.get('/:userID/:rideID', async function(req, res, next){
   const rideID = req.params.rideID;
   const collection = client.dbCollection(collectionName);
   collection.findOne({
-    driverID: Number(driverID),
-    rideID: Number(rideID)
+    "driverID": Number(driverID),
+    "_id" : ObjectId(rideID)
   }).then(function(ride) {
       if(ride){
         res.status(200).json(ride);

@@ -17,7 +17,7 @@ function emptyCol(isTrue, callback=()=>{}) {
 
 function post(driverID, rideID, record, isTrue = true, callback=()=>{}) {
   if(isTrue) {
-    request.post('http://localhost:3000/api/rides/'+ driverID + '/' + rideID, {
+    request.post('http://localhost:3000/api/rides/'+ driverID, {
       json: record
     }, (error, res, body) => {
       if (error) {
@@ -33,7 +33,7 @@ function post(driverID, rideID, record, isTrue = true, callback=()=>{}) {
 function query(callback=()=>{}) {
   var query = {
                 originCoords: [-119.159392, 34.164958],
-                // destCoords:  [-117.221505, 32.873788 ],
+                destCoords:  [-117.221505, 32.873788 ],
                 beginDate: new Date(2020, 6, 23, 13, 0),
                 endDate: new Date(2020, 6, 23, 14, 0),
                 distance: 5
@@ -49,22 +49,22 @@ function query(callback=()=>{}) {
   callback();
 }
 
-function getSingleRide(driverID, rideID, callback=()=>{}) {
-  const URL = "http://localhost:3000/api/rides/" + driverID + "/" + rideID;
-  request.get(URL, {}, (err, res, body) => {
-    if(err) {
-      console.error(err);
-      return;
-    }
-    if(res.statusCode == 200) {
-      console.log("Fetched " + driverID + "/" + rideID + ":\n" + JSON.stringify(JSON.parse(body),null,2));
-    }
-    else {
-      console.log("Fetched " + driverID + "/" + rideID + ":" + body);
-    }
-  })
-  callback();
-}
+// function getSingleRide(driverID, rideID, callback=()=>{}) {
+//   const URL = "http://localhost:3000/api/rides/" + driverID + "/" + rideID;
+//   request.get(URL, {}, (err, res, body) => {
+//     if(err) {
+//       console.error(err);
+//       return;
+//     }
+//     if(res.statusCode == 200) {
+//       console.log("Fetched " + driverID + "/" + rideID + ":\n" + JSON.stringify(JSON.parse(body),null,2));
+//     }
+//     else {
+//       console.log("Fetched " + driverID + "/" + rideID + ":" + body);
+//     }
+//   })
+//   callback();
+// }
 
 var doc0 = {
   origin: {address: "4000 S Rose Ave", city: "Oxnard", state: "CA", zip: 93033, school: "Oxnard College"},
@@ -129,8 +129,8 @@ emptyCol(true, function() {
     query( function() {
       console.log("DB Init is done.");
     });
-    getSingleRide(0, 0);
-    getSingleRide(1, 0);
-    getSingleRide(1, 2);
+    // getSingleRide(0, 0);
+    // getSingleRide(1, 0);
+    // getSingleRide(1, 2);
   })
 });
