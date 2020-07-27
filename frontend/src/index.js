@@ -3,12 +3,46 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {createStore} from "redux";
+import {Provider} from "react-redux"
+
+const initialState = {
+    start: '',
+    endDest: '',
+    rides: [
+        ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
+        ['UCLA', 'UCSD', new Date(2020, 6, 24, 12, 15)],
+        ['USC', 'Stanford', new Date(2020, 6, 27, 14, 30)],
+    ],
+    filteredRides: [],
+    startDate: '',
+    endDate: '',
+};
+
+function reducer(state = initialState, action) {
+    switch(action.type) {
+        case "SEARCH":
+            return {
+
+            };
+        default:
+            return state;
+    }
+}
+
+const store = createStore(reducer);
+
+store.dispatch({
+    type: "SEARCH"
+});
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <Provider store={store}>
+            <App/>
+        </Provider>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

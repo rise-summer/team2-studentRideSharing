@@ -1,0 +1,61 @@
+.center-column {
+    width: 35vw;
+    background-color: #ecffdc;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    padding: 15px;
+}
+
+.itinerary {
+    /*width: 100%;*/
+    background-color: #c5f8f5;
+    display: block;
+    margin: 0 -15px;
+    padding: 5px 15px;
+}
+
+.location {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.name {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.padding {
+    padding: 5px 0px;
+}
+
+.subtitle {
+    font-size: 16px;
+    font-weight: lighter;
+}
+
+.ride-detail-wrapper {
+    display: block;
+}
+
+.detail-icon {
+    display: inline;
+}
+
+.ride-detail {
+    font-size: 16px;
+    font-weight: normal;
+    display: inline;
+}
+
+.indent {
+    padding-left: 8px;
+    padding-top: 5px;
+}
+
+.indent2 {
+    padding-left: 50px;
+    padding-top: 5px;
+}
+

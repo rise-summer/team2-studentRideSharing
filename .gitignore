@@ -34,3 +34,12 @@ node_modules/
 
 # npm
 node_modules
+
+# notes
+useful links.txt
+
+#batch files
+*.bat
+
+# IDE
+.idea/

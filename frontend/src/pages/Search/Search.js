@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import RideList from "../../components/RidesList/RideList";
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css'
+import {SEARCH_RIDES_SUCCESS} from "../../actions/SearchPageStates";
+import {getRidesError, getRidesSuccess} from "../../reducers/SearchRidesReducer";
+const xurl = '/api/rides?query=%7B%22originCoords%22%3A%5B-119.159392%2C34.164958%5D%2C%22beginDate%22%3A%222020-07-23T20%3A00%3A00.000Z%22%2C%22endDate%22%3A%222020-07-23T21%3A00%3A00.000Z%22%2C%22distance%22%3A5%7D'
 
 class Search extends Component {
     constructor(props) {
@@ -27,7 +31,7 @@ class Search extends Component {
         this.endDateRef = React.createRef();
     }
 
-    componentDidMount () {
+    componentDidMount() {
         new Pikaday({
             field: this.startDateRef.current,
             onSelect: this.editStartDate,
@@ -39,16 +43,20 @@ class Search extends Component {
         });
     }
 
-    editStart = (sd) => {this.setState({start: sd.target.value})};
+    editStart = (sd) => {
+        this.setState({start: sd.target.value})
+    };
 
-    editEndDest = (ed) => {this.setState({endDest: ed.target.value})};
+    editEndDest = (ed) => {
+        this.setState({endDest: ed.target.value})
+    };
 
     editStartDate = (d) => {
         var date = moment(d).format('MM/DD/YYYY') + ' ';
         this.setState({startDate: date})
     };
 
-    editEndDate = (d) =>{
+    editEndDate = (d) => {
         var date = moment(d).format('MM/DD/YYYY') + ' ';
         this.setState({endDate: date})
     };
@@ -58,13 +66,13 @@ class Search extends Component {
         const rides = this.state.rides;
         return rides.filter(dest =>
             (dest[0].toLowerCase().includes(this.state.start.toLowerCase()) &&
-            dest[1].toLowerCase().includes(this.state.endDest.toLowerCase())));
+                dest[1].toLowerCase().includes(this.state.endDest.toLowerCase())));
     };
 
     /* filter upon button click */
     filterRides = () => {
         // split searched departure date into array
-        var dateArray  = this.state.startDate.split('/');
+        var dateArray = this.state.startDate.split('/');
         // create Date object from array information
         // new Date(YYYY, MM, DD), month is 0-indexed
         var date = new Date(dateArray[2], dateArray[0] - 1, dateArray[1]);
@@ -74,14 +82,23 @@ class Search extends Component {
         })
     };
 
+    queryRides = () => {
+        // this.props.dispatch({type: SEARCH_RIDES_SUCCESS});
+        fetch(xurl)
+            .then(res => res.json())
+            .then(res => {
+                console.log(res); /*****/
+            })
+    };
+
     // helper function for filterRides()
     checkMatch = (dest, dateArray, date) => {
         var startMatch = dest[0].toLowerCase().includes(this.state.start.toLowerCase());
         var destMatch = dest[1].toLowerCase().includes(this.state.endDest.toLowerCase());
         var dateMatch = dateArray.length === 1 ||
             (date.getFullYear() === dest[2].getFullYear() &&
-            date.getMonth() === dest[2].getMonth() &&
-            date.getDate() === dest[2].getDate());
+                date.getMonth() === dest[2].getMonth() &&
+                date.getDate() === dest[2].getDate());
         return startMatch && destMatch && dateMatch;
     };
 
@@ -97,29 +114,34 @@ class Search extends Component {
 
     render() {
         return (
-            <div className='search-wrapper'>
-                <SearchBar
-                    text={this.state.start}
-                    editfn={this.editStart}
-                    placeholder='Choose Starting Point...'
-                />
-                <SearchBar
-                    text={this.state.endDest}
-                    editfn={this.editEndDest}
-                    placeholder='Choose Destination...'
-                />
+            <div className="search-wrapper">
+                <div className="search-details">
+                    <SearchBar
+                        className="start-location"
+                        text={this.state.start}
+                        editfn={this.editStart}
+                        placeholder="Choose Starting Point..."
+                    />
+                    <SearchBar
+                        className="end-dest"
+                        text={this.state.endDest}
+                        editfn={this.editEndDest}
+                        placeholder="Choose Destination..."
+                    />
 
-                <input
-                    className='date-picker-box'
-                    type="text"
-                    ref={this.startDateRef}
-                    onChange={this.editStartDate}
-                    value={this.state.startDate}
-                    placeholder='Departure Date'
-                />
+                    <input
+                        className="date-picker-box"
+                        type="text"
+                        ref={this.startDateRef}
+                        onChange={this.editStartDate}
+                        value={this.state.startDate}
+                        placeholder="Departure Date"
+                    />
+                </div>
                 <br/>
                 <button onClick={this.filterRides}>Search</button>
                 <button onClick={this.clearFilter}>Clear</button>
+                <button onClick={this.queryRides}>Search DB</button>
                 <h3>Available Rides</h3>
                 {/*<RideList rides={this.ridefilter}/>*/}
                 <RideList rides={this.state.filteredRides}/>
@@ -129,4 +151,14 @@ class Search extends Component {
     }
 }
 
-export default Search;
+const mapStateToProps = (state) => ({
+    start: state.start,
+    endDest: state.endDest,
+    rides: state.rides,
+    filteredRides: state.filteredRides,
+    startDate: state.startDate,
+    endDate: state.endDate,
+});
+
+// export default Search;
+export default connect(mapStateToProps)(Search);
