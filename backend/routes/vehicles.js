@@ -11,13 +11,13 @@ router.delete('/', async function(req, res, next){
 })
 
 //add a car
-router.post('/:userID/:carID', async function(req, res, next){
+router.post('/:userID', async function(req, res, next){
   const userID = req.params.userID;
-  const carID = req.params.carID;
+  // const carID = req.params.carID;
   const {make, model, color, plate, capacity} = req.body;
   let carDocument = {
     "userID": userID,
-    "carID": Number(carID),
+    // "carID": Number(carID),
     "make": make,
     "model": model,
     "color": color,

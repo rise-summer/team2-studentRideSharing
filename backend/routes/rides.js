@@ -104,7 +104,7 @@ router.get('/:userID/:rideID', async function(req, res, next){
   const rideID = req.params.rideID;
   const collection = client.dbCollection(collectionName);
   collection.findOne({
-    "driverID": Number(driverID),
+    "driverID": ObjectId(driverID),
     "_id" : ObjectId(rideID)
   }).then(function(ride) {
       if(ride){
