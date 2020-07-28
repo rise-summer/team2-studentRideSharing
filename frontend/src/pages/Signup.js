@@ -3,6 +3,8 @@ import SearchBar from '../components/SearchBar/SearchBar';
 import login_image from './google-login.png';
 
 class Signup extends React.Component {
+    //TODO: Add prefereed contact methods
+    //Combine into one component (see figma layout)
     constructor(props) {
         super(props);
         this.state = {
@@ -57,15 +59,13 @@ class Signup extends React.Component {
                     </div>
                     <input type="submit" value="Sign up" />
                     <br />
-                    Already have an account? <a href="#">Sign in</a>
+                    {/* Already have an account? <a href="#">Sign in</a> */}
                 </form>
-                <a href="#">
                     {/* Placeholder */}
                     <img
                         src={login_image}
                         style={{ 'margin-top': 50, width: 250, height: 'auto' }}
                     />
-                </a>
             </div>
         );
     }

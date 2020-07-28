@@ -2,22 +2,23 @@ import React from 'react';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TimePicker from '../components/TimePicker/TimePicker';
 import NumberPicker from '../components/NumberPicker/NumberPicker';
+import GeoSearch from '../components/GeoSearch/GeoSearch';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 
-// TODO: remove lastStartTime
+// TODO: change so first ride is stored and everything is submitted at the end
+
 class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             startLocation: '',
-            endLocation: '',
+            endLocation: {},
             startDate: '',
-            firstStartTime: '',
-            lastStartTime: '',
-            price: undefined,
-            capacity: undefined,
+            startTime: '',
+            price: '',
+            capacity: '',
             isRoundTrip: false,
             errorMessage: '',
             step: 1,
@@ -38,37 +39,31 @@ class DriverListing extends React.Component {
         this.setState({ startDate: date });
     };
 
+    handleGeoSubmit = (resp, fieldName) => {
+        console.log(resp);
+        const mappedContext = resp.context.map((item) => {
+            return {
+                name: item.id.split('.')[0],
+                text: item.text,
+            };
+        });
+        const getObj = (name) => mappedContext.find((obj) => obj.name === name);
+        console.log(mappedContext);
+        this.setState({
+            [fieldName]: {
+                lng: resp.center[0],
+                lat: resp.center[1],
+                address: resp.address || '',
+                city: getObj('place').text || '',
+                state: getObj('region').text || '',
+                zip: getObj('postcode').text || '',
+            },
+        });
+    };
+
     postData = async () => {
         const userId = 'abc';
         const url = `/api/rides/${userId}`;
-        const testBodyData = {
-            startLoc: {
-                address: '69 Division Ave',
-                city: 'Victorville',
-                state: 'CA',
-                zip: 92392,
-            },
-            endLoc: {
-                city: 'Los Angeles',
-                state: 'CA',
-                zip: 90095,
-                school: 'UCLA',
-            }, //school is optional
-            originCoords: {
-                type: 'Point',
-                coordinates: [-119.158323, 34.177169],
-            },
-            destCoords: [-117.274471, 32.832215],
-            time: new Date(2020, 6, 23, 13, 0), //year, month (0 to 11), date, hours, minutes
-            price: 20.0,
-            capacity: 3,
-            car: {
-                model: 'Toyota',
-                make: 'Camry',
-                color: 'White',
-                plate: '7AVF369',
-            },
-        };
         const bodyData = {
             origin: {
                 address: '4000 S Rose Ave',
@@ -76,6 +71,7 @@ class DriverListing extends React.Component {
                 state: 'CA',
                 zip: 93033,
                 school: 'Oxnard College',
+                // add "Display name"
             },
             destination: {
                 address: 'Miramar St',
@@ -85,13 +81,19 @@ class DriverListing extends React.Component {
             },
             originCoords: {
                 type: 'Point',
-                coordinates: [-119.159392, 34.164958],
+                coordinates: [
+                    this.state.startLocation.lng,
+                    this.state.startLocation.lat,
+                ],
             },
             destCoords: {
                 type: 'Point',
-                coordinates: [-117.221505, 32.873788],
+                coordinates: [
+                    this.state.endLocation.lng,
+                    this.state.endLocation.lat,
+                ],
             },
-            time: new Date(this.state.startDate + this.state.firstStartTime), //year, month (0 to 11), date, hours, minutes
+            time: new Date(this.state.startDate + this.state.startTime), //year, month (0 to 11), date, hours, minutes
             price: this.state.price,
             capacity: this.state.capacity,
             car: {
@@ -125,39 +127,21 @@ class DriverListing extends React.Component {
         this.setState({ [name]: value });
     };
 
-    // Handles custom validation. Some validation is done in the HTML
-    handleValidation = (event) => {
-        const time1 = Date.parse('01/01/2000' + this.state.firstStartTime);
-        const time2 = Date.parse('01/01/2000' + this.state.lastStartTime);
-        if (time2 < time1) {
-            console.log('this');
-            this.setState({
-                errorMessage:
-                    'Earliest start time must come before latest start time',
-            });
-            console.log('state set', this.state.errorMessage);
-        } else {
-            this.setState({ errorMessage: '' });
-        }
-        console.log('end of validation', this.state.errorMessage);
-    };
-
     handleSubmit = (event) => {
         event.preventDefault();
         const isRoundTrip = this.state.isRoundTrip;
-        const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
-        const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
-
-        // this.handleValidation();
+        // const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
+        // const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
 
         if (this.state.errorMessage === '') {
             this.postData();
+            // Do I need async/await here? to avoid setting state prematurely
+            console.log('test');
             this.setState({
-                startLocation: nextStartLocation,
-                endLocation: nextEndLocation,
+                startLocation: {},
+                endLocation: {},
                 startDate: '',
-                firstStartTime: '',
-                lastStartTime: '',
+                startTime: '',
                 price: '',
                 capacity: '',
                 isRoundTrip: false,
@@ -176,20 +160,15 @@ class DriverListing extends React.Component {
                 )}
                 <form onSubmit={this.handleSubmit} autoComplete="off">
                     {/* Replace with location picker*/}
-                    <SearchBar
-                        text={this.state.startLocation}
-                        editfn={this.handleChange}
-                        placeholder="Start location"
+                    <GeoSearch
+                        handleChange={this.handleGeoSubmit}
+                        placeholder="Where from?"
                         name="startLocation"
-                        required
                     />
-                    {/* Replace with location picker */}
-                    <SearchBar
-                        text={this.state.endLocation}
-                        editfn={this.handleChange}
-                        placeholder="End location"
+                    <GeoSearch
+                        handleChange={this.handleGeoSubmit}
+                        placeholder="Where to?"
                         name="endLocation"
-                        required
                     />
                     <input
                         className="date-picker-box"
@@ -206,21 +185,13 @@ class DriverListing extends React.Component {
                     <label>
                         Earliest start time
                         <TimePicker
-                            name="firstStartTime"
-                            value={this.state.firstStartTime}
+                            name="startTime"
+                            value={this.state.startTime}
                             editfn={this.handleChange}
                             required
                         />
                     </label>
-                    <label>
-                        Latest start time
-                        <TimePicker
-                            name="lastStartTime"
-                            value={this.state.lastStartTime}
-                            editfn={this.handleChange}
-                            required
-                        />
-                    </label>
+
                     <NumberPicker
                         min={0}
                         max={100}
