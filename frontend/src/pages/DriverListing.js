@@ -6,6 +6,7 @@ import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 
+// TODO: remove lastStartTime
 class DriverListing extends React.Component {
     constructor(props) {
         super(props);
@@ -39,8 +40,7 @@ class DriverListing extends React.Component {
 
     postData = async () => {
         const userId = 'abc';
-        const rideId = '123';
-        const url = `/api/rides/${userId}/${rideId}`;
+        const url = `/api/rides/${userId}`;
         const testBodyData = {
             startLoc: {
                 address: '69 Division Ave',
@@ -70,25 +70,29 @@ class DriverListing extends React.Component {
             },
         };
         const bodyData = {
-            startLoc: {
-                address: '69 Division Ave',
-                city: 'Victorville',
+            origin: {
+                address: '4000 S Rose Ave',
+                city: 'Oxnard',
                 state: 'CA',
-                zip: 92392,
+                zip: 93033,
+                school: 'Oxnard College',
             },
-            endLoc: {
-                city: 'Los Angeles',
+            destination: {
+                address: 'Miramar St',
+                city: 'La Jolla',
                 state: 'CA',
-                zip: 90095,
-                school: 'UCLA',
-            }, //school is optional
+                zip: 92037,
+            },
             originCoords: {
                 type: 'Point',
-                coordinates: [-119.158323, 34.177169],
+                coordinates: [-119.159392, 34.164958],
             },
-            destCoords: [-117.274471, 32.832215],
+            destCoords: {
+                type: 'Point',
+                coordinates: [-117.221505, 32.873788],
+            },
             time: new Date(this.state.startDate + this.state.firstStartTime), //year, month (0 to 11), date, hours, minutes
-            price: this.state.price, // Do I need to cast it to a number?
+            price: this.state.price,
             capacity: this.state.capacity,
             car: {
                 model: 'Toyota',
