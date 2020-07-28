@@ -16,7 +16,10 @@ This directory should only include backend project files
       - [Add a new ride](#add-a-new-ride)
       - [Get a specific ride](#get-a-specific-ride)
     - [users.js](#users) Defines all users-related operations
+      - [Register a new user](#register-a-new-user)
     - [vehicles.js](#vehicles) Defines all vehicles-related operations
+      - [Register a new car for the user](#register-a-new-car-for-the-user)
+      - [Get all cars of a user](#get-all-cars-of-a-user)
 - `/test`
     - `dbTest.js`
         - Initialize Database with test data and test sample query
