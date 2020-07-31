@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import "./Ride.css";
 import {Accordion, Icon} from "semantic-ui-react";
+import {Link} from 'react-router-dom';
+
 
 class Ride extends Component {
     constructor(props) {
@@ -48,7 +50,9 @@ class Ride extends Component {
                         className="accordion-dropdown"
                         active={this.state.activeIndex === 0}>
                         <b>Departure Time: {this.formatTime(this.props.time)}</b>
-                        <button className="view-button">View Ride</button>
+                        <Link to='/ride/'>
+                            <button className="view-button">View Ride</button>
+                        </Link>
                     </Accordion.Content>
                 </Accordion>
                 {/*<div><b>Departing From: {this.props.start}</b></div>*/}

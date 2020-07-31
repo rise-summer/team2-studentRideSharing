@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
 import './RideDetails.css';
 import {Icon} from 'semantic-ui-react';
+import {Link} from "react-router-dom";
 
 class RideDetails extends Component {
     render() {
         return (
             <div>
+                <div className="driver"></div>
                 <div className="center-column">
+                    <Link to='/search/'>
+                        <button className="view-button">Back</button>
+                    </Link>
                     <div className="name padding">Elliot S.</div>
                     <div className="subtitle padding">San Diego State University</div>
                     <div className="itinerary">

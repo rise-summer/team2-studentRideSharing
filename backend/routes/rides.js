@@ -17,33 +17,50 @@ router.get('/', async function(req, res, next){
   const query = JSON.parse(req.query['query']);
   console.log(query);
   const originCoords = query['originCoords'];
-  // const destCoords = query['destCoords'];
+  const destCoords = query['destCoords'];
   const beginDate = query['beginDate'];
   const endDate = query['endDate'];
   const distance = query['distance']; // within x miles
   const collection = client.dbCollection(collectionName);
-  const METERS_PER_MILE = 1609.34;
+  // const METERS_PER_MILE = 1609.34;
+  const distInRadians = distance / 3963.2;//converts the distance to radians by dividing by the approximate equatorial radius of the earth
 
   collection.find({
     time: {$gte: beginDate, $lte: endDate},
-    originCoords:
-      {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: originCoords
-          },
-          $maxDistance: distance * METERS_PER_MILE
+    originCoords: { $geoWithin: { $centerSphere: [ originCoords, distInRadians ] } },
+    destCoords:{ $geoWithin: { $centerSphere: [ destCoords, distInRadians ] } }
+  })
+      // collection.find({
+      //   time: {$gte: beginDate, $lte: endDate},
+      //   originCoords:
+      //     {
+      //       $near: {
+      //         $geometry: {
+      //           type: "Point",
+      //           coordinates: originCoords
+      //         },
+      //         $maxDistance: distance * METERS_PER_MILE
+      //       }
+      //   },
+      //   destCoords:
+      //     {
+      //       $near: {
+      //         $geometry: {
+      //           type: "Point",
+      //           coordinates: destCoords
+      //         },
+      //         $maxDistance: distance * METERS_PER_MILE
+      //       }
+      //     }
+      // })
+      .toArray(function(err, rides){
+        if(err) {
+          console.log(err);
+          res.sendStatus(400);
         }
-      }
-  }).toArray(function(err, rides){
-    if(err) {
-      console.log(err);
-      res.sendStatus(400);
-    }
-    // console.log();
-    res.status(200).json(rides);
-  });
+        // console.log();
+        res.status(200).json(rides);
+      });
 })
 
 //post a new ride
@@ -89,12 +106,12 @@ router.get('/:userID/:rideID', async function(req, res, next){
     driverID: Number(driverID),
     rideID: Number(rideID)
   }).then(function(ride) {
-      if(ride){
-        res.status(200).json(ride);
-      }
-      else {
-        res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
-      }
+    if(ride){
+      res.status(200).json(ride);
+    }
+    else {
+      res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
+    }
   });
 })
 

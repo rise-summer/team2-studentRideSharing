@@ -6,9 +6,17 @@ import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css'
+import {Link} from 'react-router-dom';
 import {SEARCH_RIDES_SUCCESS} from "../../actions/SearchPageStates";
 import {getRidesError, getRidesSuccess} from "../../reducers/SearchRidesReducer";
-const xurl = '/api/rides?query=%7B%22originCoords%22%3A%5B-119.159392%2C34.164958%5D%2C%22beginDate%22%3A%222020-07-23T20%3A00%3A00.000Z%22%2C%22endDate%22%3A%222020-07-23T21%3A00%3A00.000Z%22%2C%22distance%22%3A5%7D'
+const xurl = 'http://localhost:3000/api/rides?query=%7B%22originCoords%22%3A%5B-119.159392%2C34.164958%5D%2C%22destCoords%22%3A%5B-117.221505%2C32.873788%5D%2C%22beginDate%22%3A%222020-07-23T20%3A00%3A00.000Z%22%2C%22endDate%22%3A%222020-07-23T21%3A00%3A00.000Z%22%2C%22distance%22%3A5%7D'
+// const xurl = 'http://localhost:3000/api/rides?query=';
+
+const sample_rides = [
+    ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
+    ['UCLA', 'UCSD', new Date(2020, 6, 24, 12, 15)],
+    ['USC', 'Stanford', new Date(2020, 6, 27, 14, 30)],
+];
 
 class Search extends Component {
     constructor(props) {
@@ -17,11 +25,7 @@ class Search extends Component {
         this.state = {
             start: '',
             endDest: '',
-            rides: [
-                ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
-                ['UCLA', 'UCSD', new Date(2020, 6, 24, 12, 15)],
-                ['USC', 'Stanford', new Date(2020, 6, 27, 14, 30)],
-            ],
+            rides: sample_rides,
             filteredRides: [],
             startDate: '',
             endDate: '',
@@ -88,6 +92,20 @@ class Search extends Component {
             .then(res => res.json())
             .then(res => {
                 console.log(res); /*****/
+                const queried_rides = [];
+                for (let ride in res) {
+                    queried_rides.push(
+                        [
+                            res[ride].startLoc.city + ', ' + res[ride].startLoc.state,
+                            res[ride].endLoc.city + ', ' + res[ride].endLoc.state,
+                            new Date(res[ride].time),
+                        ]
+                    )
+                }
+                this.setState({
+                    filteredRides: queried_rides
+                });
+                console.log(queried_rides);
             })
     };
 

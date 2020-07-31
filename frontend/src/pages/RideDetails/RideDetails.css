@@ -1,4 +1,5 @@
 .center-column {
+    top: 25px;
     width: 35vw;
     background-color: #ecffdc;
     position: relative;
@@ -59,3 +60,12 @@
     padding-top: 5px;
 }
 
+.driver {
+    display: block;
+    position: absolute;
+    left: 10vw;
+    top: 25px;
+    width: 20vw;
+    height: 250px;
+    background-color: #b6b3bf;
+}
