@@ -14,31 +14,21 @@ mapboxgl.accessToken =
 -add required prop
 -Make it look good with css
 -Add proptypes/documentation
+-Add address, city, state field autofilled and allow user to edit it
 */
+
 //need to render map with point of interest?
-// add address, city, state field autofilled and allow user to edit it
-// store display name (could be address), city, state, optional address in db
 // ride listing shows city
 // ride detail page shows display name
 class GeoSearch extends React.Component {
     constructor(props) {
         super(props);
-        // props: has map?
-
-        /* 
-        place_type: base place type (e.g. place for San Francisco)
-        text: feature name (display name?), if search is address, will be street name
-        place_name: feature name with full result hierarchy (e.g. San Francisco, California, United States)
-        address: optional, check for address here first, if search is an address, will be a number
-        properties.address: optional, check here if not in 'address'
-        */
-
         this.searchRef = React.createRef();
     }
 
     async componentDidMount() {
 
-        // Code to retreive location for proximity search
+        // Code to retrieve location for proximity search
         let coords;
         if (navigator.geolocation) {
             const getCoordinates = async () => {
@@ -75,7 +65,6 @@ class GeoSearch extends React.Component {
         geocoder.addTo(this.searchRef.current);
     }
     render() {
-        //need to render map with point of interest?
         return (
             <div
                 style={{

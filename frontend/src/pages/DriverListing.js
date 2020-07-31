@@ -13,7 +13,7 @@ class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            startLocation: '',
+            startLocation: {},
             endLocation: {},
             startDate: '',
             startTime: '',
@@ -40,62 +40,75 @@ class DriverListing extends React.Component {
     };
 
     handleGeoSubmit = (resp, fieldName) => {
-        console.log(resp);
-        const mappedContext = resp.context.map((item) => {
-            return {
-                name: item.id.split('.')[0],
-                text: item.text,
-            };
-        });
-        const getObj = (name) => mappedContext.find((obj) => obj.name === name);
-        console.log(mappedContext);
+        const { context, place_type, place_name, center } = resp;
+
+        // Parses attribute types from resp.context
+        const getObj = (name) => context.find((obj) => obj.id.startsWith(name));
+
+        // Address can show up in various places, below searches all of them
+        const displayName =
+            resp.address && place_type[0] === 'address'
+                ? resp.address + ' ' + resp.text
+                : resp.text;
+        const address = place_name;
+
+        // If query is a place, place will not be in context
+        const city = place_type[0] === 'place' ? resp : getObj('place');
+        const zip = getObj('postcode');
+        const state = getObj('region');
+
+        console.log(displayName);
+        console.log(address);
         this.setState({
             [fieldName]: {
-                lng: resp.center[0],
-                lat: resp.center[1],
-                address: resp.address || '',
-                city: getObj('place').text || '',
-                state: getObj('region').text || '',
-                zip: getObj('postcode').text || '',
+                lng: center[0],
+                lat: center[1],
+                address: address,
+                city: city ? city.text : '',
+                state: state ? state.text : '',
+                zip: zip ? zip.text : '',
+                displayName: displayName || '',
             },
         });
     };
 
     postData = async () => {
+        const {
+            startLocation,
+            endLocation,
+            startDate,
+            startTime,
+            price,
+            capacity,
+        } = this.state;
         const userId = 'abc';
         const url = `/api/rides/${userId}`;
         const bodyData = {
             origin: {
-                address: '4000 S Rose Ave',
-                city: 'Oxnard',
-                state: 'CA',
-                zip: 93033,
-                school: 'Oxnard College',
-                // add "Display name"
+                address: startLocation.address,
+                city: startLocation.city,
+                state: startLocation.state,
+                zip: startLocation.zip,
+                displayName: startLocation.displayName,
             },
             destination: {
-                address: 'Miramar St',
-                city: 'La Jolla',
-                state: 'CA',
-                zip: 92037,
+                address: endLocation.address,
+                city: endLocation.city,
+                state: endLocation.state,
+                zip: endLocation.zip,
+                displayName: endLocation.displayName,
             },
             originCoords: {
                 type: 'Point',
-                coordinates: [
-                    this.state.startLocation.lng,
-                    this.state.startLocation.lat,
-                ],
+                coordinates: [startLocation.lng, startLocation.lat],
             },
             destCoords: {
                 type: 'Point',
-                coordinates: [
-                    this.state.endLocation.lng,
-                    this.state.endLocation.lat,
-                ],
+                coordinates: [endLocation.lng, endLocation.lat],
             },
-            time: new Date(this.state.startDate + this.state.startTime), //year, month (0 to 11), date, hours, minutes
-            price: this.state.price,
-            capacity: this.state.capacity,
+            time: new Date(startDate + startTime), //year, month (0 to 11), date, hours, minutes
+            price: price,
+            capacity: capacity,
             car: {
                 model: 'Toyota',
                 make: 'Camry',
@@ -136,7 +149,6 @@ class DriverListing extends React.Component {
         if (this.state.errorMessage === '') {
             this.postData();
             // Do I need async/await here? to avoid setting state prematurely
-            console.log('test');
             this.setState({
                 startLocation: {},
                 endLocation: {},
