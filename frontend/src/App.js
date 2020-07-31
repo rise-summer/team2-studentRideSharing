@@ -13,11 +13,6 @@ function App() {
             {/*<RideDetails/>*/}
             {/*<Search/>*/}
             <Router initialEntries={['/']} initialIndex={0} history={history}>
-                {/*<div>*/}
-                {/*    <Route exact path="/" component={Search}/>*/}
-                {/*    <Route exact path="/search" component={Search}/>*/}
-                {/*    <Route path="/ride" component={RideDetails}/>*/}
-                {/*</div>*/}
                 <Switch>
                     <Route exact path="/">
                         <Search/>
