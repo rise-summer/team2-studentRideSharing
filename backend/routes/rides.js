@@ -3,6 +3,7 @@ const router = express.Router();
 const client = require('../db');
 const querystring = require('querystring');
 const collectionName = "Rides";
+const ObjectId = require('mongodb').ObjectId;
 
 //(temporary) Admin API for testing
 router.delete('/', async function(req, res, next){
@@ -104,7 +105,7 @@ router.get('/:userID/:rideID', async function(req, res, next){
   const rideID = req.params.rideID;
   const collection = client.dbCollection(collectionName);
   collection.findOne({
-    "driverID": ObjectId(driverID),
+    "driverID": driverID,
     "_id" : ObjectId(rideID)
   }).then(function(ride) {
       if(ride){
