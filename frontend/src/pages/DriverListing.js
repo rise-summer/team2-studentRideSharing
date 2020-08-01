@@ -57,8 +57,6 @@ class DriverListing extends React.Component {
         const zip = getObj('postcode');
         const state = getObj('region');
 
-        console.log(displayName);
-        console.log(address);
         this.setState({
             [fieldName]: {
                 lng: center[0],
@@ -176,11 +174,13 @@ class DriverListing extends React.Component {
                         handleChange={this.handleGeoSubmit}
                         placeholder="Where from?"
                         name="startLocation"
+                        types="postcode,district,locality,neighborhood,address,poi"
                     />
                     <GeoSearch
                         handleChange={this.handleGeoSubmit}
                         placeholder="Where to?"
                         name="endLocation"
+                        types="postcode,district,locality,neighborhood,address,poi"
                     />
                     <input
                         className="date-picker-box"
