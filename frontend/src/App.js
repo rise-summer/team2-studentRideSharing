@@ -1,14 +1,13 @@
 import React from 'react';
 import './App.css';
-import DriverListing from './pages/DriverListing';
+import DriverListing from './pages/DriverListing/DriverListing';
 import Search from './pages/Search/Search';
-import Signin from './pages/Signin';
-import Signup from './pages/Signup';
+import LoginPage from './pages/LoginPage/LoginPage';
 
 function App() {
     return (
         <div className="App">
-            <DriverListing />
+            <LoginPage />
         </div>
     );
 }

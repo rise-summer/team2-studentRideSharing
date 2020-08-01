@@ -1,8 +1,8 @@
 import React from 'react';
-import SearchBar from '../components/SearchBar/SearchBar';
-import TimePicker from '../components/TimePicker/TimePicker';
-import NumberPicker from '../components/NumberPicker/NumberPicker';
-import GeoSearch from '../components/GeoSearch/GeoSearch';
+import SearchBar from '../../components/SearchBar/SearchBar';
+import TimePicker from '../../components/TimePicker/TimePicker';
+import NumberPicker from '../../components/NumberPicker/NumberPicker';
+import GeoSearch from '../../components/GeoSearch/GeoSearch';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
