@@ -64,20 +64,21 @@ router.get('/', async function (req, res, next) {
 });
 
 //post a new ride
-router.post('/:userID/:rideID', async function (req, res, next) {
+
+router.post('/:userID', async function (req, res, next) {
     //TODO: validate login state - login user = given userid
     //TODO: validate input data - userID/rideID not existed in db, req body must include certain data
     const driverID = req.params.userID;
-    const rideID = req.params.rideID;
+    // const rideID = req.params.rideID;
     const {origin, destination, originCoords, destCoords, time, price, capacity, car} = req.body;
     let rideDocument = {
         "driverID": driverID,
-        "rideID": Number(rideID),
-        "startLoc": origin,
+        // "rideID": Number(rideID),
+        "startLoc": origin,//{"address": "4000 S Rose Ave", "city": "Oxnard", "state": "CA", "zip": 93033, "school": "", "display":""}
         "endLoc": destination,
         "originCoords": originCoords,
         "destCoords": destCoords,
-        "time": time,//year, month (0 to 11), date, hours, minutes
+        "time": time,//new Date(year, month (0 to 11), date, hours, minutes)
         "price": price,
         "capacity": capacity,
         "car": car
@@ -89,6 +90,7 @@ router.post('/:userID/:rideID', async function (req, res, next) {
             res.sendStatus(400);
         } else {
             console.log("Record added as " + JSON.stringify(record.ops[0]));
+            res.setHeader("Location", "/api/rides/" + driverID + "/" + record.ops[0]["_id"]);
             res.status(201).send(JSON.stringify(record.ops[0]));//Created
             //TODO: location header -> link to the generated ride
         }
@@ -102,10 +104,9 @@ router.get('/:userID/:rideID', async function (req, res, next) {
     const rideID = req.params.rideID;
     const collection = client.dbCollection(collectionName);
     collection.findOne({
-        driverID: Number(driverID),
-        rideID: Number(rideID)
+        "driverID": ObjectId(driverID),
+        "_id": ObjectId(rideID)
     }).then(function (ride) {
-
         if (ride) {
             res.status(200).json(ride);
         } else {
@@ -114,4 +115,9 @@ router.get('/:userID/:rideID', async function (req, res, next) {
     });
 });
 
+if (ride) {
+    res.status(200).json(ride);
+} else {
+    res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
+}
 module.exports = router;
