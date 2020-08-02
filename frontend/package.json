@@ -8,6 +8,8 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "autoprefixer": "^9.8.5",
+    "firebase": "^7.17.1",
+    "firebaseui": "^4.6.1",
     "http-proxy-middleware": "^1.0.5",
     "moment": "^2.27.0",
     "pikaday": "^1.8.0",
@@ -40,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "react-firebaseui": "^4.1.0",
     "react-router-dom": "^5.2.0",
     "redux-devtools": "^3.5.0"
   }
