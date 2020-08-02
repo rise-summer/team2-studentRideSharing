@@ -1,12 +1,13 @@
 import React from 'react';
 import './App.css';
-import DriverListing from './pages/DriverListing';
+import DriverListing from './pages/DriverListing/DriverListing';
 import Search from './pages/Search/Search';
 import {Router, Switch, Route} from 'react-router-dom';
 import RideDetails from './pages/RideDetails/RideDetails';
 import {createBrowserHistory} from "history";
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import LoginPage from './pages/LoginPage/LoginPage';
 
 const history = createBrowserHistory();
 
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/newride"><DriverListing/></Route>
                     <Route path="/signin"><SignIn/></Route>
                     <Route path="/signup"><SignUp/></Route>
+                    <Route path="/login"><LoginPage/></Route>
                 </Switch>
             </Router>
         </div>
