@@ -8,6 +8,7 @@ const app = express();
 const ridesRouter = require('./routes/rides');
 const usersRouter = require('./routes/users');
 const vehiclesRouter = require('./routes/vehicles');
+const requestsRouter = require('./routes/requests');
 // configure app
 app.use(logger('dev'));
 // app.use(cors());
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 app.use('/api/rides', ridesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/vehicles', vehiclesRouter);
+app.use('/api/requests', requestsRouter);
 
 //Connect to Mongo on start
 // const uri = "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true&w=majority";
