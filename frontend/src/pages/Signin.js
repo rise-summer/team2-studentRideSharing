@@ -48,15 +48,13 @@ class Signin extends React.Component {
                     </div>
                     <input type="submit" value="Sign In" />
                     <br />
-                    Don't have an account? <a href="#">Sign up</a>
+                    {/* Don't have an account? <a href="#">Sign up</a> */}
                 </form>
-                <a href="#">
                     {/* Placeholder */}
                     <img
                         src={login_image}
                         style={{ 'margin-top': 50, width: 250, height: 'auto' }}
                     />
-                </a>
             </div>
         );
     }

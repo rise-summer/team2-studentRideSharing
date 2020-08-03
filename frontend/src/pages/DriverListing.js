@@ -2,21 +2,23 @@ import React from 'react';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TimePicker from '../components/TimePicker/TimePicker';
 import NumberPicker from '../components/NumberPicker/NumberPicker';
+import GeoSearch from '../components/GeoSearch/GeoSearch';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
+
+// TODO: change so first ride is stored and everything is submitted at the end
 
 class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            startLocation: '',
-            endLocation: '',
+            startLocation: {},
+            endLocation: {},
             startDate: '',
-            firstStartTime: '',
-            lastStartTime: '',
-            price: undefined,
-            capacity: undefined,
+            startTime: '',
+            price: '',
+            capacity: '',
             isRoundTrip: false,
             errorMessage: '',
             step: 1,
@@ -37,59 +39,74 @@ class DriverListing extends React.Component {
         this.setState({ startDate: date });
     };
 
+    handleGeoSubmit = (resp, fieldName) => {
+        const { context, place_type, place_name, center } = resp;
+
+        // Parses attribute types from resp.context
+        const getObj = (name) => context.find((obj) => obj.id.startsWith(name));
+
+        // Address can show up in various places, below searches all of them
+        const displayName =
+            resp.address && place_type[0] === 'address'
+                ? resp.address + ' ' + resp.text
+                : resp.text;
+        const address = place_name;
+
+        // If query is a place, place will not be in context
+        const city = place_type[0] === 'place' ? resp : getObj('place');
+        const zip = getObj('postcode');
+        const state = getObj('region');
+
+        this.setState({
+            [fieldName]: {
+                lng: center[0],
+                lat: center[1],
+                address: address,
+                city: city ? city.text : '',
+                state: state ? state.text : '',
+                zip: zip ? zip.text : '',
+                displayName: displayName || '',
+            },
+        });
+    };
+
     postData = async () => {
+        const {
+            startLocation,
+            endLocation,
+            startDate,
+            startTime,
+            price,
+            capacity,
+        } = this.state;
         const userId = 'abc';
-        const rideId = '123';
-        const url = `/api/rides/${userId}/${rideId}`;
-        const testBodyData = {
-            startLoc: {
-                address: '69 Division Ave',
-                city: 'Victorville',
-                state: 'CA',
-                zip: 92392,
-            },
-            endLoc: {
-                city: 'Los Angeles',
-                state: 'CA',
-                zip: 90095,
-                school: 'UCLA',
-            }, //school is optional
-            originCoords: {
-                type: 'Point',
-                coordinates: [-119.158323, 34.177169],
-            },
-            destCoords: [-117.274471, 32.832215],
-            time: new Date(2020, 6, 23, 13, 0), //year, month (0 to 11), date, hours, minutes
-            price: 20.0,
-            capacity: 3,
-            car: {
-                model: 'Toyota',
-                make: 'Camry',
-                color: 'White',
-                plate: '7AVF369',
-            },
-        };
+        const url = `/api/rides/${userId}`;
         const bodyData = {
-            startLoc: {
-                address: '69 Division Ave',
-                city: 'Victorville',
-                state: 'CA',
-                zip: 92392,
+            origin: {
+                address: startLocation.address,
+                city: startLocation.city,
+                state: startLocation.state,
+                zip: startLocation.zip,
+                displayName: startLocation.displayName,
             },
-            endLoc: {
-                city: 'Los Angeles',
-                state: 'CA',
-                zip: 90095,
-                school: 'UCLA',
-            }, //school is optional
+            destination: {
+                address: endLocation.address,
+                city: endLocation.city,
+                state: endLocation.state,
+                zip: endLocation.zip,
+                displayName: endLocation.displayName,
+            },
             originCoords: {
                 type: 'Point',
-                coordinates: [-119.158323, 34.177169],
+                coordinates: [startLocation.lng, startLocation.lat],
             },
-            destCoords: [-117.274471, 32.832215],
-            time: new Date(this.state.startDate + this.state.firstStartTime), //year, month (0 to 11), date, hours, minutes
-            price: this.state.price, // Do I need to cast it to a number?
-            capacity: this.state.capacity,
+            destCoords: {
+                type: 'Point',
+                coordinates: [endLocation.lng, endLocation.lat],
+            },
+            time: new Date(startDate + startTime), //year, month (0 to 11), date, hours, minutes
+            price: price,
+            capacity: capacity,
             car: {
                 model: 'Toyota',
                 make: 'Camry',
@@ -121,39 +138,20 @@ class DriverListing extends React.Component {
         this.setState({ [name]: value });
     };
 
-    // Handles custom validation. Some validation is done in the HTML
-    handleValidation = (event) => {
-        const time1 = Date.parse('01/01/2000' + this.state.firstStartTime);
-        const time2 = Date.parse('01/01/2000' + this.state.lastStartTime);
-        if (time2 < time1) {
-            console.log('this');
-            this.setState({
-                errorMessage:
-                    'Earliest start time must come before latest start time',
-            });
-            console.log('state set', this.state.errorMessage);
-        } else {
-            this.setState({ errorMessage: '' });
-        }
-        console.log('end of validation', this.state.errorMessage);
-    };
-
     handleSubmit = (event) => {
         event.preventDefault();
         const isRoundTrip = this.state.isRoundTrip;
-        const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
-        const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
-
-        // this.handleValidation();
+        // const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
+        // const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
 
         if (this.state.errorMessage === '') {
             this.postData();
+            // Do I need async/await here? to avoid setting state prematurely
             this.setState({
-                startLocation: nextStartLocation,
-                endLocation: nextEndLocation,
+                startLocation: {},
+                endLocation: {},
                 startDate: '',
-                firstStartTime: '',
-                lastStartTime: '',
+                startTime: '',
                 price: '',
                 capacity: '',
                 isRoundTrip: false,
@@ -172,20 +170,17 @@ class DriverListing extends React.Component {
                 )}
                 <form onSubmit={this.handleSubmit} autoComplete="off">
                     {/* Replace with location picker*/}
-                    <SearchBar
-                        text={this.state.startLocation}
-                        editfn={this.handleChange}
-                        placeholder="Start location"
+                    <GeoSearch
+                        handleChange={this.handleGeoSubmit}
+                        placeholder="Where from?"
                         name="startLocation"
-                        required
+                        types="postcode,district,locality,neighborhood,address,poi"
                     />
-                    {/* Replace with location picker */}
-                    <SearchBar
-                        text={this.state.endLocation}
-                        editfn={this.handleChange}
-                        placeholder="End location"
+                    <GeoSearch
+                        handleChange={this.handleGeoSubmit}
+                        placeholder="Where to?"
                         name="endLocation"
-                        required
+                        types="postcode,district,locality,neighborhood,address,poi"
                     />
                     <input
                         className="date-picker-box"
@@ -202,21 +197,13 @@ class DriverListing extends React.Component {
                     <label>
                         Earliest start time
                         <TimePicker
-                            name="firstStartTime"
-                            value={this.state.firstStartTime}
+                            name="startTime"
+                            value={this.state.startTime}
                             editfn={this.handleChange}
                             required
                         />
                     </label>
-                    <label>
-                        Latest start time
-                        <TimePicker
-                            name="lastStartTime"
-                            value={this.state.lastStartTime}
-                            editfn={this.handleChange}
-                            required
-                        />
-                    </label>
+
                     <NumberPicker
                         min={0}
                         max={100}
