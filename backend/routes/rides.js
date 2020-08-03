@@ -73,15 +73,16 @@ router.post('/:userID', async function(req, res, next){
   const {origin, destination, originCoords, destCoords, time, price, capacity, car} = req.body;
   let rideDocument = {
     "driverID": driverID,
-    // "rideID": Number(rideID),
+    "status": 0,
     "startLoc": origin,//{"address": "4000 S Rose Ave", "city": "Oxnard", "state": "CA", "zip": 93033, "school": "", "display":""}
     "endLoc": destination,
     "originCoords": originCoords,
     "destCoords": destCoords,
-    "time": time,//new Date(year, month (0 to 11), date, hours, minutes)
+    "time": new Date(time),//new Date(year, month (0 to 11), date, hours, minutes)
     "price": price,
     "capacity": capacity,
-    "car": car
+    "car": car,
+    "requests": [null] //TODO: how to initialize an empty array?
   }
   const collection = client.dbCollection(collectionName);
   collection.insertOne(rideDocument, function(err, record){
@@ -103,18 +104,73 @@ router.get('/:userID/:rideID', async function(req, res, next){
   //should be available for all?
   const driverID = req.params.userID;
   const rideID = req.params.rideID;
-  const collection = client.dbCollection(collectionName);
-  collection.findOne({
-    "driverID": driverID,
-    "_id" : ObjectId(rideID)
-  }).then(function(ride) {
-      if(ride){
-        res.status(200).json(ride);
-      }
-      else {
-        res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
-      }
-  });
+  if(ObjectId.isValid(rideID)) {
+    const collection = client.dbCollection(collectionName);
+    collection.findOne({
+      "_id" : ObjectId(rideID)
+    }).then(function(ride) {
+        if(ride){
+          res.status(200).json(ride);
+        }
+        else {
+          res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
+        }
+    });
+  }
+  else {//invalid request - rideID not ObjectId
+    res.status(400).send("Invalid rideID (not ObjectId) for GET a ride");
+  }
+})
+
+//delete a ride with no pending/confirmed requests
+router.delete('/:userID/:rideID', async function(req, res, next) {
+  const driverID = req.params.userID;
+  const rideID = req.params.rideID;
+  if(ObjectId.isValid(rideID)) {
+    const collection = client.dbCollection(collectionName);
+    collection.deleteOne({
+      "_id" : ObjectId(rideID),
+      "status": 0 //cannot delete cancelled(2) or completed(1) ride
+    }).then(function(rep) {
+        if(rep["deletedCount"] == 1){
+          res.status(200).send("Ride " + rideID + " is deleted.");
+        }
+        else {
+          res.status(400).send("Ride " + rideID + " cannot be deleted. Either the ride doesn't exist or it's already completed/cancelled.");
+        }
+    });
+  }
+  else {//invalid request - rideID not ObjectId
+    res.status(400).send("Invalid rideID (not ObjectId) for ride deleting request.");
+  }
+})
+
+//cancel a ride
+router.put('/cancel/:userID/:rideID', async function(req, res, next) {
+  const driverID = req.params.userID;
+  const rideID = req.params.rideID;
+  const sameTimeTMR = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);//one day after current time
+  console.log(sameTimeTMR);
+  if(ObjectId.isValid(rideID)) {
+    const collection = client.dbCollection(collectionName);
+    collection.updateOne({
+      "_id" : ObjectId(rideID),
+      "status": 0, //cannot cancel cancelled(2) or completed(1) ride
+      time: {$gt: sameTimeTMR}, //cannot cancel a ride that starts within 24 hrs
+    }, {
+      $set: {"status": 2}
+    }).then(function(rep) {
+        if(rep.modifiedCount == 1){
+          res.status(200).send("Ride " + rideID + " is cancelled.");
+        }
+        else {
+          res.status(400).send("Ride " + rideID + " cannot be cancelled. Either the ride doesn't exist or it's already completed/cancelled or it's about to start.");
+        }
+    });
+  }
+  else {//invalid request - rideID not ObjectId
+    res.status(400).send("Invalid rideID (not ObjectId) for ride cancellation request.");
+  }
 })
 
 module.exports = router;
