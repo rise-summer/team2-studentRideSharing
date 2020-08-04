@@ -3,13 +3,13 @@ import ProfileDetails from '../ProfileDetails/ProfileDetails';
 import ProfileListings from '../ProfileListings/ProfileListings';
 import { Tab, Menu, Label } from 'semantic-ui-react';
 
-const ProfileTabs = () => {
+const ProfileTabs = ({ vehicles, contact, email, rides }) => {
     const panes = [
         {
             menuItem: 'Details',
             render: () => (
                 <Tab.Pane attached={false} textAlign="left">
-                    <ProfileDetails />
+                    <ProfileDetails vehicles={vehicles} contact={contact} email={email} />
                 </Tab.Pane>
             ),
         },
@@ -18,13 +18,13 @@ const ProfileTabs = () => {
                 <Menu.Item>
                     My Listings
                     <Label circular size="mini" color="black">
-                        2
+                        {rides.length}
                     </Label>
                 </Menu.Item>
             ),
             render: () => (
                 <Tab.Pane attached={false} textAlign="left">
-                    <ProfileListings />
+                    <ProfileListings rides={rides} />
                 </Tab.Pane>
             ),
         },
@@ -40,7 +40,7 @@ const ProfileTabs = () => {
                     pointing: true,
                 }}
                 panes={panes}
-                defaultActiveIndex={0}
+                defaultActiveIndex={1}
             />
         </div>
     );
