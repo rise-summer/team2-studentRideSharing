@@ -3,6 +3,7 @@ const router = express.Router();
 const client = require('../db');
 const querystring = require('querystring');
 const collectionName = "Rides";
+const ObjectId = require('mongodb').ObjectId;
 
 //(temporary) Admin API for testing
 router.delete('/', async function(req, res, next){
@@ -73,11 +74,11 @@ router.post('/:userID', async function(req, res, next){
   let rideDocument = {
     "driverID": driverID,
     // "rideID": Number(rideID),
-    "startLoc": origin,
+    "startLoc": origin,//{"address": "4000 S Rose Ave", "city": "Oxnard", "state": "CA", "zip": 93033, "school": "", "display":""}
     "endLoc": destination,
     "originCoords": originCoords,
     "destCoords": destCoords,
-    "time": time,//year, month (0 to 11), date, hours, minutes
+    "time": time,//new Date(year, month (0 to 11), date, hours, minutes)
     "price": price,
     "capacity": capacity,
     "car": car
@@ -104,7 +105,7 @@ router.get('/:userID/:rideID', async function(req, res, next){
   const rideID = req.params.rideID;
   const collection = client.dbCollection(collectionName);
   collection.findOne({
-    "driverID": ObjectId(driverID),
+    "driverID": driverID,
     "_id" : ObjectId(rideID)
   }).then(function(ride) {
       if(ride){
