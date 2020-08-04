@@ -9,6 +9,7 @@ import './Search.css'
 import {Link} from 'react-router-dom';
 import {SEARCH_RIDES_SUCCESS} from "../../actions/SearchPageStates";
 import {getRidesError, getRidesSuccess} from "../../reducers/SearchRidesReducer";
+const querystring = require('querystring');
 
 const sample_rides = [
     ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
