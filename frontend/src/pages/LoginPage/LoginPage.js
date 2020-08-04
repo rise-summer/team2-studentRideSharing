@@ -4,7 +4,6 @@ import Signup from '../../components/Signup/Signup';
 import { Grid, Tab } from 'semantic-ui-react';
 
 const LoginPage = () => {
-    // style={{border: '10px solid black'}}
     const panes = [
         {
             menuItem: 'Log In',
@@ -34,7 +33,7 @@ const LoginPage = () => {
                     <Tab
                         menu={{ secondary: true, pointing: true }}
                         panes={panes}
-                        defaultActiveIndex={1}
+                        defaultActiveIndex={0}
                     />
                 </Grid.Column>
             </Grid>
