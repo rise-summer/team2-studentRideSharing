@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import RideList from "../../components/RidesList/RideList";
 import Pikaday from 'pikaday';
@@ -9,8 +9,8 @@ import './Search.css'
 import {Link} from 'react-router-dom';
 import {SEARCH_RIDES_SUCCESS} from "../../actions/SearchPageStates";
 import {getRidesError, getRidesSuccess} from "../../reducers/SearchRidesReducer";
+
 const xurl = 'http://localhost:3000/api/rides?query=%7B%22originCoords%22%3A%5B-119.159392%2C34.164958%5D%2C%22destCoords%22%3A%5B-117.221505%2C32.873788%5D%2C%22beginDate%22%3A%222020-07-23T20%3A00%3A00.000Z%22%2C%22endDate%22%3A%222020-07-23T21%3A00%3A00.000Z%22%2C%22distance%22%3A5%7D'
-// const xurl = 'http://localhost:3000/api/rides?query=';
 
 const sample_rides = [
     ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
@@ -146,7 +146,6 @@ class Search extends Component {
                         editfn={this.editEndDest}
                         placeholder="Choose Destination..."
                     />
-
                     <input
                         className="date-picker-box"
                         type="text"

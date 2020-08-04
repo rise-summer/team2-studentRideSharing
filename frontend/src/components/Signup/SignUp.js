@@ -1,35 +1,69 @@
 import React from 'react';
-import { Form, Divider, Button } from 'semantic-ui-react';
+import {Form, Divider, Button} from 'semantic-ui-react';
+import firebase, {auth, uiConfig} from '../../firebase';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
-class Signup extends React.Component {
-    //TODO: Add prefereed contact methods
+
+class SignUp extends React.Component {
+    //TODO: Add preferred contact methods
     //Combine into one component (see figma layout)
     constructor(props) {
         super(props);
         this.state = {
-            firstName: '',
-            lastName: '',
+            firstName: 'Alex',
+            lastName: 'Dinh',
             email: '',
-            phoneNumber: '',
+            phoneNumber: '0',
             password: '',
             confirmPassword: '',
         };
     }
 
-    handleChange = (event, { name, value }) => {
-        this.setState({ [name]: value });
+    handleChange = (event, {name, value}) => {
+        this.setState({[name]: value});
     };
+
+    validate = () => {
+        let errorMsg = '';
+        const {email, password} = this.state;
+        const reEmail = RegExp('([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.([a-zA-Z]{2,5})$');
+        const reEdu = RegExp('([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.edu$');
+        const validEmail = reEmail.test(email) && reEdu.test(email);
+        if (!reEmail) {
+            errorMsg += 'Invalid e-mail\n';
+        }
+        if (!reEdu) {
+            errorMsg += 'Only *.edu e-mail addresses can be used\n';
+        }
+        const validPass = (password.length >= 8);
+        if (!validPass) {
+            errorMsg += 'Password must be at least 8 characters long\n'
+        }
+        if (errorMsg) { alert(errorMsg); }
+
+        return validEmail && validPass;
+    };
+
+
     handleSubmit = (event) => {
-        alert('Submitted ' + JSON.stringify(this.state));
-        this.setState({
-            firstName: '',
-            lastName: '',
-            email: '',
-            phoneNumber: '',
-            password: '',
-            confirmPassword: '',
-        });
+        // alert('Submitted ' + JSON.stringify(this.state));
+        // add regex checking and password match
+        // pass all info to mongoDB too
+        const {email, password} = this.state;
+        if (this.validate()) {
+            auth.createUserWithEmailAndPassword(email, password);
+            this.setState({
+                firstName: '',
+                lastName: '',
+                email: '',
+                phoneNumber: '',
+                password: '',
+                confirmPassword: '',
+            });
+        } else {
+        }
     };
+
     render() {
         const {
             firstName,
@@ -101,10 +135,11 @@ class Signup extends React.Component {
                     />
                 </Form>
                 <Divider horizontal>Or</Divider>
-                [Login with google button]
+                {/*[Login with google button]*/}
+                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
             </div>
         );
     }
 }
 
-export default Signup;
+export default SignUp;

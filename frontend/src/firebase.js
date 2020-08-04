@@ -1,5 +1,4 @@
 import * as firebase from 'firebase'
-import * as firebaseui from 'firebaseui'
 
 const config = {
     apiKey: "AIzaSyBStZvVTJgu72YYfA4bo-cQiQwIbX5OpOw",
@@ -24,7 +23,6 @@ export const uiConfig = {
     signInSuccessUrl: '/search',
     // We will display Google and Facebook as auth providers.
     signInOptions: [
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.FacebookAuthProvider.PROVIDER_ID,
     ]
@@ -62,4 +60,8 @@ const getUserDocument = async uid => {
     }
 };
 
- export default firebase;
+function createUser(email, password) {
+    firebase.auth.createUserWithEmailAndPassword(email, password);
+}
+
+export default firebase;

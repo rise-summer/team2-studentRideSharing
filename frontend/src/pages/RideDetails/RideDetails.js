@@ -4,6 +4,10 @@ import {Icon} from 'semantic-ui-react';
 import {Link} from "react-router-dom";
 
 class RideDetails extends Component {
+    requestRide = () =>{
+        alert('HELLO WORLD');
+    };
+
     render() {
         return (
             <div>
@@ -38,6 +42,7 @@ class RideDetails extends Component {
                         <div className="ride-detail indent">Accepts payment through:</div>
                         <div className="indent2">Venmo, Zelle, Cash</div>
                     </div>
+                    <button className="" onClick={this.requestRide}>Request Ride</button>
                 </div>
             </div>
         )

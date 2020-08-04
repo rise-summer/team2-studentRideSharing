@@ -1,11 +1,16 @@
 .search-wrapper {
     padding: 10px;
+    text-align: center;
+}
+
+.block {
+    display: inline-block;
 }
 
 .search-details {
     width: 60vw;
     min-width: 400px;
-    height: 200px;
+    height: 150px;
     background-color: #e6f1ff;
     margin-left: auto;
     margin-right: auto;
@@ -17,11 +22,13 @@
 .start-location {
     margin-top: 30px;
     margin-left: 10px;
+    display: inline;
 }
 
 .end-dest {
     margin-top: 30px;
     margin-left: 50px;
+    display: inline;
 }
 
 .date-picker-box {
