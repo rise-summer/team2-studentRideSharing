@@ -3,8 +3,10 @@
     text-align: center;
 }
 
-.block {
+.field {
     display: inline-block;
+    width: 200px;
+    height: 30px;
 }
 
 .search-details {
@@ -22,13 +24,11 @@
 .start-location {
     margin-top: 30px;
     margin-left: 10px;
-    display: inline;
 }
 
 .end-dest {
     margin-top: 30px;
     margin-left: 50px;
-    display: inline;
 }
 
 .date-picker-box {

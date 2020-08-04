@@ -10,8 +10,6 @@ import {Link} from 'react-router-dom';
 import {SEARCH_RIDES_SUCCESS} from "../../actions/SearchPageStates";
 import {getRidesError, getRidesSuccess} from "../../reducers/SearchRidesReducer";
 
-const xurl = 'http://localhost:3000/api/rides?query=%7B%22originCoords%22%3A%5B-119.159392%2C34.164958%5D%2C%22destCoords%22%3A%5B-117.221505%2C32.873788%5D%2C%22beginDate%22%3A%222020-07-23T20%3A00%3A00.000Z%22%2C%22endDate%22%3A%222020-07-23T21%3A00%3A00.000Z%22%2C%22distance%22%3A5%7D'
-
 const sample_rides = [
     ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
     ['UCLA', 'UCSD', new Date(2020, 6, 24, 12, 15)],
@@ -29,6 +27,9 @@ class Search extends Component {
             filteredRides: [],
             startDate: '',
             endDate: '',
+            originCoords: '',
+            destCoords: '',
+            distance: '',
         };
         this.state.filteredRides = this.state.rides;
         this.startDateRef = React.createRef();
@@ -88,10 +89,17 @@ class Search extends Component {
 
     queryRides = () => {
         // this.props.dispatch({type: SEARCH_RIDES_SUCCESS});
+        const query = {
+            originCoords: this.state.originCoords,
+            destCoords: this.state.destCoords,
+            time: this.state.startDate,
+            distance: this.state.distance,
+        };
+        const xurl = '/api/rides?' + querystring.stringify({'query': JSON.stringify(query)});
         fetch(xurl)
             .then(res => res.json())
             .then(res => {
-                console.log(res); /*****/
+                // console.log(res); /*****/
                 const queried_rides = [];
                 for (let ride in res) {
                     queried_rides.push(
@@ -105,7 +113,7 @@ class Search extends Component {
                 this.setState({
                     filteredRides: queried_rides
                 });
-                console.log(queried_rides);
+                // console.log(queried_rides);
             })
     };
 
@@ -135,13 +143,13 @@ class Search extends Component {
             <div className="search-wrapper">
                 <div className="search-details">
                     <SearchBar
-                        className="start-location"
+                        className=""
                         text={this.state.start}
                         editfn={this.editStart}
                         placeholder="Choose Starting Point..."
                     />
                     <SearchBar
-                        className="end-dest"
+                        className=""
                         text={this.state.endDest}
                         editfn={this.editEndDest}
                         placeholder="Choose Destination..."
