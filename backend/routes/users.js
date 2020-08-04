@@ -27,11 +27,10 @@ router.post('/signup', async function(req, res, next){
         "firstName": firstName,
         "lastName": lastName,
         "contact": contact,
+        "payment": "",//payment method
         "school": "",
         "phone": "",
         "addresses": {},
-        // "rides": {},
-        // "vehicles": {},
         "ratingDriver": -1,
         "ratingPassenger": -1
       }
@@ -53,7 +52,7 @@ router.post('/signup', async function(req, res, next){
 //Get user's info
 router.get('/:userID', async function(req, res, next) {
   const userID = req.params.userID;
-  if(ObjectId.isValid(userID)){ //invalid request - userID not ObjectId
+  if(ObjectId.isValid(userID)){
     const collection = client.dbCollection(collectionName);
     collection.findOne({
       "_id": ObjectId(userID)
@@ -65,7 +64,7 @@ router.get('/:userID', async function(req, res, next) {
         res.status(404).send("User " + userID + " is not found");
     }});
   }
-  else {
+  else {//invalid request - userID not ObjectId
     res.status(400).send("Invalid userID (not ObjectId)");
   }
 })
@@ -85,7 +84,8 @@ router.put('/:userID', async function(req, res, next) {
     const collection = client.dbCollection(collectionName);
     collection.updateOne({
       "_id": ObjectId(userID)
-    }, {$set: body
+    }, {
+      $set: body
     }).then(function(rep) {
       if(rep.modifiedCount == 1) {
         res.status(200).json(rep);
