@@ -10,10 +10,10 @@ class SignUp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            firstName: 'Alex',
-            lastName: 'Dinh',
+            firstName: '',
+            lastName: '',
             email: '',
-            phoneNumber: '0',
+            phoneNumber: '',
             password: '',
             confirmPassword: '',
         };
@@ -60,7 +60,6 @@ class SignUp extends React.Component {
                 password: '',
                 confirmPassword: '',
             });
-        } else {
         }
     };
 

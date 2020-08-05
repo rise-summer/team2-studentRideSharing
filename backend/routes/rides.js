@@ -166,9 +166,19 @@ router.put('/cancel/:userID/:rideID', async function (req, res, next) {
     }
 })
 
-if (ride) {
-    res.status(200).json(ride);
-} else {
-    res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
-}
+//get all rides
+router.get('/:userID', async function(req, res, next){
+  const driverID = req.params.userID;
+  const collection = client.dbCollection(collectionName);
+  collection.find({
+    driverID: driverID
+  }).toArray(function(err, rides){
+    if(err) {
+      console.log(err);
+      res.sendStatus(400);
+    }
+    res.status(200).json(rides);
+  });
+})
+
 module.exports = router;
