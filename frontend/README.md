@@ -1,4 +1,4 @@
-### Important
+# Important
 - To get Dependencies for this frontend folder, run `yarn install`  
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

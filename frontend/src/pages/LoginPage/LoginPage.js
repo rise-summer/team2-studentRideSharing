@@ -1,7 +1,7 @@
 import React from 'react';
-import Signin from '../../components/Signin/Signin';
-import Signup from '../../components/Signup/Signup';
-import { Grid, Tab } from 'semantic-ui-react';
+import SignIn from '../../components/SignIn/SignIn';
+import SignUp from '../../components/Signup/SignUp';
+import {Grid, Tab} from 'semantic-ui-react';
 
 const LoginPage = () => {
     const panes = [
@@ -9,7 +9,7 @@ const LoginPage = () => {
             menuItem: 'Log In',
             render: () => (
                 <Tab.Pane attached={false} textAlign="left">
-                    <Signin />
+                    <SignIn/>
                 </Tab.Pane>
             ),
         },
@@ -17,7 +17,7 @@ const LoginPage = () => {
             menuItem: 'Sign Up',
             render: () => (
                 <Tab.Pane attached={false} textAlign="left">
-                    <Signup />
+                    <SignUp/>
                 </Tab.Pane>
             ),
         },
@@ -26,12 +26,12 @@ const LoginPage = () => {
         <div>
             <Grid
                 textAlign="center"
-                style={{ height: '100vh' }}
+                style={{height: '100vh'}}
                 verticalAlign="middle"
             >
-                <Grid.Column style={{ maxWidth: 450 }}>
+                <Grid.Column style={{maxWidth: 450}}>
                     <Tab
-                        menu={{ secondary: true, pointing: true }}
+                        menu={{secondary: true, pointing: true}}
                         panes={panes}
                         defaultActiveIndex={0}
                     />
