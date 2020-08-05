@@ -181,9 +181,4 @@ router.get('/:userID', async function(req, res, next){
   });
 })
 
-if (ride) {
-    res.status(200).json(ride);
-} else {
-    res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
-}
 module.exports = router;

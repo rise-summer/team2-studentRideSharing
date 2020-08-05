@@ -12,14 +12,11 @@ class Ride extends Component {
         }
     }
 
-    //     var mins = t.getMinutes();
-    //     if (mins < 10) {
-    //         mins = '0' + mins;
-    //     }
-    //     const period = hour < 12 ? 'AM' : 'PM';
-    //     if (hour > 12) {
-    //         hour -= 12;
-    //     }
+    formatTime = (t) => {
+        const year = t.getFullYear();
+        const month = t.getMonth() + 1;
+        const date = t.getDate();
+        var hour = t.getHours();
 
         var mins = t.getMinutes();
         if (mins < 10) { mins = "0" + mins; }

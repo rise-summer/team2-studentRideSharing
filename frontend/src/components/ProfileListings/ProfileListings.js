@@ -1,5 +1,5 @@
 import React from 'react';
-import Ride from '../Ride/Ride';
+import RideProfile from '../RideProfile/RideProfile';
 
 const ProfileListings = ({ rides }) => {
     // startName, destName, datetime, price, seats
@@ -7,7 +7,7 @@ const ProfileListings = ({ rides }) => {
     // TODO: render displayname instead of city
     const rideList = rides.map(
         ({ startLoc, endLoc, time, price, capacity }) => (
-            <Ride
+            <RideProfile
                 startName={startLoc.city}
                 destName={endLoc.city}
                 datetime={time}

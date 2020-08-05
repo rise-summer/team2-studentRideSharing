@@ -15,7 +15,8 @@ function App() {
         <div className="App">
             <Router initialEntries={['/']} initialIndex={0} history={history}>
                 <Switch>
-                    <Route exact path="/"><LoginPage/></Route>
+                    {/* <Route exact path="/"><LoginPage/></Route> */}
+                    <Route exact path="/"><Profile/></Route>
                     <Route path="/search"><Search/></Route>
                     <Route path="/ride"><RideDetails/></Route>
                     <Route path="/newride"><DriverListing/></Route>
