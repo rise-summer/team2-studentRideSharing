@@ -3,7 +3,7 @@ import ProfileDetails from '../ProfileDetails/ProfileDetails';
 import ProfileListings from '../ProfileListings/ProfileListings';
 import { Tab, Menu, Label } from 'semantic-ui-react';
 
-const ProfileTabs = ({ vehicles, contact, email, rides }) => {
+const ProfileTabs = ({ vehicles, contact, email, rides, handleCancel }) => {
     const panes = [
         {
             menuItem: 'Details',
@@ -18,13 +18,13 @@ const ProfileTabs = ({ vehicles, contact, email, rides }) => {
                 <Menu.Item>
                     My Listings
                     <Label circular size="mini" color="black">
-                        {rides.length}
+                        {rides.filter((ride) => !ride.status || ride.status === 0).length}
                     </Label>
                 </Menu.Item>
             ),
             render: () => (
                 <Tab.Pane attached={false} textAlign="left">
-                    <ProfileListings rides={rides} />
+                    <ProfileListings rides={rides} handleCancel={handleCancel} />
                 </Tab.Pane>
             ),
         },
@@ -40,7 +40,7 @@ const ProfileTabs = ({ vehicles, contact, email, rides }) => {
                     pointing: true,
                 }}
                 panes={panes}
-                defaultActiveIndex={0}
+                defaultActiveIndex={1}
             />
         </div>
     );

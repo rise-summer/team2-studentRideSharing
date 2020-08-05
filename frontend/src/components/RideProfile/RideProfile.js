@@ -2,7 +2,16 @@ import React from 'react';
 import CancelRideButton from '../CancelRideButton/CancelRideButton';
 import { Segment, Header, Icon, Grid } from 'semantic-ui-react';
 
-const RideProfile = ({ startName, destName, datetime, price, capacity }) => {
+const RideProfile = ({
+    startName,
+    destName,
+    datetime,
+    price,
+    capacity,
+    id,
+    handleCancel,
+    isCancelled,
+}) => {
     const dateObject = new Date(datetime);
     const dateString = dateObject.toLocaleDateString('en-US');
     const timeString = dateObject.toLocaleTimeString('en-US');
@@ -24,7 +33,14 @@ const RideProfile = ({ startName, destName, datetime, price, capacity }) => {
                     <Grid.Column>Seats: {capacity}</Grid.Column>
                 </Grid.Row>
             </Grid>
-            <CancelRideButton startName={startName} destName={destName} />
+            {!isCancelled && (
+                <CancelRideButton
+                    startName={startName}
+                    destName={destName}
+                    id={id}
+                    handleCancel={handleCancel}
+                />
+            )}
         </Segment>
     );
 };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ProfileTabs from '../../components/ProfileTabs/ProfileTabs';
-import { Grid, Header, Image } from 'semantic-ui-react';
+import { Grid, Header, Image, Message } from 'semantic-ui-react';
 
 class Profile extends Component {
     constructor(props) {
@@ -15,6 +15,7 @@ class Profile extends Component {
             vehicles: [],
             // The rides the user has posted
             rides: [],
+            errorMessage: '',
             // These are currently unused
             addresses: '',
             ratingDriver: '',
@@ -23,7 +24,8 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        fetch(`http://localhost:3000/api/users/${this.props.userId}`)
+        const { userId } = this.props;
+        fetch(`/api/users/${userId}`)
             .then((response) => response.json())
             .then(({ email, firstName, lastName, contact }) =>
                 this.setState({
@@ -36,7 +38,7 @@ class Profile extends Component {
             )
             .catch((error) => console.log('error', error));
 
-        fetch(`http://localhost:3000/api/vehicles/${this.props.userId}`)
+        fetch(`/api/vehicles/${userId}`)
             .then((response) => response.json())
             .then((vehicles) =>
                 this.setState({
@@ -45,8 +47,8 @@ class Profile extends Component {
             )
             .catch((error) => console.log('error', error));
 
-        // Would it be better to fetch teh rides when ProfileListing is rendered?
-        fetch(`http://localhost:3000/api/rides/${this.props.userId}`)
+        // Would it be better to fetch the rides when ProfileListing is rendered?
+        fetch(`/api/rides/${userId}`)
             .then((response) => response.json())
             .then((rides) =>
                 this.setState({
@@ -55,6 +57,19 @@ class Profile extends Component {
             )
             .catch((error) => console.log('error', error));
     }
+
+    // TODO: handleCancel doesn't affect how rides are displayed
+    handleCancel = (id) => {
+        fetch(`/api/rides/cancel/${this.props.userId}/${id}`, { method: 'PUT' })
+            .then((response) => response.text())
+            .then((result) => this.setState({errorMessage: result}))
+            .catch((error) => console.log('error', error));
+    };
+
+    handleErrorDismiss = () => {
+        this.setState({ errorMessage: '' });
+    };
+
     render() {
         const {
             firstName,
@@ -64,9 +79,20 @@ class Profile extends Component {
             contact,
             email,
             rides,
+            errorMessage,
         } = this.state;
         return (
             <div>
+                {errorMessage && (
+                    <Message
+                        negative
+                        floating
+                        onDismiss={this.handleErrorDismiss}
+                        header="Cancellation Error"
+                        content={errorMessage}
+                    />
+                )}
+
                 <Grid
                     textAlign="center"
                     style={{ height: '100vh' }}
@@ -82,6 +108,7 @@ class Profile extends Component {
                             contact={contact}
                             email={email}
                             rides={rides}
+                            handleCancel={this.handleCancel}
                         />
                     </Grid.Column>
                 </Grid>

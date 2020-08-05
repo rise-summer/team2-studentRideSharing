@@ -1,11 +1,15 @@
 import React from 'react';
 import { Button, Modal, Icon } from 'semantic-ui-react';
 
-const CancelRideButton = ({ startName, destName }) => {
+const CancelRideButton = ({ startName, destName, id, handleCancel }) => {
     const [open, setOpen] = React.useState(false);
 
     const handleClose = () => setOpen(false);
     const handleOpen = () => setOpen(true);
+    const handleCancelButton = () => {
+        setOpen(false);
+        handleCancel(id);
+    };
     const button = (
         <Button basic color="red">
             Cancel Ride
@@ -27,7 +31,7 @@ const CancelRideButton = ({ startName, destName }) => {
             </Modal.Content>
             <Modal.Actions>
                 <Button onClick={handleClose}>Go Back</Button>
-                <Button negative onClick={handleClose}>
+                <Button negative onClick={handleCancelButton}>
                     Cancel Ride
                 </Button>
             </Modal.Actions>
