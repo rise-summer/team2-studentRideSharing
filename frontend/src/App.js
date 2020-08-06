@@ -2,19 +2,24 @@ import React, { Component } from 'react';
 import './App.css';
 import DriverListing from './pages/DriverListing/DriverListing';
 import Search from './pages/Search/Search';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import RideDetails from './pages/RideDetails/RideDetails';
-import { createBrowserHistory } from 'history';
 import LoginPage from './pages/LoginPage/LoginPage';
 import Profile from './pages/Profile/Profile';
+import Navbar from './components/Navbar/Navbar';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 
 const history = createBrowserHistory();
 
 function App() {
+    // TODO: Add private routing and specific routing for user, ride
+    // e.g. /user/5f29astecr0s965e
     return (
         <div className="App">
             <Router initialEntries={['/']} initialIndex={0} history={history}>
+                <Navbar isLoggedIn={true} />
                 <Switch>
+                    {/* should be search if user logged in */}
                     <Route exact path="/">
                         <LoginPage />
                     </Route>
