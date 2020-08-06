@@ -95,7 +95,7 @@ class Profile extends Component {
 
                 <Grid
                     textAlign="center"
-                    style={{ height: '100vh' }}
+                    style={{ height: '100%' }}
                     verticalAlign="middle"
                 >
                     <Grid.Column style={{ maxWidth: 450 }}>

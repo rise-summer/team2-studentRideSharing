@@ -44,7 +44,6 @@ class GeoSearch extends React.Component {
                 console.log(error);
             }
         }
-        console.log(this.props.types);
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             placeholder: this.props.placeholder,
