@@ -1,8 +1,8 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
-import {Form, Divider, Button} from 'semantic-ui-react';
-import firebase, {auth} from "../../firebase";
-import {uiConfig} from "../../firebase";
+import { Redirect } from 'react-router-dom';
+import { Form, Divider, Button } from 'semantic-ui-react';
+import firebase, { auth } from "../../firebase";
+import { uiConfig } from "../../firebase";
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 class SignIn extends React.Component {
@@ -44,7 +44,7 @@ class SignIn extends React.Component {
 
     render() {
         if (this.state.loggedIn) {
-            return <Redirect to="/search"/>
+            return <Redirect to="/search" />
         } else {
             return (
                 <div>
@@ -76,7 +76,7 @@ class SignIn extends React.Component {
                     </Form>
                     <Divider horizontal>Or</Divider>
                     {/* Alternative login methods */}
-                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
+                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
                 </div>
             );
         }

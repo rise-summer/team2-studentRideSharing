@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import RideList from '../../components/RidesList/RideList';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css'
-import {Link} from 'react-router-dom';
-import {SEARCH_RIDES_SUCCESS} from "../../actions/SearchPageStates";
-import {getRidesError, getRidesSuccess} from "../../reducers/SearchRidesReducer";
-import TopNav from '../../components/TopNav/TopNav';
-import {Dropdown} from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { SEARCH_RIDES_SUCCESS } from "../../actions/SearchPageStates";
+import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
+import { Dropdown } from 'semantic-ui-react';
+
 const querystring = require('querystring');
 
 const sample_rides = [
@@ -83,14 +83,6 @@ class Search extends Component {
         this.setState({endDate: date})
     };
 
-    /* for automatic ride filtering */
-    ridefilter = () => {
-        const rides = this.state.rides;
-        return rides.filter(dest =>
-            (dest[0].toLowerCase().includes(this.state.start.toLowerCase()) &&
-                dest[1].toLowerCase().includes(this.state.endDest.toLowerCase())));
-    };
-
     /* filter upon button click */
     filterRides = () => {
         // split searched departure date into array
@@ -158,54 +150,53 @@ class Search extends Component {
     render() {
         return (
             <div className="search-wrapper">
-                <TopNav/>
                 <div className="search-subwrapper">
-                <div className="ride-type-wrapper">
-                    <Dropdown className="ride-type-selector"
-                              defaultValue="One Way"
-                              selection
-                              compact
-                              options={rideOptions}/>
-                </div>
-                <div className="search-box">
-                    <div className="search-field">
-                        <div className="field-desc">Starting Location</div>
-                        <SearchBar
-                            className="input"
-                            text={this.state.start}
-                            editfn={this.editStart}
-                            placeholder="Choose Starting Location..."
-                        />
+                    <div className="ride-type-wrapper">
+                        <Dropdown className="ride-type-selector"
+                                  defaultValue="One Way"
+                                  selection
+                                  compact
+                                  options={rideOptions} />
                     </div>
-                    <div className="search-field">
-                        <div className="field-desc">Destination</div>
-                        <SearchBar
-                            className="input"
-                            text={this.state.endDest}
-                            editfn={this.editEndDest}
-                            placeholder="Choose Destination..."
-                        />
+                    <div className="search-box">
+                        <div className="search-field">
+                            <div className="field-desc">Starting Location</div>
+                            <SearchBar
+                                className="input"
+                                text={this.state.start}
+                                editfn={this.editStart}
+                                placeholder="Choose Starting Location..."
+                            />
+                        </div>
+                        <div className="search-field">
+                            <div className="field-desc">Destination</div>
+                            <SearchBar
+                                className="input"
+                                text={this.state.endDest}
+                                editfn={this.editEndDest}
+                                placeholder="Choose Destination..."
+                            />
+                        </div>
+                        <div className="search-field">
+                            <div className="field-desc">Ride Date</div>
+                            <input
+                                className="date-picker-box input"
+                                type="text"
+                                ref={this.startDateRef}
+                                onChange={this.editStartDate}
+                                value={this.state.startDate}
+                                placeholder="Choose Date..."
+                            />
+                        </div>
+                        <div onClick={this.filterRides} className="search-button">Search Rides</div>
                     </div>
-                    <div className="search-field">
-                        <div className="field-desc">Ride Date</div>
-                        <input
-                            className="date-picker-box input"
-                            type="text"
-                            ref={this.startDateRef}
-                            onChange={this.editStartDate}
-                            value={this.state.startDate}
-                            placeholder="Choose Date..."
-                        />
-                    </div>
-                    <div onClick={this.filterRides} className="search-button">Search Rides</div>
                 </div>
-                </div>
-                <br/>
+                <br />
                 {/*<button onClick={this.clearFilter}>Clear</button>*/}
                 {/*<button onClick={this.queryRides}>Search DB</button>*/}
                 <h3>Available Rides</h3>
                 {/*<RideList rides={this.ridefilter}/>*/}
-                <RideList rides={this.state.filteredRides}/>
+                <RideList rides={this.state.filteredRides} />
 
             </div>
         );

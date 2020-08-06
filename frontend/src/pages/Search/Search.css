@@ -12,16 +12,13 @@
 }
 
 .ride-type-wrapper {
-    /*width: 150px;*/
     display: flex;
-    /*height: 25px;*/
 }
 
 /* !important needed to override default semantic ui styles*/
 .ride-type-selector {
     display: flex!important;
     padding-left: 10px!important;
-    /*height: 10px!important;*/
     border: none!important;
     background: none!important;
 }

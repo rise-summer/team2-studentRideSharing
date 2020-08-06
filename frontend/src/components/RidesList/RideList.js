@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Ride from "../Ride/Ride";
 import './RideList.css'
 

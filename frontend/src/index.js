@@ -4,8 +4,8 @@ import './index.css';
 import App from './App';
 import 'semantic-ui-css/semantic.min.css'
 import * as serviceWorker from './serviceWorker';
-import {createStore} from "redux";
-import {Provider} from "react-redux"
+import { createStore } from "redux";
+import { Provider } from "react-redux"
 import * as firebase from "firebase";
 
 const initialState = {
@@ -22,11 +22,9 @@ const initialState = {
 };
 
 function reducer(state = initialState, action) {
-    switch(action.type) {
+    switch (action.type) {
         case "SEARCH":
-            return {
-
-            };
+            return {};
         default:
             return state;
     }
@@ -41,7 +39,7 @@ store.dispatch({
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
-            <App/>
+            <App />
         </Provider>
     </React.StrictMode>,
     document.getElementById('root')

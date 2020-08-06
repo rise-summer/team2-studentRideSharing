@@ -1,8 +1,7 @@
 import React from 'react';
 import SignIn from '../../components/SignIn/SignIn';
 import SignUp from '../../components/Signup/SignUp';
-import {Grid, Tab} from 'semantic-ui-react';
-import TopNav from "../../components/TopNav/TopNav";
+import { Grid, Tab } from 'semantic-ui-react';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -11,7 +10,7 @@ const LoginPage = () => {
             menuItem: 'Log In',
             render: () => (
                 <Tab.Pane attached={false} textAlign="left">
-                    <SignIn/>
+                    <SignIn />
                 </Tab.Pane>
             ),
         },
@@ -19,28 +18,25 @@ const LoginPage = () => {
             menuItem: 'Sign Up',
             render: () => (
                 <Tab.Pane attached={false} textAlign="left">
-                    <SignUp/>
+                    <SignUp />
                 </Tab.Pane>
             ),
         },
     ];
     return (
-        <div className="login-wrapper">
-            <TopNav/>
-            <Grid
-                textAlign="center"
-                style={{height: '100vh'}}
-                verticalAlign="middle"
-            >
-                <Grid.Column style={{maxWidth: 450}}>
-                    <Tab
-                        menu={{secondary: true, pointing: true}}
-                        panes={panes}
-                        defaultActiveIndex={0}
-                    />
-                </Grid.Column>
-            </Grid>
-        </div>
+        <Grid
+            textAlign="center"
+            style={{height: '100%'}}
+            verticalAlign="middle"
+        >
+            <Grid.Column style={{maxWidth: 450}}>
+                <Tab
+                    menu={{secondary: true, pointing: true}}
+                    panes={panes}
+                    defaultActiveIndex={0}
+                />
+            </Grid.Column>
+        </Grid>
     );
 };
 

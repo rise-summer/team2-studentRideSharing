@@ -1,7 +1,7 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./Ride.css";
-import {Accordion, Icon} from "semantic-ui-react";
-import {Link} from 'react-router-dom';
+import { Accordion, Icon } from "semantic-ui-react";
+import { Link } from 'react-router-dom';
 
 
 class Ride extends Component {
@@ -19,18 +19,22 @@ class Ride extends Component {
         var hour = t.getHours();
 
         var mins = t.getMinutes();
-        if (mins < 10) { mins = "0" + mins; }
+        if (mins < 10) {
+            mins = "0" + mins;
+        }
         const period = (hour < 12) ? "AM" : "PM";
-        if (hour > 12) {hour -= 12;}
+        if (hour > 12) {
+            hour -= 12;
+        }
 
         return month + "-" + date + "-" + year + " at " + hour + ":" + mins + " " + period;
     };
 
     handleClick = (e, titleProps) => {
-        const { index } = titleProps;
-        const { activeIndex } = this.state;
+        const {index} = titleProps;
+        const {activeIndex} = this.state;
         const newIndex = activeIndex === index ? -1 : index;
-        this.setState({ activeIndex: newIndex })
+        this.setState({activeIndex: newIndex})
     };
 
     render() {
@@ -44,7 +48,7 @@ class Ride extends Component {
                         onClick={this.handleClick}>
                         From: {this.props.start + " | "}
                         To: {this.props.dest}
-                        <Icon name="dropdown" className="dropdown-icon"/>
+                        <Icon name="dropdown" className="dropdown-icon" />
                     </Accordion.Title>
                     <Accordion.Content
                         className="accordion-dropdown"

@@ -1,6 +1,6 @@
 import React from 'react';
-import {Form, Divider, Button} from 'semantic-ui-react';
-import firebase, {auth, uiConfig} from '../../firebase';
+import { Form, Divider, Button } from 'semantic-ui-react';
+import firebase, { auth, uiConfig } from '../../firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 
@@ -10,10 +10,10 @@ class SignUp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            firstName: 'Alex',
-            lastName: 'Dinh',
+            firstName: '',
+            lastName: '',
             email: '',
-            phoneNumber: '0',
+            phoneNumber: '',
             password: '',
             confirmPassword: '',
         };
@@ -39,7 +39,9 @@ class SignUp extends React.Component {
         if (!validPass) {
             errorMsg += 'Password must be at least 8 characters long\n'
         }
-        if (errorMsg) { alert(errorMsg); }
+        if (errorMsg) {
+            alert(errorMsg);
+        }
 
         return validEmail && validPass;
     };
@@ -60,7 +62,6 @@ class SignUp extends React.Component {
                 password: '',
                 confirmPassword: '',
             });
-        } else {
         }
     };
 
@@ -136,7 +137,7 @@ class SignUp extends React.Component {
                 </Form>
                 <Divider horizontal>Or</Divider>
                 {/*[Login with google button]*/}
-                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
+                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
             </div>
         );
     }
