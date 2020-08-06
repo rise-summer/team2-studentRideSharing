@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SearchBar from '../../components/SearchBar/SearchBar';
-import RideList from '../../components/RidesList/RideList';
+import RideList from '../../components/Rides/RideList';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
@@ -39,14 +39,24 @@ class Search extends Component {
         this.state = {
             start: '',
             endDest: '',
-            rides: sample_rides,
-            filteredRides: [],
             startDate: '',
             endDate: '',
             originCoords: '',
             destCoords: '',
             distance: '',
+            rides: sample_rides,
+            filteredRides: [],
             roundtrip: false,
+            /* Use this.state.query.* when passing to redux */
+            query: {
+                start: '',
+                endDest: '',
+                startDate: '',
+                endDate: '',
+                originCoords: '',
+                destCoords: '',
+                distance: '',
+            }
         };
         this.state.filteredRides = this.state.rides;
         this.startDateRef = React.createRef();
@@ -195,7 +205,6 @@ class Search extends Component {
                 {/*<button onClick={this.clearFilter}>Clear</button>*/}
                 {/*<button onClick={this.queryRides}>Search DB</button>*/}
                 <h3>Available Rides</h3>
-                {/*<RideList rides={this.ridefilter}/>*/}
                 <RideList rides={this.state.filteredRides} />
 
             </div>

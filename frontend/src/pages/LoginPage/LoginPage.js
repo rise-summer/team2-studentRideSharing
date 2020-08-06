@@ -1,6 +1,6 @@
 import React from 'react';
-import SignIn from '../../components/SignIn/SignIn';
-import SignUp from '../../components/Signup/SignUp';
+import SignIn from '../../components/Auth/SignIn';
+import SignUp from '../../components/Auth/SignUp';
 import { Grid, Tab } from 'semantic-ui-react';
 import './LoginPage.css';
 
