@@ -19,7 +19,6 @@ function App() {
                     <Route path="/ride"><RideDetails/></Route>
                     <Route path="/newride"><DriverListing/></Route>
                     <Route path="/login"><LoginPage/></Route>
-                    <Redirect from="/medlify" to="http://localhost:3000/medlify" />
                 </Switch>
             </Router>
         </div>

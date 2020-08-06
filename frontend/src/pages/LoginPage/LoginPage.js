@@ -2,6 +2,8 @@ import React from 'react';
 import SignIn from '../../components/SignIn/SignIn';
 import SignUp from '../../components/Signup/SignUp';
 import {Grid, Tab} from 'semantic-ui-react';
+import TopNav from "../../components/TopNav/TopNav";
+import './LoginPage.css';
 
 const LoginPage = () => {
     const panes = [
@@ -23,7 +25,8 @@ const LoginPage = () => {
         },
     ];
     return (
-        <div>
+        <div className="login-wrapper">
+            <TopNav/>
             <Grid
                 textAlign="center"
                 style={{height: '100vh'}}

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import SearchBar from '../../components/SearchBar/SearchBar';
-import RideList from "../../components/RidesList/RideList";
+import RideList from '../../components/RidesList/RideList';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
@@ -9,12 +9,27 @@ import './Search.css'
 import {Link} from 'react-router-dom';
 import {SEARCH_RIDES_SUCCESS} from "../../actions/SearchPageStates";
 import {getRidesError, getRidesSuccess} from "../../reducers/SearchRidesReducer";
+import TopNav from '../../components/TopNav/TopNav';
+import {Dropdown} from 'semantic-ui-react';
 const querystring = require('querystring');
 
 const sample_rides = [
     ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
     ['UCLA', 'UCSD', new Date(2020, 6, 24, 12, 15)],
     ['USC', 'Stanford', new Date(2020, 6, 27, 14, 30)],
+];
+
+const rideOptions = [
+    {
+        key: 'One Way',
+        text: 'One Way',
+        value: 'One Way',
+    },
+    {
+        key: 'Roundtrip',
+        text: 'Roundtrip',
+        value: 'Roundtrip',
+    },
 ];
 
 class Search extends Component {
@@ -31,6 +46,7 @@ class Search extends Component {
             originCoords: '',
             destCoords: '',
             distance: '',
+            roundtrip: false,
         };
         this.state.filteredRides = this.state.rides;
         this.startDateRef = React.createRef();
@@ -142,32 +158,51 @@ class Search extends Component {
     render() {
         return (
             <div className="search-wrapper">
-                <div className="search-details">
-                    <SearchBar
-                        className=""
-                        text={this.state.start}
-                        editfn={this.editStart}
-                        placeholder="Choose Starting Point..."
-                    />
-                    <SearchBar
-                        className=""
-                        text={this.state.endDest}
-                        editfn={this.editEndDest}
-                        placeholder="Choose Destination..."
-                    />
-                    <input
-                        className="date-picker-box"
-                        type="text"
-                        ref={this.startDateRef}
-                        onChange={this.editStartDate}
-                        value={this.state.startDate}
-                        placeholder="Departure Date"
-                    />
+                <TopNav/>
+                <div className="search-subwrapper">
+                <div className="ride-type-wrapper">
+                    <Dropdown className="ride-type-selector"
+                              defaultValue="One Way"
+                              selection
+                              compact
+                              options={rideOptions}/>
+                </div>
+                <div className="search-box">
+                    <div className="search-field">
+                        <div className="field-desc">Starting Location</div>
+                        <SearchBar
+                            className="input"
+                            text={this.state.start}
+                            editfn={this.editStart}
+                            placeholder="Choose Starting Location..."
+                        />
+                    </div>
+                    <div className="search-field">
+                        <div className="field-desc">Destination</div>
+                        <SearchBar
+                            className="input"
+                            text={this.state.endDest}
+                            editfn={this.editEndDest}
+                            placeholder="Choose Destination..."
+                        />
+                    </div>
+                    <div className="search-field">
+                        <div className="field-desc">Ride Date</div>
+                        <input
+                            className="date-picker-box input"
+                            type="text"
+                            ref={this.startDateRef}
+                            onChange={this.editStartDate}
+                            value={this.state.startDate}
+                            placeholder="Choose Date..."
+                        />
+                    </div>
+                    <div onClick={this.filterRides} className="search-button">Search Rides</div>
+                </div>
                 </div>
                 <br/>
-                <button onClick={this.filterRides}>Search</button>
-                <button onClick={this.clearFilter}>Clear</button>
-                <button onClick={this.queryRides}>Search DB</button>
+                {/*<button onClick={this.clearFilter}>Clear</button>*/}
+                {/*<button onClick={this.queryRides}>Search DB</button>*/}
                 <h3>Available Rides</h3>
                 {/*<RideList rides={this.ridefilter}/>*/}
                 <RideList rides={this.state.filteredRides}/>
