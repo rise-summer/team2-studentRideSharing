@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ProfileTabs from '../../components/ProfileTabs/ProfileTabs';
+import ProfileTabs from '../../components/UserProfiles/ProfileTabs';
 import { Grid, Header, Image, Message } from 'semantic-ui-react';
 
 class Profile extends Component {

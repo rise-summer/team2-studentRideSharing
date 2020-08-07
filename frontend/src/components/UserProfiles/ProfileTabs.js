@@ -1,6 +1,6 @@
 import React from 'react';
-import ProfileDetails from '../ProfileDetails/ProfileDetails';
-import ProfileListings from '../ProfileListings/ProfileListings';
+import ProfileDetails from './ProfileDetails';
+import ProfileListings from './ProfileListings';
 import { Tab, Menu, Label } from 'semantic-ui-react';
 
 const ProfileTabs = ({ vehicles, contact, email, rides, handleCancel }) => {

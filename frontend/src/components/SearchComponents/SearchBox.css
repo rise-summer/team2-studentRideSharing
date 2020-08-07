@@ -1,0 +1,36 @@
+.search-box {
+    display: inline-flex;
+    border-width: 2px;
+    border-style: solid;
+    /*margin: 5px;*/
+    margin: 0 auto;
+    height: 60px;
+}
+
+.search-field {
+    display: inline-block;
+    text-align: left;
+    border-right: 2px solid black;
+    margin: 5px;
+    min-width: 180px;
+    padding-right: 10px;
+}
+
+.field-desc {
+    display: block;
+    margin-bottom: 5px;
+}
+
+
+.search-button {
+    /*display: block;*/
+    display: flex;
+    height: 100%;
+    background-color: black;
+    padding: 0 10px;
+    color: white;
+    margin-left: -10px;
+    white-space: nowrap;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+}
