@@ -6,10 +6,10 @@ import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css'
+import { Dropdown } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { SEARCH_RIDES_SUCCESS } from "../../actions/SearchPageStates";
 import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
-import { Dropdown } from 'semantic-ui-react';
 
 const querystring = require('querystring');
 
@@ -21,14 +21,14 @@ const sample_rides = [
 
 const rideOptions = [
     {
-        key: 'One Way',
-        text: 'One Way',
-        value: 'One Way',
-    },
-    {
         key: 'Roundtrip',
         text: 'Roundtrip',
         value: 'Roundtrip',
+    },
+    {
+        key: 'One Way',
+        text: 'One Way',
+        value: 'One Way',
     },
 ];
 
@@ -46,7 +46,7 @@ class Search extends Component {
             distance: '',
             rides: sample_rides,
             filteredRides: [],
-            roundtrip: false,
+            roundtrip: true,
             /* Use this.state.query.* when passing to redux */
             query: {
                 start: '',
@@ -56,7 +56,7 @@ class Search extends Component {
                 originCoords: '',
                 destCoords: '',
                 distance: '',
-            }
+            },
         };
         this.state.filteredRides = this.state.rides;
         this.startDateRef = React.createRef();
@@ -84,12 +84,12 @@ class Search extends Component {
     };
 
     editStartDate = (d) => {
-        var date = moment(d).format('MM/DD/YYYY') + ' ';
+        let date = moment(d).format('MM/DD/YYYY') + ' ';
         this.setState({startDate: date})
     };
 
     editEndDate = (d) => {
-        var date = moment(d).format('MM/DD/YYYY') + ' ';
+        let date = moment(d).format('MM/DD/YYYY') + ' ';
         this.setState({endDate: date})
     };
 
@@ -157,25 +157,53 @@ class Search extends Component {
         })
     };
 
+    changeRideType = (e, data) => {
+        if (data.value === 'One Way') {
+            this.setState({roundtrip: false})
+        } else {
+            this.setState({roundtrip: true})
+        }
+    };
+
     render() {
+        const {roundtrip} = this.state;
+        const renderReturnDate = () => {
+            if (roundtrip) {
+                return (
+                    <div className="search-field">
+                        <div className="field-desc">Return Date</div>
+                        <input
+                            className="date-picker-box input"
+                            type="text"
+                            ref={this.endDateRef}
+                            onChange={this.editEndDate}
+                            value={this.state.endDate}
+                            placeholder="Choose Date..."
+                        />
+                    </div>
+                );
+            }
+        };
         return (
             <div className="search-wrapper">
                 <div className="search-subwrapper">
                     <div className="ride-type-wrapper">
                         <Dropdown className="ride-type-selector"
-                                  defaultValue="One Way"
+                                  defaultValue="Roundtrip"
                                   selection
                                   compact
-                                  options={rideOptions} />
+                                  onChange={this.changeRideType}
+                                  options={rideOptions}
+                        />
                     </div>
                     <div className="search-box">
                         <div className="search-field">
-                            <div className="field-desc">Starting Location</div>
+                            <div className="field-desc">Start Location</div>
                             <SearchBar
                                 className="input"
                                 text={this.state.start}
                                 editfn={this.editStart}
-                                placeholder="Choose Starting Location..."
+                                placeholder="Choose Start Location..."
                             />
                         </div>
                         <div className="search-field">
@@ -188,7 +216,7 @@ class Search extends Component {
                             />
                         </div>
                         <div className="search-field">
-                            <div className="field-desc">Ride Date</div>
+                            <div className="field-desc">Depart Date</div>
                             <input
                                 className="date-picker-box input"
                                 type="text"
@@ -198,6 +226,7 @@ class Search extends Component {
                                 placeholder="Choose Date..."
                             />
                         </div>
+                        {renderReturnDate()}
                         <div onClick={this.filterRides} className="search-button">Search Rides</div>
                     </div>
                 </div>

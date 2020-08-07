@@ -44,7 +44,7 @@ class SignIn extends React.Component {
 
     render() {
         if (this.state.loggedIn) {
-            return <Redirect to="/search" />
+            return <Redirect to="/searchlanding" />
         } else {
             return (
                 <div>
