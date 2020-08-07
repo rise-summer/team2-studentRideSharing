@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import DriverListing from './pages/DriverListing/DriverListing';
 import Search from './pages/Search/Search';
@@ -21,12 +21,21 @@ function App() {
                 <Navbar isLoggedIn={true} />
                 <Switch>
                     {/* should be search if user logged in */}
-                    <Route exact path="/"><LoginPage /></Route>
-                    <Route path="/search"><Search /></Route>
-                    <Route path="/searchlanding"><SearchLanding /></Route>
-                    <Route path="/ride"><RideDetails /></Route>
-                    <Route path="/newride"><DriverListing /></Route>
-                    <Route path="/login"><LoginPage /></Route>
+                    <Route exact path="/">
+                        <LoginPage />
+                    </Route>
+                    <Route path="/search">
+                        <Search />
+                    </Route>
+                    <Route path="/ride">
+                        <RideDetails />
+                    </Route>
+                    <Route path="/newride">
+                        <DriverListing />
+                    </Route>
+                    <Route path="/login">
+                        <LoginPage />
+                    </Route>
                     <Route path="/profile">
                         <Profile userId="5f29a088bc6acb9e9da9e65e" />
                     </Route>

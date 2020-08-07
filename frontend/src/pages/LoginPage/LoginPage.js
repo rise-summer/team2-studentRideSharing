@@ -4,6 +4,7 @@ import SignUp from '../../components/Auth/SignUp';
 import { Grid, Tab } from 'semantic-ui-react';
 import './LoginPage.css';
 
+
 const LoginPage = () => {
     const panes = [
         {
