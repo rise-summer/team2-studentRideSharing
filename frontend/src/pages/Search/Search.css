@@ -3,11 +3,52 @@
     text-align: center;
 }
 
+.search-subwrapper {
+    /*width: 62vw;*/
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+.ride-type-wrapper {
+    display: flex;
+}
+
+/* !important needed to override default semantic ui styles*/
+.ride-type-selector {
+    display: flex!important;
+    padding-left: 10px!important;
+    border: none!important;
+    background: none!important;
+}
+
+.ride-type-selector:hover {
+    outline: 1px solid #99C9DB!important;
+}
+
+.ride-type-selector.active { /* semantic ui override */
+    /*border: 1px solid #99C9DB!important;*/
+    /*border: 1px solid black!important;*/
+    outline: 1px solid black!important;
+}
+
+.ride-type-selector.active.item {
+    outline: 5px solid green!important;
+}
+
+.transition {
+    /*border: 1px solid black!important;*/
+    border: none!important;
+    outline: 1px solid black!important;
+}
+
 .search-box {
     display: inline-flex;
     border-width: 2px;
     border-style: solid;
-    margin: 5px;
+    /*margin: 5px;*/
+    margin: 0 auto;
+    height: 60px;
 }
 
 .search-field {
@@ -15,7 +56,7 @@
     text-align: left;
     border-right: 2px solid black;
     margin: 5px;
-    min-width: 180px;
+    /*min-width: 180px;*/
     padding-right: 10px;
 }
 
@@ -27,18 +68,21 @@
 
 .search-button {
     /*display: block;*/
-    display: inline-block;
+    display: flex;
     height: 100%;
-    padding: 20px 10px;
     background-color: black;
+    padding: 0 10px;
     color: white;
     margin-left: -10px;
-    min-width: 98px;
     white-space: nowrap;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+
 }
 
 .search-button:hover {
     background-color: #3a4a49;
+    cursor: pointer;
 }
 
 .date-picker-box {
@@ -46,5 +90,5 @@
     border: none;
     outline: none;
     border-bottom: 1px solid black;
-
 }
+

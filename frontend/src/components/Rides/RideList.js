@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import Ride from "../Ride/Ride";
+import React, { Component } from 'react';
+import Ride from "./Ride";
 import './RideList.css'
 
 class RideList extends Component {

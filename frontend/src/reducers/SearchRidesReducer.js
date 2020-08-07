@@ -1,4 +1,4 @@
-import {SEARCH_RIDES_ERROR, SEARCH_RIDES_SUCCESS, SEARCH_RIDES_PENDING} from "../actions/SearchPageStates";
+import { SEARCH_RIDES_ERROR, SEARCH_RIDES_SUCCESS, SEARCH_RIDES_PENDING } from "../actions/SearchPageStates";
 
 const initialState = {
     pending: false,
@@ -7,7 +7,7 @@ const initialState = {
 };
 
 export function ridesReducer(state = initialState, action) {
-    switch(action.type) {
+    switch (action.type) {
         case SEARCH_RIDES_PENDING:
             return {
                 ...state,

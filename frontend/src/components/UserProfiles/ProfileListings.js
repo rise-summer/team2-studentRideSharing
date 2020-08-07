@@ -1,5 +1,5 @@
 import React from 'react';
-import RideProfile from '../RideProfile/RideProfile';
+import RideProfile from '../Rides/RideProfile';
 import { Header } from 'semantic-ui-react';
 
 const ProfileListings = ({ rides, handleCancel }) => {
