@@ -99,13 +99,13 @@ router.post('/:userID', async function (req, res, next) {
 })
 
 //get a single ride
-router.get('/:rideID', async function(req, res, next){
+router.get('/:rideID', async function (req, res, next) {
     //should be available for all?
     // const driverID = req.params.userID;
     const rideID = req.params.rideID;
-    if(ObjectId.isValid(rideID)) {
+    if (ObjectId.isValid(rideID)) {
         getRide(rideID, function(ride) {
-            if(ride){
+            if (ride) {
                 res.status(200).json(ride);
             }
             else {
