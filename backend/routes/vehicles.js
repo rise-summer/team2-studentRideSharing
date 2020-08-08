@@ -24,23 +24,17 @@ router.post('/:userID', async function (req, res, next) {
         "plate": plate,
         "capacity": Number(capacity),
     };
+
     const collection = client.dbCollection(collectionName);
     collection.insertOne(carDocument, function (err, record) {
         if (err) {//insert a record with an existing _id value
             console.log(err);
             res.sendStatus(400);
+        } else {
+            console.log("A vehicle record added as " + JSON.stringify(record.ops[0]));
+            res.status(201).send(JSON.stringify(record.ops[0]));//Created
         }
-        const collection = client.dbCollection(collectionName);
-        collection.insertOne(carDocument, function (err, record) {
-            if (err) {//insert a record with an existing _id value
-                console.log(err);
-                res.sendStatus(400);
-            } else {
-                console.log("A vehicle record added as " + JSON.stringify(record.ops[0]));
-                res.status(201).send(JSON.stringify(record.ops[0]));//Created
-            }
-        });
-    })
+    });
 });
 
 //get cars

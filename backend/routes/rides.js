@@ -70,7 +70,7 @@ router.post('/:userID', async function (req, res, next) {
     //TODO: validate input data - userID/rideID not existed in db, req body must include certain data
     const driverID = req.params.userID;
     // const rideID = req.params.rideID;
-    const {origin, destination, originCoords, destCoords, time, price, capacity, car, email} = req.body;
+    const {origin, destination, originCoords, destCoords, time, price, capacity, car} = req.body;
     let rideDocument = {
         "driverID": driverID,
         "status": 0,
@@ -82,7 +82,6 @@ router.post('/:userID', async function (req, res, next) {
         "price": price,
         "capacity": capacity,
         "car": car,
-        "email": email,
         "requests": [null] //TODO: how to initialize an empty array?
     }
     const collection = client.dbCollection(collectionName);
@@ -100,9 +99,9 @@ router.post('/:userID', async function (req, res, next) {
 })
 
 //get a single ride
-router.get('/:userID/:rideID', async function(req, res, next){
+router.get('/:rideID', async function(req, res, next){
     //should be available for all?
-    const driverID = req.params.userID;
+    // const driverID = req.params.userID;
     const rideID = req.params.rideID;
     if(ObjectId.isValid(rideID)) {
         getRide(rideID, function(ride) {
@@ -110,9 +109,12 @@ router.get('/:userID/:rideID', async function(req, res, next){
                 res.status(200).json(ride);
             }
             else {
-                res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
+                res.status(404).send("There is no such a ride with id " + rideID);
             }
         });
+    }
+    else {
+        res.status(400).send("Invalid rideID (not ObjectId) for getting a single ride.");
     }
 })
 

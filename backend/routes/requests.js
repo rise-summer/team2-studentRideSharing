@@ -48,12 +48,8 @@ router.post('/email/:rideID', async function(req, res, next){
     // using Twilio SendGrid's v3 Node.js Library
     // https://github.com/sendgrid/sendgrid-nodejs
     sgMail.setApiKey(apiKey.SENDGRID_API_KEY);
-    // console.log(driverMail);
-    // const driverMail = "haiweilu@g.ucla.edu";
-    // const driverFirstName = "Joe";
     rides.getRide(rideID, function(ride) {
       if(ride){
-        // console.log(ride["_id"]);
         const msg = {
           // to: driverMail,
           from: {
