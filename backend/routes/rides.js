@@ -99,25 +99,33 @@ router.post('/:userID', async function (req, res, next) {
 })
 
 //get a single ride
-router.get('/:userID/:rideID', async function (req, res, next) {
+router.get('/:rideID', async function (req, res, next) {
     //should be available for all?
-    const driverID = req.params.userID;
+    // const driverID = req.params.userID;
     const rideID = req.params.rideID;
     if (ObjectId.isValid(rideID)) {
-        const collection = client.dbCollection(collectionName);
-        collection.findOne({
-            "_id": ObjectId(rideID)
-        }).then(function (ride) {
+        getRide(rideID, function(ride) {
             if (ride) {
                 res.status(200).json(ride);
-            } else {
-                res.status(404).send("Driver " + driverID + " does not have a ride with id " + rideID);
+            }
+            else {
+                res.status(404).send("There is no such a ride with id " + rideID);
             }
         });
-    } else {//invalid request - rideID not ObjectId
-        res.status(400).send("Invalid rideID (not ObjectId) for GET a ride");
+    }
+    else {
+        res.status(400).send("Invalid rideID (not ObjectId) for getting a single ride.");
     }
 })
+
+function getRide(rideID, callback) {
+    const collection = client.dbCollection(collectionName);
+    collection.findOne({
+        "_id" : ObjectId(rideID)
+    }).then(function(ride) {
+        callback(ride);
+    });
+};
 
 //delete a ride with no pending/confirmed requests
 router.delete('/:userID/:rideID', async function (req, res, next) {
@@ -181,4 +189,4 @@ router.get('/:userID', async function(req, res, next){
   });
 })
 
-module.exports = router;
+module.exports = {router, getRide};
