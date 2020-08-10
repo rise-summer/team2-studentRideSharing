@@ -16,7 +16,7 @@ router.delete('/', async function(req, res, next){
 //add a request
 router.post('/:rideID', async function(req, res, next){
   const rideID = req.params.rideID;
-  const {ownerID, origin, destination, originCoords, destCoords} = req.body;
+  const {ownerID, origin, destination, originCoords, destCoords, comment} = req.body;
   let requestDocument = {
     "rideID": rideID,
     "ownerID": ownerID, //id of the request owner
@@ -25,7 +25,8 @@ router.post('/:rideID', async function(req, res, next){
     "startLoc": origin,//just the display name
     "endLoc": destination,
     "originCoords": originCoords,
-    "destCoords": destCoords
+    "destCoords": destCoords,
+    "comment": comment
   }
   const collection = client.dbCollection(collectionName);
   collection.insertOne(requestDocument, function(err, record){
