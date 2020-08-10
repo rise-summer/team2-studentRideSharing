@@ -82,7 +82,7 @@ router.post('/:userID', async function (req, res, next) {
         "price": price,
         "capacity": capacity,
         "car": car,
-        "requests": [null] //TODO: how to initialize an empty array?
+        "requests": []
     }
     const collection = client.dbCollection(collectionName);
     collection.insertOne(rideDocument, function (err, record) {
