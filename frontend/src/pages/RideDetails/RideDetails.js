@@ -25,7 +25,9 @@ class RideDetails extends Component {
 
     componentDidMount() {
         const rideID = this.props.match.params.rideID;
-        const rideURL = "/api/rides/" + rideID;
+        const driverID = this.props.match.params.driverID;
+        const rideURL = "/api/rides/" + driverID + "/" + rideID;
+        const userURL = "/api/users/" + driverID;
         var requestOptions = {
           method: 'GET',
         };
@@ -43,25 +45,23 @@ class RideDetails extends Component {
             .then(ride => {
                 this.setState({ ride });
             })
-            .then(() => { //fetch driver info
-                const userURL = "/api/users/" + this.state.ride.driverID;
-                fetch(userURL, requestOptions)
-                .then(response => {
-                    if(response.ok) {
-                        this.setState({render: true})
-                        return response.json();
-                    } else {
-                        this.setState({render: false})
-                        throw new Error('Bad Request');
-                    }
-                })
-                .then(driver => {
-                    this.setState({ driver });
-                    // console.log(this.state);
-                })
-                .catch(error => console.log('error', error));//TODO: throw error here?
+            .catch(error => console.log('error', error));
+        //fetch driver info
+        fetch(userURL, requestOptions)
+            .then(response => {
+                if(response.ok) {
+                    this.setState({render: true})
+                    return response.json();
+                } else {
+                    this.setState({render: false})
+                    throw new Error('Bad Request');
+                }
             })
-            .catch(error => console.log('error', error));//TODO: display 400/404 page
+            .then(driver => {
+                this.setState({ driver });
+                // console.log(this.state);
+            })
+            .catch(error => console.log('error', error));
     }
 
     copyToClipboard = (event) => {
