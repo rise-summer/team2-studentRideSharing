@@ -5,6 +5,7 @@ import Search from './pages/Search/Search';
 import RideDetails from './pages/RideDetails/RideDetails';
 import LoginPage from './pages/LoginPage/LoginPage';
 import Profile from './pages/Profile/Profile';
+import DriverInfo from './pages/DriverInfo/DriverInfo';
 import Navbar from './components/Navbar/Navbar';
 import SearchLanding from './components/SearchComponents/SearchLanding';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
@@ -27,7 +28,7 @@ function App() {
                     <Route path="/search">
                         <Search />
                     </Route>
-                    <Route path="/ride/:driverID/:rideID" component={RideDetails}/>
+                    <Route path="/ride/:driverID/:rideID" component={RideDetails} />
                     <Route path="/newride">
                         <DriverListing />
                     </Route>
@@ -36,6 +37,9 @@ function App() {
                     </Route>
                     <Route path="/profile">
                         <Profile userId="5f29a088bc6acb9e9da9e65e" />
+                    </Route>
+                    <Route path="/vehicleinfo">
+                        <DriverInfo />
                     </Route>
                 </Switch>
             </Router>

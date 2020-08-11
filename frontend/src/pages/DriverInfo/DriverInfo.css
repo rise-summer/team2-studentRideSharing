@@ -1,0 +1,14 @@
+.driver-info{
+    width: 30%;
+    margin: 8% auto;
+}
+#submit-button{
+    width: 100%;
+    color:white;
+    background-color: black;
+}
+
+#submit-button:hover{
+    color: black;
+    background-color: rgb(197, 196, 196);
+}
