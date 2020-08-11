@@ -82,7 +82,7 @@ class RideDetails extends Component {
             <div hidden={!this.state.render}>
                 <div className="left-column">
                 </div>
-                <div className="left">
+                <div className="left-section">
                     <center>{this.state.ride.car.color} {this.state.ride.car.make} {this.state.ride.car.model}</center>
                     <br/>
                     <center>

@@ -20,27 +20,31 @@ router.get('/', async function (req, res, next) {
     if (DEBUG) {
         console.log(query);
     }
-    const originCoords = query['originCoords'];
-    const destCoords = query['destCoords'];
-    // const beginDate = query['beginDate'];
-    // const endDate = query['endDate'];
-    const time = query['time'];
+    const {originCoords, destCoords, time, beginDate, endDate, distance} = query;
     // build date range
     const rideTime = new Date(time);
     const dayStart = new Date(rideTime.getFullYear(), rideTime.getMonth(), rideTime.getDate());
     const dayEnd = new Date(rideTime.getFullYear(), rideTime.getMonth(), rideTime.getDate() + 1);
 
-    const distance = query['distance']; // within x miles
     const collection = client.dbCollection(collectionName);
     // const METERS_PER_MILE = 1609.34;
     const distInRadians = distance / 3963.2;//converts the distance to radians by dividing by the approximate equatorial radius of the earth
 
-    collection.find({
-        // time: {$gte: beginDate, $lte: endDate},
-        time: {$gte: dayStart, $lte: dayEnd},
-        // originCoords: {$geoWithin: {$centerSphere: [originCoords, distInRadians]}},
-        // destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
-    })
+    let filter;
+    if (originCoords === '') {
+        filter = {
+            time: {$gte: dayStart, $lte: dayEnd}
+        };
+    } else {
+        filter = {
+            // time: {$gte: beginDate, $lte: endDate},
+            time: {$gte: dayStart, $lte: dayEnd},
+            originCoords: {$geoWithin: {$centerSphere: [originCoords, distInRadians]}},
+            destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
+        }
+    }
+
+    collection.find(filter)
         // collection.find({
         //   time: {$gte: beginDate, $lte: endDate},
         //   originCoords:
@@ -66,9 +70,7 @@ router.get('/', async function (req, res, next) {
         // })
         .toArray(function (err, rides) {
             if (err) {
-                if (DEBUG) {
-                    console.log(err);
-                }
+                console.log(err);
                 res.sendStatus(400);
             }
             // console.log();

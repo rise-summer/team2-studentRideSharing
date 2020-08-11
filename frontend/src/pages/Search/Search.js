@@ -13,6 +13,7 @@ import { SEARCH_RIDES_SUCCESS } from "../../actions/SearchPageStates";
 import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
 
 const querystring = require('querystring');
+const DEBUG = true;
 
 const sample_rides = [
     ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
@@ -42,8 +43,8 @@ class Search extends Component {
             endDest: '',
             startDate: '',
             endDate: '',
-            originCoords: [0, 0],
-            destCoords: [0, 0],
+            originCoords: '',
+            destCoords: '',
             distance: 5,
             // rides: sample_rides,
             rides: [],
@@ -119,6 +120,7 @@ class Search extends Component {
         fetch(xurl)
             .then(res => res.json())
             .then(res => {
+                if (DEBUG) { console.log(res); }
                 const queried_rides = [];
                 for (let ride in res) {
                     queried_rides.push(
