@@ -9,6 +9,7 @@ const ridesRouter = require('./routes/rides');
 const usersRouter = require('./routes/users');
 const vehiclesRouter = require('./routes/vehicles');
 const requestsRouter = require('./routes/requests');
+
 // configure app
 app.use(logger('dev'));
 // app.use(cors());
@@ -20,7 +21,7 @@ app.get('/', (req, res) => {
 });
 
 //routes
-app.use('/api/rides', ridesRouter);
+app.use('/api/rides', ridesRouter.router);
 app.use('/api/users', usersRouter);
 app.use('/api/vehicles', vehiclesRouter);
 app.use('/api/requests', requestsRouter);

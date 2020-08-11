@@ -26,9 +26,7 @@ function App() {
                     <Route path="/search">
                         <Search />
                     </Route>
-                    <Route path="/ride">
-                        <RideDetails />
-                    </Route>
+                    <Route path="/ride/:driverID/:rideID" component={RideDetails}/>
                     <Route path="/newride">
                         <DriverListing />
                     </Route>

@@ -7,6 +7,13 @@
     height: 250px;
     background-color: #b6b3bf;
 }
+.left {
+    position: absolute;
+    margin-top: 300px;
+    left: 10vw;
+    width: 20vw;
+    font-weight: bold;
+}
 
 .center-column {
     top: 25px;
@@ -80,8 +87,9 @@
     padding-top: 5px;
 }
 
-
-
+ul li{
+    display: inline;
+}
 .price {
     font-size: 16px;
     margin: 5px 0;

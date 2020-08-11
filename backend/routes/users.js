@@ -12,7 +12,7 @@ router.delete('/', async function (req, res, next) {
 
 //register a new user
 router.post('/signup', async function (req, res, next) {
-    const {email, password, firstName, lastName, contact} = req.body;
+    const {email, password, firstName, lastName, contact, school, paymentMethods} = req.body;
     const collection = client.dbCollection(collectionName);
     collection.findOne({
         "email": email
@@ -26,7 +26,8 @@ router.post('/signup', async function (req, res, next) {
                 "firstName": firstName,
                 "lastName": lastName,
                 "contact": contact,
-                "school": "",
+                "school": school,
+                "paymentMethods": paymentMethods ? paymentMethods : [],
                 "phone": "",
                 "addresses": {},
                 // "rides": {},
