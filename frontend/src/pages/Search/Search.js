@@ -7,6 +7,7 @@ import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css'
 import { Dropdown } from 'semantic-ui-react';
+import GeoSearch from '../../components/GeoSearch/GeoSearch';
 import { Link } from 'react-router-dom';
 import { SEARCH_RIDES_SUCCESS } from "../../actions/SearchPageStates";
 import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
@@ -21,14 +22,14 @@ const sample_rides = [
 
 const rideOptions = [
     {
-        key: 'Roundtrip',
-        text: 'Roundtrip',
-        value: 'Roundtrip',
-    },
-    {
         key: 'One Way',
         text: 'One Way',
         value: 'One Way',
+    },
+    {
+        key: 'Roundtrip',
+        text: 'Roundtrip',
+        value: 'Roundtrip',
     },
 ];
 
@@ -41,18 +42,18 @@ class Search extends Component {
             endDest: '',
             startDate: '',
             endDate: '',
-            originCoords: '',
-            destCoords: '',
-            distance: '',
-            rides: sample_rides,
+            originCoords: [0, 0],
+            destCoords: [0, 0],
+            distance: 5,
+            // rides: sample_rides,
+            rides: [],
             filteredRides: [],
-            roundtrip: true,
+            roundtrip: false,
             /* Use this.state.query.* when passing to redux */
             query: {
                 start: '',
                 endDest: '',
-                startDate: '',
-                endDate: '',
+                time: '',
                 originCoords: '',
                 destCoords: '',
                 distance: '',
@@ -85,7 +86,7 @@ class Search extends Component {
 
     editStartDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({startDate: date})
+        this.setState({startDate: date});
     };
 
     editEndDate = (d) => {
@@ -111,14 +112,13 @@ class Search extends Component {
         const query = {
             originCoords: this.state.originCoords,
             destCoords: this.state.destCoords,
-            time: this.state.startDate,
+            time: new Date(this.state.startDate),
             distance: this.state.distance,
         };
         const xurl = '/api/rides?' + querystring.stringify({'query': JSON.stringify(query)});
         fetch(xurl)
             .then(res => res.json())
             .then(res => {
-                // console.log(res); /*****/
                 const queried_rides = [];
                 for (let ride in res) {
                     queried_rides.push(
@@ -132,7 +132,9 @@ class Search extends Component {
                 this.setState({
                     filteredRides: queried_rides
                 });
-                // console.log(queried_rides);
+            })
+            .catch(error => {
+                console.log(error);
             })
     };
 
@@ -189,7 +191,7 @@ class Search extends Component {
                 <div className="search-subwrapper">
                     <div className="ride-type-wrapper">
                         <Dropdown className="ride-type-selector"
-                                  defaultValue="Roundtrip"
+                                  defaultValue="One Way"
                                   selection
                                   compact
                                   onChange={this.changeRideType}
@@ -227,7 +229,7 @@ class Search extends Component {
                             />
                         </div>
                         {renderReturnDate()}
-                        <div onClick={this.filterRides} className="search-button">Search Rides</div>
+                        <div onClick={this.queryRides} className="search-button">Search Rides</div>
                     </div>
                 </div>
                 <br />

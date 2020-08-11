@@ -6,7 +6,7 @@ var client;
 // create a connection to url and call callback()
 module.exports.connect = function (url, callback) {
   if (client) {
-    //connection has already been estabilished
+    //connection has already been established
     callback();
   }
   //create a new connection

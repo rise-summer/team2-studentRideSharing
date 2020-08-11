@@ -4,6 +4,7 @@ const client = require('../db');
 const querystring = require('querystring');
 const collectionName = "Rides";
 const ObjectId = require('mongodb').ObjectId;
+const DEBUG = false;
 
 //(temporary) Admin API for testing
 router.delete('/', async function (req, res, next) {
@@ -16,20 +17,29 @@ router.get('/', async function (req, res, next) {
     //TODO: validate login state - login user = given userid
     //TODO: search logic for begin and end date
     const query = JSON.parse(req.query['query']);
-    console.log(query);
+    if (DEBUG) {
+        console.log(query);
+    }
     const originCoords = query['originCoords'];
     const destCoords = query['destCoords'];
-    const beginDate = query['beginDate'];
-    const endDate = query['endDate'];
+    // const beginDate = query['beginDate'];
+    // const endDate = query['endDate'];
+    const time = query['time'];
+    // build date range
+    const rideTime = new Date(time);
+    const dayStart = new Date(rideTime.getFullYear(), rideTime.getMonth(), rideTime.getDate());
+    const dayEnd = new Date(rideTime.getFullYear(), rideTime.getMonth(), rideTime.getDate() + 1);
+
     const distance = query['distance']; // within x miles
     const collection = client.dbCollection(collectionName);
     // const METERS_PER_MILE = 1609.34;
     const distInRadians = distance / 3963.2;//converts the distance to radians by dividing by the approximate equatorial radius of the earth
 
     collection.find({
-        time: {$gte: beginDate, $lte: endDate},
-        originCoords: {$geoWithin: {$centerSphere: [originCoords, distInRadians]}},
-        destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
+        // time: {$gte: beginDate, $lte: endDate},
+        time: {$gte: dayStart, $lte: dayEnd},
+        // originCoords: {$geoWithin: {$centerSphere: [originCoords, distInRadians]}},
+        // destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
     })
         // collection.find({
         //   time: {$gte: beginDate, $lte: endDate},
@@ -56,7 +66,9 @@ router.get('/', async function (req, res, next) {
         // })
         .toArray(function (err, rides) {
             if (err) {
-                console.log(err);
+                if (DEBUG) {
+                    console.log(err);
+                }
                 res.sendStatus(400);
             }
             // console.log();
@@ -83,20 +95,24 @@ router.post('/:userID', async function (req, res, next) {
         "capacity": capacity,
         "car": car,
         "requests": [null] //TODO: how to initialize an empty array?
-    }
+    };
     const collection = client.dbCollection(collectionName);
     collection.insertOne(rideDocument, function (err, record) {
         if (err) {//insert a record with an existing _id value
-            console.log("New Ride Error");
+            if (DEBUG) {
+                console.log("New Ride Error");
+            }
             res.sendStatus(400);
         } else {
-            console.log("Record added as " + JSON.stringify(record.ops[0]));
+            if (DEBUG) {
+                console.log("Record added as " + JSON.stringify(record.ops[0]));
+            }
             res.setHeader("Location", "/api/rides/" + driverID + "/" + record.ops[0]["_id"]);
             res.status(201).send(JSON.stringify(record.ops[0]));//Created
             //TODO: location header -> link to the generated ride
         }
     });
-})
+});
 
 //get a single ride
 router.get('/:userID/:rideID', async function (req, res, next) {
@@ -117,7 +133,7 @@ router.get('/:userID/:rideID', async function (req, res, next) {
     } else {//invalid request - rideID not ObjectId
         res.status(400).send("Invalid rideID (not ObjectId) for GET a ride");
     }
-})
+});
 
 //delete a ride with no pending/confirmed requests
 router.delete('/:userID/:rideID', async function (req, res, next) {
@@ -138,14 +154,16 @@ router.delete('/:userID/:rideID', async function (req, res, next) {
     } else {//invalid request - rideID not ObjectId
         res.status(400).send("Invalid rideID (not ObjectId) for ride deleting request.");
     }
-})
+});
 
 //cancel a ride
 router.put('/cancel/:userID/:rideID', async function (req, res, next) {
     const driverID = req.params.userID;
     const rideID = req.params.rideID;
     const sameTimeTMR = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);//one day after current time
-    console.log(sameTimeTMR);
+    if (DEBUG) {
+        console.log(sameTimeTMR);
+    }
     if (ObjectId.isValid(rideID)) {
         const collection = client.dbCollection(collectionName);
         collection.updateOne({
@@ -167,18 +185,20 @@ router.put('/cancel/:userID/:rideID', async function (req, res, next) {
 })
 
 //get all rides
-router.get('/:userID', async function(req, res, next){
-  const driverID = req.params.userID;
-  const collection = client.dbCollection(collectionName);
-  collection.find({
-    driverID: driverID
-  }).toArray(function(err, rides){
-    if(err) {
-      console.log(err);
-      res.sendStatus(400);
-    }
-    res.status(200).json(rides);
-  });
+router.get('/:userID', async function (req, res, next) {
+    const driverID = req.params.userID;
+    const collection = client.dbCollection(collectionName);
+    collection.find({
+        driverID: driverID
+    }).toArray(function (err, rides) {
+        if (err) {
+            if (DEBUG) {
+                console.log(err);
+            }
+            res.sendStatus(400);
+        }
+        res.status(200).json(rides);
+    });
 })
 
 module.exports = router;

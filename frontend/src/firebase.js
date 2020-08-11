@@ -18,7 +18,7 @@ export const firestore = firebase.firestore();
 // Configure FirebaseUI.
 export const uiConfig = {
     // Popup signin flow rather than redirect flow.
-    signInFlow: 'popup',
+    signInFlow: 'redirect',
     // Redirect to /search after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
     signInSuccessUrl: '/search',
     // We will display Google and Facebook as auth providers.
