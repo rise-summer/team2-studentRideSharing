@@ -27,7 +27,6 @@ function App() {
                         <Search />
                     </Route>
                     <Route path="/ride/:driverID/:rideID" component={RideDetails}/>
-                    <Route path="/ride" component={RideDetails}/>
                     <Route path="/newride">
                         <DriverListing />
                     </Route>

@@ -20,25 +20,18 @@ router.get('/', async function (req, res, next) {
     if (DEBUG) {
         console.log(query);
     }
-    const {originCoords, destCoords, time, beginDate, endDate, distance} = query;
-    // build date range
-    const rideTime = new Date(time);
-    const dayStart = new Date(rideTime.getFullYear(), rideTime.getMonth(), rideTime.getDate());
-    const dayEnd = new Date(rideTime.getFullYear(), rideTime.getMonth(), rideTime.getDate() + 1);
-
+    const {originCoords, destCoords, beginDate, endDate, distance} = query;
     const collection = client.dbCollection(collectionName);
     // const METERS_PER_MILE = 1609.34;
     const distInRadians = distance / 3963.2;//converts the distance to radians by dividing by the approximate equatorial radius of the earth
-
     let filter;
     if (originCoords === '') {
         filter = {
-            time: {$gte: dayStart, $lte: dayEnd}
+            time: {$gte: new Date(beginDate), $lte: new Date(endDate)}
         };
     } else {
         filter = {
-            // time: {$gte: beginDate, $lte: endDate},
-            time: {$gte: dayStart, $lte: dayEnd},
+            time: {$gte: new Date(beginDate), $lte: new Date(endDate)},
             originCoords: {$geoWithin: {$centerSphere: [originCoords, distInRadians]}},
             destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
         }
@@ -101,14 +94,10 @@ router.post('/:userID', async function (req, res, next) {
     const collection = client.dbCollection(collectionName);
     collection.insertOne(rideDocument, function (err, record) {
         if (err) {//insert a record with an existing _id value
-            if (DEBUG) {
-                console.log("New Ride Error");
-            }
+            console.log("New Ride Error");
             res.sendStatus(400);
         } else {
-            if (DEBUG) {
-                console.log("Record added as " + JSON.stringify(record.ops[0]));
-            }
+            console.log("Record added as " + JSON.stringify(record.ops[0]));
             res.setHeader("Location", "/api/rides/" + driverID + "/" + record.ops[0]["_id"]);
             res.status(201).send(JSON.stringify(record.ops[0]));//Created
             //TODO: location header -> link to the generated ride
@@ -122,16 +111,14 @@ router.get('/:userID/:rideID', async function (req, res, next) {
     // const driverID = req.params.userID;
     const rideID = req.params.rideID;
     if (ObjectId.isValid(rideID)) {
-        getRide(rideID, function(ride) {
+        getRide(rideID, function (ride) {
             if (ride) {
                 res.status(200).json(ride);
-            }
-            else {
+            } else {
                 res.status(404).send("There is no such a ride with id " + rideID);
             }
         });
-    }
-    else {
+    } else {
         res.status(400).send("Invalid rideID (not ObjectId) for getting a single ride.");
     }
 });
@@ -139,11 +126,11 @@ router.get('/:userID/:rideID', async function (req, res, next) {
 function getRide(rideID, callback) {
     const collection = client.dbCollection(collectionName);
     collection.findOne({
-        "_id" : ObjectId(rideID)
-    }).then(function(ride) {
+        "_id": ObjectId(rideID)
+    }).then(function (ride) {
         callback(ride);
     });
-};
+}
 
 //delete a ride with no pending/confirmed requests
 router.delete('/:userID/:rideID', async function (req, res, next) {
@@ -171,9 +158,6 @@ router.put('/cancel/:userID/:rideID', async function (req, res, next) {
     const driverID = req.params.userID;
     const rideID = req.params.rideID;
     const sameTimeTMR = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);//one day after current time
-    if (DEBUG) {
-        console.log(sameTimeTMR);
-    }
     if (ObjectId.isValid(rideID)) {
         const collection = client.dbCollection(collectionName);
         collection.updateOne({
@@ -192,7 +176,7 @@ router.put('/cancel/:userID/:rideID', async function (req, res, next) {
     } else {//invalid request - rideID not ObjectId
         res.status(400).send("Invalid rideID (not ObjectId) for ride cancellation request.");
     }
-})
+});
 
 //get all rides
 router.get('/:userID', async function (req, res, next) {
@@ -209,6 +193,6 @@ router.get('/:userID', async function (req, res, next) {
         }
         res.status(200).json(rides);
     });
-})
+});
 
 module.exports = {router, getRide};

@@ -41,7 +41,7 @@ class Search extends Component {
         this.state = {
             start: '',
             endDest: '',
-            startDate: '',
+            beginDate: '',
             endDate: '',
             originCoords: '',
             destCoords: '',
@@ -61,14 +61,14 @@ class Search extends Component {
             },
         };
         this.state.filteredRides = this.state.rides;
-        this.startDateRef = React.createRef();
+        this.beginDateRef = React.createRef();
         this.endDateRef = React.createRef();
     }
 
     componentDidMount() {
         new Pikaday({
-            field: this.startDateRef.current,
-            onSelect: this.editStartDate,
+            field: this.beginDateRef.current,
+            onSelect: this.editBeginDate,
         });
 
         new Pikaday({
@@ -85,9 +85,9 @@ class Search extends Component {
         this.setState({endDest: ed.target.value})
     };
 
-    editStartDate = (d) => {
+    editBeginDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({startDate: date});
+        this.setState({beginDate: date});
     };
 
     editEndDate = (d) => {
@@ -98,7 +98,7 @@ class Search extends Component {
     /* filter upon button click */
     filterRides = () => {
         // split searched departure date into array
-        var dateArray = this.state.startDate.split('/');
+        var dateArray = this.state.beginDate.split('/');
         // create Date object from array information
         // new Date(YYYY, MM, DD), month is 0-indexed
         var date = new Date(dateArray[2], dateArray[0] - 1, dateArray[1]);
@@ -110,10 +110,15 @@ class Search extends Component {
 
     queryRides = () => {
         // this.props.dispatch({type: SEARCH_RIDES_SUCCESS});
+        /* dates are store as strings in this.state, must convert to Date object */
+        const date = new Date(this.state.beginDate);
+        const dateEnd = new Date(date);
+        dateEnd.setHours(23, 59, 59);
         const query = {
             originCoords: this.state.originCoords,
             destCoords: this.state.destCoords,
-            time: new Date(this.state.startDate),
+            beginDate: date,
+            endDate: dateEnd,
             distance: this.state.distance,
         };
         const xurl = '/api/rides?' + querystring.stringify({'query': JSON.stringify(query)});
@@ -156,7 +161,7 @@ class Search extends Component {
             start: '',
             endDest: '',
             filteredRides: this.state.rides,
-            startDate: '',
+            beginDate: '',
             endDate: '',
         })
     };
@@ -224,9 +229,9 @@ class Search extends Component {
                             <input
                                 className="date-picker-box input"
                                 type="text"
-                                ref={this.startDateRef}
-                                onChange={this.editStartDate}
-                                value={this.state.startDate}
+                                ref={this.beginDateRef}
+                                onChange={this.editBeginDate}
+                                value={this.state.beginDate}
                                 placeholder="Choose Date..."
                             />
                         </div>
@@ -250,7 +255,7 @@ const mapStateToProps = (state) => ({
     endDest: state.endDest,
     rides: state.rides,
     filteredRides: state.filteredRides,
-    startDate: state.startDate,
+    beginDate: state.beginDate,
     endDate: state.endDate,
 });
 
