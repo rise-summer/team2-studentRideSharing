@@ -6,6 +6,7 @@ const querystring = require('querystring');
 const collectionName = "Requests";
 const sgMail = require('@sendgrid/mail');
 const rides = require('./rides');
+const ObjectId = require('mongodb').ObjectId;
 
 //(temporary) Admin API for testing
 router.delete('/', async function(req, res, next){
@@ -40,6 +41,51 @@ router.post('/:rideID', async function(req, res, next){
     }
   });
   //TODO: update other collection as well?
+})
+
+//Update request's info - deny/confirm
+router.put('/:action/:requestID', async function (req, res, next) {
+    const requestID = req.params.requestID;
+    const action = req.params.action;
+    var status;
+    if(action === "deny") {
+        status = 2;
+    }
+    else if(action === "confirm") {
+        status = 1;
+    }
+    if (ObjectId.isValid(requestID)) { //invalid request - requestID not ObjectId
+        const collection = client.dbCollection(collectionName);
+        collection.updateOne({
+            "_id": ObjectId(requestID),
+            "status": 0
+        }, {
+            $set: {status: status}
+        }).then(function (rep) {
+            if (rep.modifiedCount == 1) {
+                res.status(200).json(rep);
+            } else {
+                res.status(400).send("Bad Request: Cannot Update the Request. ModifiedCount is not 1.");
+            }
+        });
+    } else {
+        res.status(400).send("Invalid requestID (not ObjectId)");
+    }
+})
+
+//get all requests about a ride
+router.get('/:rideID', async function(req, res, next){
+  const rideID = req.params.rideID;
+  const collection = client.dbCollection(collectionName);
+  collection.find({
+    rideID: rideID
+}).toArray(function(err, requests){
+    if(err) {
+      console.log(err);
+      res.sendStatus(400);
+    }
+    res.status(200).json(requests);
+  });
 })
 
 //send email
