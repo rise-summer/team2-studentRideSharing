@@ -1,7 +1,6 @@
 // To Init the database: node ./test/dbInit.js
 const request = require('request');
 const querystring = require('querystring');
-const POSTDEBUG = true;
 
 function emptyCol(isTrue, callback = () => {
 }) {
@@ -27,9 +26,7 @@ function post(driverID, rideID, record, isTrue = true, callback = () => {
                 console.error(error);
                 return;
             }
-            if (POSTDEBUG) {
-                console.log("Record added as:\n" + JSON.stringify(body, null, 2));
-            }
+            console.log("Record added as:\n" + JSON.stringify(body, null, 2));
         })
     }
     callback();

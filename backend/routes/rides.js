@@ -4,7 +4,6 @@ const client = require('../db');
 const querystring = require('querystring');
 const collectionName = "Rides";
 const ObjectId = require('mongodb').ObjectId;
-const DEBUG = false;
 
 //(temporary) Admin API for testing
 router.delete('/', async function (req, res, next) {
@@ -17,9 +16,7 @@ router.get('/', async function (req, res, next) {
     //TODO: validate login state - login user = given userid
     //TODO: search logic for begin and end date
     const query = JSON.parse(req.query['query']);
-    if (DEBUG) {
-        console.log(query);
-    }
+    console.log(query);
     const {originCoords, destCoords, beginDate, endDate, distance} = query;
     const collection = client.dbCollection(collectionName);
     // const METERS_PER_MILE = 1609.34;
@@ -186,9 +183,7 @@ router.get('/:userID', async function (req, res, next) {
         driverID: driverID
     }).toArray(function (err, rides) {
         if (err) {
-            if (DEBUG) {
-                console.log(err);
-            }
+            console.log(err);
             res.sendStatus(400);
         }
         res.status(200).json(rides);
