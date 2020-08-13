@@ -32,7 +32,7 @@ class RequestRide extends Component {
             this.setState({openConfirmation: true});
         }
         else {
-            this.state = initialState;
+            this.setState(initialState);
         }
     };
 

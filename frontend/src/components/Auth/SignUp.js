@@ -3,6 +3,7 @@ import { Form, Divider, Button } from 'semantic-ui-react';
 import firebase, { auth, uiConfig } from '../../firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
+const querystring = require('querystring');
 
 class SignUp extends React.Component {
     //TODO: Add preferred contact methods
@@ -10,13 +11,14 @@ class SignUp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            email: '',
+            password: '',
             firstName: '',
             lastName: '',
-            email: '',
             phoneNumber: '',
-            password: '',
             confirmPassword: '',
-        };
+            newUserCreated: false,
+        }
     }
 
     handleChange = (event, {name, value}) => {
@@ -46,7 +48,6 @@ class SignUp extends React.Component {
         return validEmail && validPass;
     };
 
-
     handleSubmit = (event) => {
         // alert('Submitted ' + JSON.stringify(this.state));
         // add regex checking and password match
@@ -65,6 +66,42 @@ class SignUp extends React.Component {
         }
     };
 
+    createUser = () => {
+        const {email, password, confirmPassword} = this.state;
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.');
+            return;
+        }
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(() => {
+                console.log('New user created!')
+                this.setState({newUserCreate: true})
+            })
+            .catch(function (error) {
+                alert(error.code + '\n' + error.message)
+            });
+
+        const newUserInfo = {
+            email: this.state.email,
+            password: this.state.password,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            contact: {phone: this.state.phoneNumber},
+            paymentMethods: ['Venmo', 'Cash', 'Zelle'],
+            school: 'School University'
+        };
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newUserInfo)
+        };
+        const xurl = '/api/users/signup';
+        fetch(xurl, requestOptions)
+            .then(response => response.json())
+            .then(data => console.log(data));
+    };
+
     render() {
         const {
             firstName,
@@ -76,6 +113,7 @@ class SignUp extends React.Component {
         } = this.state;
         return (
             <div>
+                {/* TODO: setup redirect after new user created */}
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Input
                         id="first-name"
@@ -133,11 +171,12 @@ class SignUp extends React.Component {
                         fluid
                         color="black"
                         content="Create an account"
+                        onClick={this.createUser}
                     />
                 </Form>
-                <Divider horizontal>Or</Divider>
+                {/*<Divider horizontal>Or</Divider>*/}
                 {/*[Login with google button]*/}
-                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+                {/*<StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />*/}
             </div>
         );
     }

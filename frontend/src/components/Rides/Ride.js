@@ -3,7 +3,6 @@ import "./Ride.css";
 import { Accordion, Icon } from "semantic-ui-react";
 import { Link } from 'react-router-dom';
 
-
 class Ride extends Component {
     constructor(props) {
         super(props);

@@ -7,11 +7,13 @@ import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css'
 import { Dropdown } from 'semantic-ui-react';
+import GeoSearch from '../../components/GeoSearch/GeoSearch';
 import { Link } from 'react-router-dom';
 import { SEARCH_RIDES_SUCCESS } from "../../actions/SearchPageStates";
 import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
 
 const querystring = require('querystring');
+const DEBUG = true;
 
 const sample_rides = [
     ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
@@ -21,14 +23,14 @@ const sample_rides = [
 
 const rideOptions = [
     {
-        key: 'Roundtrip',
-        text: 'Roundtrip',
-        value: 'Roundtrip',
-    },
-    {
         key: 'One Way',
         text: 'One Way',
         value: 'One Way',
+    },
+    {
+        key: 'Roundtrip',
+        text: 'Roundtrip',
+        value: 'Roundtrip',
     },
 ];
 
@@ -39,34 +41,34 @@ class Search extends Component {
         this.state = {
             start: '',
             endDest: '',
-            startDate: '',
+            beginDate: '',
             endDate: '',
             originCoords: '',
             destCoords: '',
-            distance: '',
-            rides: sample_rides,
+            distance: 5,
+            // rides: sample_rides,
+            rides: [],
             filteredRides: [],
-            roundtrip: true,
+            roundtrip: false,
             /* Use this.state.query.* when passing to redux */
             query: {
                 start: '',
                 endDest: '',
-                startDate: '',
-                endDate: '',
+                time: '',
                 originCoords: '',
                 destCoords: '',
                 distance: '',
             },
         };
         this.state.filteredRides = this.state.rides;
-        this.startDateRef = React.createRef();
+        this.beginDateRef = React.createRef();
         this.endDateRef = React.createRef();
     }
 
     componentDidMount() {
         new Pikaday({
-            field: this.startDateRef.current,
-            onSelect: this.editStartDate,
+            field: this.beginDateRef.current,
+            onSelect: this.editBeginDate,
         });
 
         new Pikaday({
@@ -83,9 +85,9 @@ class Search extends Component {
         this.setState({endDest: ed.target.value})
     };
 
-    editStartDate = (d) => {
+    editBeginDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({startDate: date})
+        this.setState({beginDate: date});
     };
 
     editEndDate = (d) => {
@@ -96,7 +98,7 @@ class Search extends Component {
     /* filter upon button click */
     filterRides = () => {
         // split searched departure date into array
-        var dateArray = this.state.startDate.split('/');
+        var dateArray = this.state.beginDate.split('/');
         // create Date object from array information
         // new Date(YYYY, MM, DD), month is 0-indexed
         var date = new Date(dateArray[2], dateArray[0] - 1, dateArray[1]);
@@ -108,17 +110,22 @@ class Search extends Component {
 
     queryRides = () => {
         // this.props.dispatch({type: SEARCH_RIDES_SUCCESS});
+        /* dates are store as strings in this.state, must convert to Date object */
+        const date = new Date(this.state.beginDate);
+        const dateEnd = new Date(date);
+        dateEnd.setHours(23, 59, 59);
         const query = {
             originCoords: this.state.originCoords,
             destCoords: this.state.destCoords,
-            time: this.state.startDate,
+            beginDate: date,
+            endDate: dateEnd,
             distance: this.state.distance,
         };
         const xurl = '/api/rides?' + querystring.stringify({'query': JSON.stringify(query)});
         fetch(xurl)
             .then(res => res.json())
             .then(res => {
-                // console.log(res); /*****/
+                if (DEBUG) { console.log(res); }
                 const queried_rides = [];
                 for (let ride in res) {
                     queried_rides.push(
@@ -132,7 +139,9 @@ class Search extends Component {
                 this.setState({
                     filteredRides: queried_rides
                 });
-                // console.log(queried_rides);
+            })
+            .catch(error => {
+                console.log(error);
             })
     };
 
@@ -152,7 +161,7 @@ class Search extends Component {
             start: '',
             endDest: '',
             filteredRides: this.state.rides,
-            startDate: '',
+            beginDate: '',
             endDate: '',
         })
     };
@@ -189,7 +198,7 @@ class Search extends Component {
                 <div className="search-subwrapper">
                     <div className="ride-type-wrapper">
                         <Dropdown className="ride-type-selector"
-                                  defaultValue="Roundtrip"
+                                  defaultValue="One Way"
                                   selection
                                   compact
                                   onChange={this.changeRideType}
@@ -220,14 +229,14 @@ class Search extends Component {
                             <input
                                 className="date-picker-box input"
                                 type="text"
-                                ref={this.startDateRef}
-                                onChange={this.editStartDate}
-                                value={this.state.startDate}
+                                ref={this.beginDateRef}
+                                onChange={this.editBeginDate}
+                                value={this.state.beginDate}
                                 placeholder="Choose Date..."
                             />
                         </div>
                         {renderReturnDate()}
-                        <div onClick={this.filterRides} className="search-button">Search Rides</div>
+                        <div onClick={this.queryRides} className="search-button">Search Rides</div>
                     </div>
                 </div>
                 <br />
@@ -246,7 +255,7 @@ const mapStateToProps = (state) => ({
     endDest: state.endDest,
     rides: state.rides,
     filteredRides: state.filteredRides,
-    startDate: state.startDate,
+    beginDate: state.beginDate,
     endDate: state.endDate,
 });
 

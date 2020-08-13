@@ -7,8 +7,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import Profile from './pages/Profile/Profile';
 import DriverInfo from './pages/DriverInfo/DriverInfo';
 import Navbar from './components/Navbar/Navbar';
-import SearchLanding from './components/SearchComponents/SearchLanding';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { Router, Switch, Route, } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 const history = createBrowserHistory();

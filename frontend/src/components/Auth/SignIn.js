@@ -18,6 +18,7 @@ class SignIn extends React.Component {
     handleChange = (event, {name, value}) => {
         this.setState({[name]: value});
     };
+
     handleSubmit = (event) => {
         // alert('Submitted ' + JSON.stringify(this.state));
         const {email, password} = this.state;

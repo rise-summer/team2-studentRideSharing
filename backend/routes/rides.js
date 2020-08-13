@@ -17,20 +17,24 @@ router.get('/', async function (req, res, next) {
     //TODO: search logic for begin and end date
     const query = JSON.parse(req.query['query']);
     console.log(query);
-    const originCoords = query['originCoords'];
-    const destCoords = query['destCoords'];
-    const beginDate = query['beginDate'];
-    const endDate = query['endDate'];
-    const distance = query['distance']; // within x miles
+    const {originCoords, destCoords, beginDate, endDate, distance} = query;
     const collection = client.dbCollection(collectionName);
     // const METERS_PER_MILE = 1609.34;
     const distInRadians = distance / 3963.2;//converts the distance to radians by dividing by the approximate equatorial radius of the earth
+    let filter;
+    if (originCoords === '') {
+        filter = {
+            time: {$gte: new Date(beginDate), $lte: new Date(endDate)}
+        };
+    } else {
+        filter = {
+            time: {$gte: new Date(beginDate), $lte: new Date(endDate)},
+            originCoords: {$geoWithin: {$centerSphere: [originCoords, distInRadians]}},
+            destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
+        }
+    }
 
-    collection.find({
-        time: {$gte: beginDate, $lte: endDate},
-        originCoords: {$geoWithin: {$centerSphere: [originCoords, distInRadians]}},
-        destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
-    })
+    collection.find(filter)
         // collection.find({
         //   time: {$gte: beginDate, $lte: endDate},
         //   originCoords:
@@ -96,7 +100,7 @@ router.post('/:userID', async function (req, res, next) {
             //TODO: location header -> link to the generated ride
         }
     });
-})
+});
 
 //get a single ride
 router.get('/:userID/:rideID', async function (req, res, next) {
@@ -104,28 +108,26 @@ router.get('/:userID/:rideID', async function (req, res, next) {
     // const driverID = req.params.userID;
     const rideID = req.params.rideID;
     if (ObjectId.isValid(rideID)) {
-        getRide(rideID, function(ride) {
+        getRide(rideID, function (ride) {
             if (ride) {
                 res.status(200).json(ride);
-            }
-            else {
+            } else {
                 res.status(404).send("There is no such a ride with id " + rideID);
             }
         });
-    }
-    else {
+    } else {
         res.status(400).send("Invalid rideID (not ObjectId) for getting a single ride.");
     }
-})
+});
 
 function getRide(rideID, callback) {
     const collection = client.dbCollection(collectionName);
     collection.findOne({
-        "_id" : ObjectId(rideID)
-    }).then(function(ride) {
+        "_id": ObjectId(rideID)
+    }).then(function (ride) {
         callback(ride);
     });
-};
+}
 
 //delete a ride with no pending/confirmed requests
 router.delete('/:userID/:rideID', async function (req, res, next) {
@@ -146,14 +148,13 @@ router.delete('/:userID/:rideID', async function (req, res, next) {
     } else {//invalid request - rideID not ObjectId
         res.status(400).send("Invalid rideID (not ObjectId) for ride deleting request.");
     }
-})
+});
 
 //cancel a ride
 router.put('/cancel/:userID/:rideID', async function (req, res, next) {
     const driverID = req.params.userID;
     const rideID = req.params.rideID;
     const sameTimeTMR = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);//one day after current time
-    console.log(sameTimeTMR);
     if (ObjectId.isValid(rideID)) {
         const collection = client.dbCollection(collectionName);
         collection.updateOne({
@@ -172,21 +173,21 @@ router.put('/cancel/:userID/:rideID', async function (req, res, next) {
     } else {//invalid request - rideID not ObjectId
         res.status(400).send("Invalid rideID (not ObjectId) for ride cancellation request.");
     }
-})
+});
 
 //get all rides
-router.get('/:userID', async function(req, res, next){
-  const driverID = req.params.userID;
-  const collection = client.dbCollection(collectionName);
-  collection.find({
-    driverID: driverID
-  }).toArray(function(err, rides){
-    if(err) {
-      console.log(err);
-      res.sendStatus(400);
-    }
-    res.status(200).json(rides);
-  });
-})
+router.get('/:userID', async function (req, res, next) {
+    const driverID = req.params.userID;
+    const collection = client.dbCollection(collectionName);
+    collection.find({
+        driverID: driverID
+    }).toArray(function (err, rides) {
+        if (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+        res.status(200).json(rides);
+    });
+});
 
 module.exports = {router, getRide};
