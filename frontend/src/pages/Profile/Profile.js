@@ -22,7 +22,7 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        const userId = "5f32fb292781120606f937ce";// temporary testing
+        const userId = "5f34d595d82608075a159c9a";// temporary testing
         // const { userId } = this.props;
         fetch(`/api/users/${userId}`)
             .then((response) => response.json())//TODO: error handling

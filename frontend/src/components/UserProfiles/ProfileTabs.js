@@ -27,7 +27,7 @@ const ProfileTabs = ({ vehicles, contact, email, rides, handleCancel }) => {
                     TODO: Implement 'My Request' Tab
                     This is a placeholder.
                     This tab should display all requests belongs to the current user.
-                    Go to ProfileTabs.js to editing this placeholder.
+                    Go to ProfileTabs.js to edit this placeholder.
                 </Tab.Pane>
             ),
         },

@@ -45,23 +45,34 @@ class RequestRide extends Component {
     }
 
     requestRide() {
-        const rideID = this.props.rideID;
-        var raw = {
-            "driverMail": this.props.driver.email,
-            "driverFirstName": this.props.driver.firstName,
-            "driverLastName":  this.props.driver.lastName,
+        const {rideID, ride, driver, dateString, timeString} = this.props;
+        console.log(window.location);
+        const dynamic_template_data = {
+            "startLoc": ride.startLoc.displayName,
+            "endLoc": ride.endLoc.displayName,
+            "driverFirstName": driver.firstName,
             "requesterFirstName": "Evelyn", //TODO: current user's first name
-            "startLoc": this.props.ride.startLoc.displayName,
-            "endLoc": this.props.ride.endLoc.displayName
+            "startDate": dateString,
+            "startTime": timeString,
+            "contact": "999-999-9999", //TODO: current user's contact info
+            //"rideURL": window.location.href,
+            "requestURL": window.location.origin + "/profile",
+            "siteURL": window.location.origin
         };
-        console.log(raw);
+        var requestBody = {
+            "driverMail": driver.email,
+            "driverFirstName": driver.firstName,
+            "driverLastName":  driver.lastName,
+            "dynamic_template_data": dynamic_template_data
+        };
+        console.log(requestBody);
         const url = "/api/requests/email/" + rideID;
         var requestOptions = {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify(raw),
+          body: JSON.stringify(requestBody),
         };
 
         fetch(url, requestOptions)
@@ -119,6 +130,15 @@ class RequestRide extends Component {
             .catch(error => console.log('error', error));
     }
 
+    triggerButton() {
+        if (this.props.disable === true) {
+            return <Button disabled>No Longer Accepting Requests</Button>;
+        }
+        else {
+            return <Button>Request a Ride</Button>;
+        }
+    }
+
     render() {
         return (
             <div>
@@ -126,7 +146,7 @@ class RequestRide extends Component {
                 closeIcon
                 as={Form}
                 onSubmit={this.handleSubmit}
-                trigger={<Button>Request a Ride</Button>}
+                trigger={this.triggerButton()}
                 onClose={() => this.setOpen(false)}
                 onOpen={() => this.setOpen(true)}
                 open={this.state.open}

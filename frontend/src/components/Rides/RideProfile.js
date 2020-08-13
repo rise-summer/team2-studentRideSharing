@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CancelRideButton from '../CancelRideButton/CancelRideButton';
-import RequestCard from './RequestCard';
+import RequestItem from './RequestItem';
 import { Segment, Header, Icon, List } from 'semantic-ui-react';
 import './RideProfile.css'
 
@@ -14,7 +14,7 @@ class RideProfile extends Component {
 
     fetchRequests() {
         //fetch requests of the current ride
-        fetch(`/api/requests/${this.props.id}`)
+        fetch(`/api/requests/${this.props.ride._id}`)
             .then((response) => response.json())
             .then((requests) =>
                 this.setState({
@@ -29,21 +29,22 @@ class RideProfile extends Component {
     }
 
     render() {
+        console.log(this.props.ride);
         console.log(this.state);
+        const {ride, handleCancel, isCancelled} = this.props;
         const {
-            startName,
-            destName,
-            datetime,
+            startLoc,
+            endLoc,
+            time,
             price,
             capacity,
-            id,
-            handleCancel,
-            isCancelled,
-        } = this.props;
+            _id,
+            driverID
+        } = ride;
         const requests = this.state.requests;
         const pendingCount = requests.filter((request) => request.status === 0).length;
         const confirmedCount = requests.filter((request) => request.status === 1).length;
-        const dateObject = new Date(datetime);
+        const dateObject = new Date(time);
         const dateString = dateObject.toLocaleDateString('en-US');
         const timeString = dateObject.toLocaleTimeString('en-US');
 
@@ -51,19 +52,22 @@ class RideProfile extends Component {
             <Segment>
                 <Header>
                     <span>
-                        {startName}
+                        {startLoc.city}, {startLoc.state}
                         <Icon name="arrow right" />
-                        {destName}
+                        {endLoc.city}, {endLoc.state}
                     </span>
-                    <span>
-                        {!isCancelled && (
-                            <CancelRideButton
-                                startName={startName}
-                                destName={destName}
-                                id={id}
-                                handleCancel={handleCancel}
-                            />
-                        )}
+                    <span style={{float: "right"}}>
+                        <a href={"/ride/"+driverID+"/"+_id} >View Ride</a>
+                        <span>
+                            {!isCancelled && (
+                                <CancelRideButton
+                                    startName={startLoc.city}
+                                    destName={endLoc.city}
+                                    id={_id}
+                                    handleCancel={handleCancel}
+                                />
+                            )}
+                        </span>
                     </span>
                 </Header>
                 <div className='rideInfo'>
@@ -77,10 +81,10 @@ class RideProfile extends Component {
                 <div>
                     <div>{pendingCount} Pending {pendingCount > 1 ? "Requests": "Request"}</div>
                     <div>{confirmedCount} Confirmed {confirmedCount > 1 ? "Requests": "Request"}</div>
-                    <List className='requestCards' divided animated>
+                    <List className='requestsList' divided animated>
                         {requests.map(request =>
-                            <RequestCard
-                                request={request} onActionButtonClick={ () => this.fetchRequests() }
+                            <RequestItem
+                                request={request} ride={ride} dateString={dateString} timeString={timeString} onActionButtonClick={ () => this.fetchRequests() }
                         />)}
                     </List>
                 </div>

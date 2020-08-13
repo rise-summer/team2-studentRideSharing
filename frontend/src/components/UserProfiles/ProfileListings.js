@@ -9,27 +9,17 @@ const ProfileListings = ({ rides, handleCancel }) => {
     const activeRides = rides.filter((ride) => !ride.status || ride.status === 0);
     const cancelledRides = rides.filter((ride) => ride.status && ride.status === 2);
     const activeRideList = activeRides.map(
-        ({ startLoc, endLoc, time, price, capacity, _id }) => (
+        (ride) => (
             <RideProfile
-                startName={startLoc.city}
-                destName={endLoc.city}
-                datetime={time}
-                price={price}
-                capacity={capacity}
-                id={_id}
+                ride={ride}
                 handleCancel={handleCancel}
             />
         )
     );
     const cancelledRideList = cancelledRides.map(
-        ({ startLoc, endLoc, time, price, capacity, _id }) => (
+        (ride) => (
             <RideProfile
-                startName={startLoc.city}
-                destName={endLoc.city}
-                datetime={time}
-                price={price}
-                capacity={capacity}
-                id={_id}
+                ride={ride}
                 handleCancel={handleCancel}
                 isCancelled
             />
