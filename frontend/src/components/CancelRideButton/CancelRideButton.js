@@ -11,7 +11,7 @@ const CancelRideButton = ({ startName, destName, id, handleCancel }) => {
         handleCancel(id);
     };
     const button = (
-        <Button basic color="red">
+        <Button size="tiny" basic color="red">
             Cancel Ride
         </Button>
     );
