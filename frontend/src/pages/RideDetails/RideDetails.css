@@ -7,7 +7,7 @@
     height: 250px;
     background-color: #b6b3bf;
 }
-.left {
+.left-section {
     position: absolute;
     margin-top: 300px;
     left: 10vw;
@@ -88,7 +88,7 @@
 }
 
 ul li{
-    display: inline;
+    /*display: inline;*/
 }
 .price {
     font-size: 16px;
