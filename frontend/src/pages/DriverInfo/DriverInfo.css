@@ -1,7 +1,25 @@
 .driver-info{
-    width: 30%;
-    margin: 8% auto;
+    /* position: absolute; */
+    padding: 10px;
+    width: 35%;
+    background: #FFFFFF;
+    border: 2px solid #989898;
+    box-sizing: border-box;
+    margin: 2% auto;
+    height: fit-content;
 }
+
+.input-form{
+    position: absolute;
+    margin: 5% 15% ;
+}
+
+#close-icon{
+    display: flex;
+    justify-content: flex-end;
+
+}
+
 #submit-button{
     width: 100%;
     color:white;
@@ -12,3 +30,4 @@
     color: black;
     background-color: rgb(197, 196, 196);
 }
+

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Form } from 'semantic-ui-react';
-// import { Link } from "react-router-dom";
+import { Form, Icon, Button } from 'semantic-ui-react';
+import { Link } from "react-router-dom";
 
 import './DriverInfo.css';
 
@@ -55,7 +55,15 @@ class DriverInfo extends React.Component {
         const { plate, make, model, color } = this.state;
         return (
             < div className="driver-info">
-                <Form onSubmit={this.handleSubmit}>
+                <div id='close-icon'>
+                    <Button icon to='/search' as={Link}>
+                        <Icon link name='close' size='tiny' />
+                    </Button>
+                </div>
+                <Form className='input-form' onSubmit={this.handleSubmit}>
+                    <Icon classname='car-icon' name='car' size='huge' />
+                    <br />
+                    <br />
                     <Form.Input
                         name='plate'
                         value={plate}
