@@ -18,7 +18,7 @@ class DriverInfo extends React.Component {
     }
 
     postFetch = () => {
-        const userId = '5f2f0fdb12db250479914d5b';
+        const userId = '5f2f0fdb12db250479914d5b';  //TODO: get currentUserID, implement onAuthStateChange
         fetch(`http://localhost:3000/api/vehicles/${userId}`, {
             method: 'POST',
             headers: {
