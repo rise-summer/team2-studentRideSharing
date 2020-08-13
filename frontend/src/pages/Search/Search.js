@@ -13,7 +13,7 @@ import { SEARCH_RIDES_SUCCESS } from "../../actions/SearchPageStates";
 import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
 
 const querystring = require('querystring');
-const DEBUG = true;
+const DEBUG = false;
 
 const sample_rides = [
     ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
@@ -78,21 +78,21 @@ class Search extends Component {
     }
 
     editStart = (sd) => {
-        this.setState({start: sd.target.value})
+        this.setState({ start: sd.target.value })
     };
 
     editEndDest = (ed) => {
-        this.setState({endDest: ed.target.value})
+        this.setState({ endDest: ed.target.value })
     };
 
     editBeginDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({beginDate: date});
+        this.setState({ beginDate: date });
     };
 
     editEndDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({endDate: date})
+        this.setState({ endDate: date })
     };
 
     /* filter upon button click */
@@ -121,7 +121,7 @@ class Search extends Component {
             endDate: dateEnd,
             distance: this.state.distance,
         };
-        const xurl = '/api/rides?' + querystring.stringify({'query': JSON.stringify(query)});
+        const xurl = '/api/rides?' + querystring.stringify({ 'query': JSON.stringify(query) });
         fetch(xurl)
             .then(res => res.json())
             .then(res => {
@@ -168,14 +168,14 @@ class Search extends Component {
 
     changeRideType = (e, data) => {
         if (data.value === 'One Way') {
-            this.setState({roundtrip: false})
+            this.setState({ roundtrip: false })
         } else {
-            this.setState({roundtrip: true})
+            this.setState({ roundtrip: true })
         }
     };
 
     render() {
-        const {roundtrip} = this.state;
+        const { roundtrip } = this.state;
         const renderReturnDate = () => {
             if (roundtrip) {
                 return (
@@ -198,11 +198,11 @@ class Search extends Component {
                 <div className="search-subwrapper">
                     <div className="ride-type-wrapper">
                         <Dropdown className="ride-type-selector"
-                                  defaultValue="One Way"
-                                  selection
-                                  compact
-                                  onChange={this.changeRideType}
-                                  options={rideOptions}
+                            defaultValue="One Way"
+                            selection
+                            compact
+                            onChange={this.changeRideType}
+                            options={rideOptions}
                         />
                     </div>
                     <div className="search-box">
