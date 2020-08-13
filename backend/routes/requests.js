@@ -88,10 +88,10 @@ router.get('/:rideID', async function(req, res, next){
   });
 })
 
-//send email
+//send email - new request notification
 router.post('/email/:rideID', async function(req, res, next){
     const rideID = req.params.rideID;
-    const {driverMail, driverFirstName, driverLastName, requesterFirstName, startLoc, endLoc} = req.body;
+    const {driverMail, driverFirstName, driverLastName , dynamic_template_data} = req.body;
     // using Twilio SendGrid's v3 Node.js Library
     // https://github.com/sendgrid/sendgrid-nodejs
     sgMail.setApiKey(apiKey.SENDGRID_API_KEY);
@@ -104,7 +104,7 @@ router.post('/email/:rideID', async function(req, res, next){
             "name": "Student Ride Sharing Team"
           },
           reply_to: "no-reply@ridesharing.com",
-          template_id: apiKey.dynamicTemplateID,
+          template_id: apiKey.dynamicTemplateID.newRequest,
           personalizations:[{
               "to": [
                 {
@@ -112,16 +112,7 @@ router.post('/email/:rideID', async function(req, res, next){
                   "name": driverFirstName + " " + driverLastName
                 }
               ],
-              "dynamic_template_data": {
-                  "startLoc": startLoc,
-                  "endLoc": endLoc,
-                  "driverFirstName": driverFirstName,
-                  "requesterFirstName": requesterFirstName,
-                  "rideURL": "http://localhost:3000/ride/rideID",
-                  "requestURL": "http://localhost:3000/request/requestID",
-                  "acceptURL": "acceptURL",
-                  "declineURL": "declineURL"
-              }
+              "dynamic_template_data": dynamic_template_data
           }],
           // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
         };
@@ -140,6 +131,56 @@ router.post('/email/:rideID', async function(req, res, next){
       else {
         res.status(404).send("Failed to send email. There's no such a ride with id " + rideID);
       }
+    });
+})
+
+//send email - request action notification - confirmed/denied
+//'email/deny/:requestID' | 'email/confirm/:requestID'
+router.post('/email/:action/:requestID', async function(req, res, next){
+    const requestID = req.params.requestID;
+    const action = req.params.action;
+    const {requesterMail, requesterFirstName, requesterLastName , dynamic_template_data} = req.body;
+    // using Twilio SendGrid's v3 Node.js Library
+    // https://github.com/sendgrid/sendgrid-nodejs
+    sgMail.setApiKey(apiKey.SENDGRID_API_KEY);
+    var template_id;
+    if (action === "deny") {
+        template_id = apiKey.dynamicTemplateID.requestDenied;
+    }
+    else if (action === "confirm") {
+        template_id = apiKey.dynamicTemplateID.requestConfirmed;
+    }
+    else {
+        res.status(400).send("Bad Request. Invalid action in URL.");
+    }
+    const msg = {
+      // to: driverMail,
+      from: {
+        "email": apiKey.teamEMAIL,
+        "name": "Student Ride Sharing Team"
+      },
+      reply_to: "no-reply@ridesharing.com",
+      template_id: template_id,
+      personalizations:[{
+          "to": [
+            {
+              "email": requesterMail,
+              "name": requesterFirstName + " " + requesterLastName
+            }
+          ],
+          "dynamic_template_data": dynamic_template_data
+      }],
+      // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    };
+    sgMail.send(msg)
+    .then(() => {
+      res.status(200).send("Email sent to " + requesterMail);
+    }, error => {
+      console.error(error);
+      if (error.response) {
+        console.error(error.response.body);
+      }
+      res.status(400).send("SendGrid Error. Email not sent.");
     });
 })
 
