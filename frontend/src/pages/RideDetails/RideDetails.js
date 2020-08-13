@@ -138,39 +138,35 @@ class RideDetails extends Component {
                         <Icon name="user" />
                         <div className="ride-detail indent">
                             {remainCapacity} {remainCapacity > 1 ? 'spots' : 'spot'} remaining
-                            <div>
-                                {confirmedCount > 0 &&
-                                <div>Booked Riders</div>
-                                }
-                                <List className='requestCards'>
-                                    {requests.map(request =>
-                                        <RequestItem
-                                            request={request} dateString={dateString} timeString={timeString} version="RideDetailsPage"
-                                    />)}
-                                </List>
-                            </div>
                         </div>
-
+                        <div className="indent2">
+                            {confirmedCount > 0 &&
+                            <div>Booked Riders</div>
+                            }
+                            <List className='requestCards'>
+                                {requests.map(request =>
+                                    <RequestItem
+                                        request={request} dateString={dateString} timeString={timeString} version="RideDetailsPage"
+                                />)}
+                            </List>
+                        </div>
                     </div>
                     <div className="ride-detail-wrapper">
                         <Icon name="phone square" />
                         <div className="ride-detail indent">Preferred Methods of Contact</div>
-                        <ul>
-                            {
-                                Object.keys(driver.contact).map((key, index) => {
-                                    return index === 0 ? <li key={index}>{key}</li> : <li key={index}>, {key}</li>
-                                })
-                            }
-                        </ul>
+                        <div className="indent2">
+                            {Object.keys(driver.contact).map((key, index) => {
+                                return index === 0 ? <span key={index}>{key}</span> : <span key={index}>, {key}</span>
+                            })}
+                        </div>
                     </div>
                     <div className="ride-detail-wrapper">
                         <Icon name="credit card" />
-                        <div className="ride-detail indent">Preferred Methods of Payment
-                            <ul>
-                                {driver.paymentMethods.map((value, index) => {
-                                    return index === 0 ? <li key={index}>{value}</li> : <li key={index}>, {value}</li>
-                              })}
-                            </ul>
+                        <div className="ride-detail indent">Preferred Methods of Payment</div>
+                        <div className="indent2">
+                            {driver.paymentMethods.map((value, index) => {
+                                return index === 0 ? <span key={index}>{value}</span> : <span key={index}>, {value}</span>
+                            })}
                         </div>
                     </div>
                 </div>
