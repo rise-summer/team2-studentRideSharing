@@ -144,9 +144,9 @@ class RideDetails extends Component {
                             <div>Booked Riders</div>
                             }
                             <List className='requestCards'>
-                                {requests.map(request =>
+                                {requests.map((request, index) =>
                                     <RequestItem
-                                        request={request} dateString={dateString} timeString={timeString} version="RideDetailsPage"
+                                        key={index} request={request} dateString={dateString} timeString={timeString} version="RideDetailsPage"
                                 />)}
                             </List>
                         </div>

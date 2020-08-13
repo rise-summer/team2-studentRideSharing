@@ -9,16 +9,18 @@ const ProfileListings = ({ rides, handleCancel }) => {
     const activeRides = rides.filter((ride) => !ride.status || ride.status === 0);
     const cancelledRides = rides.filter((ride) => ride.status && ride.status === 2);
     const activeRideList = activeRides.map(
-        (ride) => (
+        (ride, index) => (
             <RideProfile
+                key={index}
                 ride={ride}
                 handleCancel={handleCancel}
             />
         )
     );
     const cancelledRideList = cancelledRides.map(
-        (ride) => (
+        (ride, index) => (
             <RideProfile
+                key={index}
                 ride={ride}
                 handleCancel={handleCancel}
                 isCancelled

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, List, Button } from 'semantic-ui-react';
+import { List, Button } from 'semantic-ui-react';
 import './RequestItem.css'
 
 class RequestItem extends Component {
@@ -88,7 +88,6 @@ class RequestItem extends Component {
         const {firstName, lastName, school} = this.state.requester;
         const {request, version} = this.props;//version controls what to display
         const {comment, startLoc, endLoc, status} = request;
-        var hidden = false;
         if(version === "RideDetailsPage") {
             if(status !== 1) { //hide non-confirmed requests
                 return null;
@@ -106,7 +105,6 @@ class RequestItem extends Component {
         }
         return (
             <List.Item>
-            {status}
                 <List.Header className='requester'>
                     <div className='name'>{firstName} {lastName[0]}.</div>
                     <div className='school'>{school}</div>
@@ -120,7 +118,7 @@ class RequestItem extends Component {
                         }
                     </div>
                     {
-                        status == 0 &&
+                        status === 0 &&
                         <div className='requestActions'>
                             <Button name='deny' negative onClick={this.handleClick}>Deny</Button>
                             <Button name='confirm' positive onClick={this.handleClick}>Confirm</Button>

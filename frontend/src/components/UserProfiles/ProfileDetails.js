@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header, List } from 'semantic-ui-react';
+import { List } from 'semantic-ui-react';
 
 const ProfileDetails = ({ vehicles, email, contact }) => {
     const vehicleList = vehicles.map((vehicle) => {

@@ -7,7 +7,7 @@ const ProfileTabs = ({ vehicles, contact, email, rides, handleCancel }) => {
     const panes = [
         {
             menuItem: (
-                <Menu.Item>
+                <Menu.Item key="listings">
                     My Listings
                     <Label circular size="mini" color="black">
                         {rides.filter((ride) => !ride.status || ride.status === 0).length}
@@ -21,7 +21,7 @@ const ProfileTabs = ({ vehicles, contact, email, rides, handleCancel }) => {
             ,
         },
         {
-            menuItem: 'My Requests',
+            menuItem: {content: 'My Requests', key: "requests"},
             render: () => (
                 <Tab.Pane attached={false}>
                     TODO: Implement 'My Request' Tab
@@ -32,7 +32,7 @@ const ProfileTabs = ({ vehicles, contact, email, rides, handleCancel }) => {
             ),
         },
         {
-            menuItem: 'My Profile',
+            menuItem: {content: 'My Profile', key: "profile"},
             render: () => (
                 <Tab.Pane attached={false}>
                     <ProfileDetails vehicles={vehicles} contact={contact} email={email} />

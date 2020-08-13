@@ -22,7 +22,7 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        const userId = "5f34d595d82608075a159c9a";// temporary testing
+        const userId = "5f34f3f66a7bcd0c1dbf17e4";// temporary testing
         // const { userId } = this.props;
         fetch(`/api/users/${userId}`)
             .then((response) => response.json())//TODO: error handling
@@ -85,7 +85,7 @@ class Profile extends Component {
                 )}
 
                 <Grid
-                    style={{ 'height': '100%', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center' }}
+                    style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                     verticalAlign="middle"
                 >
                     <Grid.Column style={{ width: '80%' }}>
