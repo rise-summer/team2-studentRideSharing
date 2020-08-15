@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CancelRideButton from '../CancelRideButton/CancelRideButton';
-import RequestItem from './RequestItem';
+import RequestItem from '../Requests/RequestItem';
 import { Segment, Header, Icon, List, Divider } from 'semantic-ui-react';
 import './RideProfile.css'
 
@@ -14,7 +14,7 @@ class RideProfile extends Component {
 
     fetchRequests() {
         //fetch requests of the current ride
-        fetch(`/api/requests/${this.props.ride._id}`)
+        fetch(`/api/requests?ride=${this.props.ride._id}`)
             .then((response) => response.json())
             .then((requests) =>
                 this.setState({

@@ -10,37 +10,64 @@ const ObjectId = require('mongodb').ObjectId;
 
 //(temporary) Admin API for testing
 router.delete('/', async function(req, res, next){
-  client.emptyCollection(collectionName);
-  res.status(200).send("Collection " + collectionName + " is empty.");
+    client.emptyCollection(collectionName);
+    res.status(200).send("Collection " + collectionName + " is empty.");
+})
+
+//get requests based on query
+// ?ride={{rideid}} sent to a ride
+// ?user={{userid}} sent from a user
+router.get('/', async function(req, res, next){
+    const rideID = req.query.ride;
+    const userID = req.query.user;
+    var filter = {
+        rideID: rideID,
+        ownerID: userID
+    }
+    //remove all undefined field
+    Object.keys(filter).forEach(key => {
+        if (filter[key] === undefined) {
+            delete filter[key];
+        }
+    });
+    const collection = client.dbCollection(collectionName);
+    collection.find(filter).toArray(function(err, requests){
+        if(err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+        res.status(200).json(requests);
+    });
 })
 
 //add a request
 router.post('/:rideID', async function(req, res, next){
-  const rideID = req.params.rideID;
-  const {ownerID, origin, destination, originCoords, destCoords, comment} = req.body;
-  let requestDocument = {
-    "rideID": rideID,
-    "ownerID": ownerID, //id of the request owner
-    "status": 0, //0-pending, 1-accepted, 2-denied
-    "time": new Date(),
-    "startLoc": origin,//just the display name
-    "endLoc": destination,
-    "originCoords": originCoords,
-    "destCoords": destCoords,
-    "comment": comment
-  }
-  const collection = client.dbCollection(collectionName);
-  collection.insertOne(requestDocument, function(err, record){
-    if(err) {//insert a record with an existing _id value
-      console.log(err);
-      res.sendStatus(400);
+    const rideID = req.params.rideID;
+    const {ownerID, driverID ,origin, destination, originCoords, destCoords, comment} = req.body;
+    let requestDocument = {
+        "rideID": rideID,
+        "ownerID": ownerID, //id of the request owner
+        "driverID": driverID, //id of the ride driver
+        "status": 0, //0-pending, 1-accepted, 2-denied
+        "time": new Date(),
+        "startLoc": origin,//just the display name
+        "endLoc": destination,
+        "originCoords": originCoords,
+        "destCoords": destCoords,
+        "comment": comment
     }
-    else {
-      console.log("A request record added as " + JSON.stringify(record.ops[0]));
-      res.status(201).send(JSON.stringify(record.ops[0]));//Created
-    }
-  });
-  //TODO: update other collection as well?
+    const collection = client.dbCollection(collectionName);
+    collection.insertOne(requestDocument, function(err, record){
+        if(err) {//insert a record with an existing _id value
+            console.log(err);
+            res.sendStatus(400);
+        }
+        else {
+            console.log("A request record added as " + JSON.stringify(record.ops[0]));
+            res.status(201).send(JSON.stringify(record.ops[0]));//Created
+        }
+    });
+    //TODO: update other collection as well?
 })
 
 //Update request's info - deny/confirm
@@ -73,21 +100,6 @@ router.put('/:action/:requestID', async function (req, res, next) {
     }
 })
 
-//get all requests about a ride
-router.get('/:rideID', async function(req, res, next){
-  const rideID = req.params.rideID;
-  const collection = client.dbCollection(collectionName);
-  collection.find({
-    rideID: rideID
-}).toArray(function(err, requests){
-    if(err) {
-      console.log(err);
-      res.sendStatus(400);
-    }
-    res.status(200).json(requests);
-  });
-})
-
 //send email - new request notification
 router.post('/email/:rideID', async function(req, res, next){
     const rideID = req.params.rideID;
@@ -96,41 +108,41 @@ router.post('/email/:rideID', async function(req, res, next){
     // https://github.com/sendgrid/sendgrid-nodejs
     sgMail.setApiKey(apiKey.SENDGRID_API_KEY);
     rides.getRide(rideID, function(ride) {
-      if(ride){
-        const msg = {
-          // to: driverMail,
-          from: {
-            "email": apiKey.teamEMAIL,
-            "name": "Student Ride Sharing Team"
-          },
-          reply_to: "no-reply@ridesharing.com",
-          template_id: apiKey.dynamicTemplateID.newRequest,
-          personalizations:[{
-              "to": [
-                {
-                  "email": driverMail,
-                  "name": driverFirstName + " " + driverLastName
+        if(ride){
+            const msg = {
+                // to: driverMail,
+                from: {
+                    "email": apiKey.teamEMAIL,
+                    "name": "Student Ride Sharing Team"
+                },
+                reply_to: "no-reply@ridesharing.com",
+                template_id: apiKey.dynamicTemplateID.newRequest,
+                personalizations:[{
+                    "to": [
+                        {
+                            "email": driverMail,
+                            "name": driverFirstName + " " + driverLastName
+                        }
+                    ],
+                    "dynamic_template_data": dynamic_template_data
+                }],
+                // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+            };
+            sgMail.send(msg)
+            .then(() => {
+                res.status(200).send("Email sent to " + driverMail);
+            }, error => {
+                console.error(error);
+                if (error.response) {
+                    console.error(error.response.body);
                 }
-              ],
-              "dynamic_template_data": dynamic_template_data
-          }],
-          // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-        };
-        sgMail.send(msg)
-        .then(() => {
-          res.status(200).send("Email sent to " + driverMail);
-        }, error => {
-          console.error(error);
-          if (error.response) {
-            console.error(error.response.body);
-          }
-          res.status(400).send("SendGrid Error. Email not sent.");
-        });
-        // res.status(200).json(ride);
-      }
-      else {
-        res.status(404).send("Failed to send email. There's no such a ride with id " + rideID);
-      }
+                res.status(400).send("SendGrid Error. Email not sent.");
+            });
+            // res.status(200).json(ride);
+        }
+        else {
+            res.status(404).send("Failed to send email. There's no such a ride with id " + rideID);
+        }
     });
 })
 
@@ -154,33 +166,33 @@ router.post('/email/:action/:requestID', async function(req, res, next){
         res.status(400).send("Bad Request. Invalid action in URL.");
     }
     const msg = {
-      // to: driverMail,
-      from: {
-        "email": apiKey.teamEMAIL,
-        "name": "Student Ride Sharing Team"
-      },
-      reply_to: "no-reply@ridesharing.com",
-      template_id: template_id,
-      personalizations:[{
-          "to": [
-            {
-              "email": requesterMail,
-              "name": requesterFirstName + " " + requesterLastName
-            }
-          ],
-          "dynamic_template_data": dynamic_template_data
-      }],
-      // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+        // to: driverMail,
+        from: {
+            "email": apiKey.teamEMAIL,
+            "name": "Student Ride Sharing Team"
+        },
+        reply_to: "no-reply@ridesharing.com",
+        template_id: template_id,
+        personalizations:[{
+            "to": [
+                {
+                    "email": requesterMail,
+                    "name": requesterFirstName + " " + requesterLastName
+                }
+            ],
+            "dynamic_template_data": dynamic_template_data
+        }],
+        // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
     };
     sgMail.send(msg)
     .then(() => {
-      res.status(200).send("Email sent to " + requesterMail);
+        res.status(200).send("Email sent to " + requesterMail);
     }, error => {
-      console.error(error);
-      if (error.response) {
-        console.error(error.response.body);
-      }
-      res.status(400).send("SendGrid Error. Email not sent.");
+        console.error(error);
+        if (error.response) {
+            console.error(error.response.body);
+        }
+        res.status(400).send("SendGrid Error. Email not sent.");
     });
 })
 

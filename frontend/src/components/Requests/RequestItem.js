@@ -10,12 +10,31 @@ class RequestItem extends Component {
             requester: {
                 lastName: ""
             },
+            driver: {
+                lastName: ""
+            },
+            ride: {
+
+            },
             errorMessage: ""
         }
     }
     componentDidMount() {
-        //fetch requester info
-        fetch(`/api/users/${this.props.request.ownerID}`)
+        const { viewer } = this.props;
+        if(viewer === "Requester") {
+            //fetch driver's info
+            fetch(`/api/users/${this.props.request.driverID}`)
+            .then(response => {
+                return response.json();
+            })
+            .then(driver => {
+                this.setState({ driver });
+            })
+            .catch(error => console.log('error', error));
+        }
+        else {
+            //fetch requester info
+            fetch(`/api/users/${this.props.request.ownerID}`)
             .then(response => {
                 return response.json();
             })
@@ -23,6 +42,16 @@ class RequestItem extends Component {
                 this.setState({ requester });
             })
             .catch(error => console.log('error', error));
+        }
+       //fetch ride info
+        fetch(`/api/rides/${this.props.request.driverID}/${this.props.request.rideID}`)
+        .then(response => {
+            return response.json();
+        })
+        .then(ride => {
+            this.setState({ ride });
+        })
+        .catch(error => console.log('error', error));
     }
 
     handleClick = (event) => {
@@ -31,16 +60,16 @@ class RequestItem extends Component {
         //='deny' - change status from 0 to 2
         //='confirm' - change status from 0 to 1
         fetch(`/api/requests/${action}/${this.props.request._id}`, { method: 'PUT' })
-            .then((response) =>
-            {
-                if(response.ok) {
-                    this.sendEmailNotificationToRequester(action);
-                    this.props.onActionButtonClick();//data fetching function from the parent component RideProfile
-                }
-                return response.text();
-            })
-            .then((result) => this.setState({errorMessage: result}))
-            .catch((error) => console.log('error', error));
+        .then((response) =>
+        {
+            if(response.ok) {
+                this.sendEmailNotificationToRequester(action);
+                this.props.onActionButtonClick();//data fetching function from the parent component RideProfile
+            }
+            return response.text();
+        })
+        .then((result) => this.setState({errorMessage: result}))
+        .catch((error) => console.log('error', error));
     }
 
     sendEmailNotificationToRequester(action) {
@@ -83,12 +112,11 @@ class RequestItem extends Component {
             .catch(error => console.log('error', error));
     }
 
-
     render() {
-        const {firstName, lastName, school} = this.state.requester;
-        const {request, version} = this.props;//version controls what to display
+        const {requester, driver, ride} = this.state;
+        const {request, viewer} = this.props;//version controls what to display
         const {comment, startLoc, endLoc, status} = request;
-        if(version === "RideDetailsPage") {
+        if(viewer === "Other") {//from RideDetails Page
             if(status !== 1) { //hide non-confirmed requests
                 return null;
             }
@@ -96,18 +124,43 @@ class RequestItem extends Component {
                 return (
                     <List.Item>
                         <List.Content className='requester'>
-                            <div>{firstName} {lastName[0]}.</div>
-                            <div className='school'>{school}</div>
+                            <div>{requester.firstName} {requester.lastName[0]}.</div>
+                            <div className='school'>{requester.school}</div>
                         </List.Content>
                     </List.Item>
                 )
             }
         }
+        else if(viewer === "Requester") {//from User Profile > 'My Requests' Tab
+            const dateObject = new Date(ride.time);
+            const dateString = dateObject.toLocaleDateString('en-US');
+            const timeString = dateObject.toLocaleTimeString('en-US');
+
+            return(
+                <List.Item>
+                    <List.Header>                         <div>{driver.firstName} {driver.lastName[0]}.</div>
+                    <div hidden className='school'>{driver.school}</div>
+                    </List.Header>
+                    <List.Content className='driver'>
+                        <div> Pick up: {startLoc} -> Drop off: {endLoc} </div>
+                        <div className='rideInfo'>
+                            <List divided horizontal>
+                                <List.Item>{dateString}</List.Item>
+                                <List.Item>{timeString}</List.Item>
+                                <List.Item>Seats: {ride.capacity}</List.Item>
+                            </List>
+                            <span style={{paddingLeft: '5%'}}>${ride.price}</span>
+                        </div>
+                        <a href={"/ride/"+driver._id+"/"+ride._id}>View Ride</a>
+                    </List.Content>
+                </List.Item>
+            )
+        }
         return (
             <List.Item>
                 <List.Header className='requester'>
-                    <div className='name'>{firstName} {lastName[0]}.</div>
-                    <div className='school'>{school}</div>
+                    <div className='name'>{requester.firstName} {requester.lastName[0]}.</div>
+                    <div className='school'>{requester.school}</div>
                 </List.Header>
                 <List.Content>
                     <div className='requestInfo'>
