@@ -10,8 +10,13 @@ class ProfileRequests extends Component {
             requests:[]
         }
     }
+
     componentDidMount() {
-        //fetch requests info
+        this.fetchUserRequests();
+    }
+
+    fetchUserRequests() {
+        //fetch requests info of the current user
         fetch(`/api/requests?user=${this.props.userID}`)
             .then(response => {
                 return response.json();
@@ -55,7 +60,7 @@ class ProfileRequests extends Component {
                         <List className='requestsList' divided animated>
                             {pendingRequests.map((request,index) =>
                                 <RequestItem
-                                    key={index} request={request} viewer={viewer}
+                                    key={index} request={request} viewer={viewer} onActionButtonClick={ () => this.fetchUserRequests() } isPending='true'
                             />)}
                         </List>
                     </div>

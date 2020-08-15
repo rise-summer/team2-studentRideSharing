@@ -70,16 +70,39 @@ router.post('/:rideID', async function(req, res, next){
     //TODO: update other collection as well?
 })
 
+//delete a pending request
+router.delete('/:requestID', async function(req, res, next) {
+    const requestID = req.params.requestID;
+    if (ObjectId.isValid(requestID)) {
+        const collection = client.dbCollection(collectionName);
+        collection.deleteOne({
+            "_id": ObjectId(requestID),
+            "status": 0 //cannot delete non pending request
+        }).then(function (rep) {
+            if (rep["deletedCount"] == 1) {
+                res.status(200).send("Request " + requestID + " is deleted.");
+            } else {
+                res.status(400).send("Request " + requestID + " cannot be deleted. Either the request doesn't exist or it's already confirmed/cancelled.");
+            }
+        });
+    } else {//invalid request - rideID not ObjectId
+        res.status(400).send("Invalid requestID (not ObjectId) to delete.");
+    }
+})
+
 //Update request's info - deny/confirm
 router.put('/:action/:requestID', async function (req, res, next) {
     const requestID = req.params.requestID;
     const action = req.params.action;
     var status;
-    if(action === "deny") {
+    if(action === "confirm") {
+        status = 1;
+    }
+    else if(action === "deny") {
         status = 2;
     }
-    else if(action === "confirm") {
-        status = 1;
+    else if(action === "cancel") {
+        status = 3;
     }
     if (ObjectId.isValid(requestID)) { //invalid request - requestID not ObjectId
         const collection = client.dbCollection(collectionName);
@@ -92,7 +115,7 @@ router.put('/:action/:requestID', async function (req, res, next) {
             if (rep.modifiedCount == 1) {
                 res.status(200).json(rep);
             } else {
-                res.status(400).send("Bad Request: Cannot Update the Request. ModifiedCount is not 1.");
+                res.status(400).send("Bad Request: Cannot " + action +" the request. ModifiedCount is not 1.");
             }
         });
     } else {

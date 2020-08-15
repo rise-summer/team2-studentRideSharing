@@ -31,6 +31,15 @@ class RequestItem extends Component {
                 this.setState({ driver });
             })
             .catch(error => console.log('error', error));
+           //fetch ride info
+            fetch(`/api/rides/${this.props.request.driverID}/${this.props.request.rideID}`)
+            .then(response => {
+                return response.json();
+            })
+            .then(ride => {
+                this.setState({ ride });
+            })
+            .catch(error => console.log('error', error));
         }
         else {
             //fetch requester info
@@ -43,27 +52,21 @@ class RequestItem extends Component {
             })
             .catch(error => console.log('error', error));
         }
-       //fetch ride info
-        fetch(`/api/rides/${this.props.request.driverID}/${this.props.request.rideID}`)
-        .then(response => {
-            return response.json();
-        })
-        .then(ride => {
-            this.setState({ ride });
-        })
-        .catch(error => console.log('error', error));
     }
 
     handleClick = (event) => {
-        const action = event.target.name; //deny or confirm
+        const action = event.target.name; //deny or confirm or cancel
         //event.target.name
-        //='deny' - change status from 0 to 2
         //='confirm' - change status from 0 to 1
+        //='deny' - change status from 0 to 2
+        //='cancel' - change status from 0 to 3
         fetch(`/api/requests/${action}/${this.props.request._id}`, { method: 'PUT' })
         .then((response) =>
         {
             if(response.ok) {
-                this.sendEmailNotificationToRequester(action);
+                if(this.props.viewer === "Driver") {
+                    this.sendEmailNotificationToRequester(action);
+                }
                 this.props.onActionButtonClick();//data fetching function from the parent component RideProfile
             }
             return response.text();
@@ -114,7 +117,7 @@ class RequestItem extends Component {
 
     render() {
         const {requester, driver, ride} = this.state;
-        const {request, viewer} = this.props;//version controls what to display
+        const {request, viewer, isPending} = this.props;//version controls what to display
         const {comment, startLoc, endLoc, status} = request;
         if(viewer === "Other") {//from RideDetails Page
             if(status !== 1) { //hide non-confirmed requests
@@ -138,8 +141,9 @@ class RequestItem extends Component {
 
             return(
                 <List.Item>
-                    <List.Header>                         <div>{driver.firstName} {driver.lastName[0]}.</div>
-                    <div hidden className='school'>{driver.school}</div>
+                    <List.Header>
+                        <div>{driver.firstName} {driver.lastName[0]}.</div>
+                        <div hidden className='school'>{driver.school}</div>
                     </List.Header>
                     <List.Content className='driver'>
                         <div> Pick up: {startLoc} -> Drop off: {endLoc} </div>
@@ -152,6 +156,10 @@ class RequestItem extends Component {
                             <span style={{paddingLeft: '5%'}}>${ride.price}</span>
                         </div>
                         <a href={"/ride/"+driver._id+"/"+ride._id}>View Ride</a>
+                        {
+                            isPending &&
+                            <Button name='cancel' onClick={this.handleClick}>Cancel Request</Button>
+                        }
                     </List.Content>
                 </List.Item>
             )

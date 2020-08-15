@@ -29,7 +29,7 @@ class RideProfile extends Component {
     }
 
     render() {
-        const {ride, handleCancel, isCancelled} = this.props;
+        const {ride, handleCancel, isActive} = this.props;
         const {requests} = this.state;
         const {
             startLoc,
@@ -59,7 +59,7 @@ class RideProfile extends Component {
                     <span style={{float: "right"}}>
                         <a href={"/ride/"+driverID+"/"+_id} >View Ride</a>
                         <span>
-                            {!isCancelled && (
+                            {isActive && (
                                 <CancelRideButton
                                     startName={startLoc.city}
                                     destName={endLoc.city}
@@ -86,7 +86,10 @@ class RideProfile extends Component {
                         <List className='requestsList' divided animated>
                             {confirmedRequests.map((request, index) =>
                                 <RequestItem
-                                    key={index} request={request} ride={ride} dateString={dateString} timeString={timeString} onActionButtonClick={ () => this.fetchRequests() }
+                                    key={index}
+                                    viewer="Driver"
+                                    request={request} ride={ride} dateString={dateString} timeString={timeString}
+                                    onActionButtonClick={ () => this.fetchRequests() }
                             />)}
                         </List>
                     </div>
@@ -101,9 +104,12 @@ class RideProfile extends Component {
                     <div className='pendingRequests'>
                         <div>{pendingCount} Pending {pendingCount > 1 ? "Requests": "Request"}</div>
                         <List className='requestsList' divided animated>
-                            {pendingRequests.map(request =>
+                            {pendingRequests.map((request, index) =>
                                 <RequestItem
-                                    request={request} ride={ride} dateString={dateString} timeString={timeString} onActionButtonClick={ () => this.fetchRequests() }
+                                    key={index}
+                                    viewer="Driver"
+                                    request={request} ride={ride} dateString={dateString} timeString={timeString}
+                                    onActionButtonClick={ () => this.fetchRequests() }
                             />)}
                         </List>
                     </div>
