@@ -7,6 +7,7 @@ import * as serviceWorker from './serviceWorker';
 import { createStore } from "redux";
 import { Provider } from "react-redux"
 import * as firebase from "firebase";
+require('dotenv').config();
 
 const initialState = {
     start: '',

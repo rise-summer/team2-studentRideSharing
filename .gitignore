@@ -10,6 +10,7 @@
 
 # production
 frontend/build
+frontend/.env
 
 # misc
 .DS_Store
@@ -31,6 +32,10 @@ Desktop.ini
 
 # Dependency directory
 node_modules/
+.env/
+
+#environment vars
+.env
 
 # npm
 node_modules
