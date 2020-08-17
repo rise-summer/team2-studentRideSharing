@@ -49,7 +49,7 @@ router.post('/:rideID', async function(req, res, next){
         "ownerID": ownerID, //id of the request owner
         "driverID": driverID, //id of the ride driver
         "status": 0, //0-pending, 1-accepted, 2-denied
-        "time": new Date(),
+        "expirationTime":  new Date(new Date().getTime() + 1000 * 60 * 60 * 24), //expire after 24 hours
         "startLoc": origin,//just the display name
         "endLoc": destination,
         "originCoords": originCoords,
@@ -87,6 +87,39 @@ router.delete('/:requestID', async function(req, res, next) {
         });
     } else {//invalid request - rideID not ObjectId
         res.status(400).send("Invalid requestID (not ObjectId) to delete.");
+    }
+})
+
+//Update request's info - pickup/dropoff location/comment editing + expiration time refresh
+router.put('/:requestID', async function (req, res, next) {
+    const requestID = req.params.requestID;
+    const body = { origin, destination, originCoords, destCoords, comment} = req.body;
+    //remove all undefined field
+    Object.keys(body).forEach(key => {
+        if (body[key] === undefined) {
+            delete body[key];
+        }
+    });
+
+    //refresh expirationTime field
+    body['expirationTime'] = new Date(new Date().getTime() + 1000 * 60 * 60 * 24); //expire after 24 hours
+
+    if (ObjectId.isValid(requestID)) { //invalid request - requestID not ObjectId
+        const collection = client.dbCollection(collectionName);
+        collection.updateOne({
+            "_id": ObjectId(requestID),
+            "status": 0, //cannot update cancelled or denied request
+        }, {
+            $set: body
+        }).then(function (rep) {
+            if (rep.modifiedCount == 1) {
+                res.status(200).json(rep);
+            } else {
+                res.status(400).send("Bad Request: Cannot modify the request info. ModifiedCount is not 1.");
+            }
+        });
+    } else {
+        res.status(400).send("Invalid requestID (not ObjectId) for updating request info");
     }
 })
 
