@@ -16,12 +16,31 @@ class RequestItem extends Component {
             ride: {
 
             },
-            errorMessage: ""
+            errorMessage: "",
+            timeLeft: "",
         }
     }
+
+    calculateTimeLeft() {
+        //update timeLeft every second
+        setInterval(() => {
+            let difference = new Date(this.props.request.expirationTime) - new Date();
+            let timeLeft = {
+                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((difference / 1000 / 60) % 60),
+                seconds: Math.floor((difference / 1000) % 60)
+            }
+            this.setState({
+                timeLeft: timeLeft
+            })
+        }, 1000);
+    }
+
     componentDidMount() {
         const { viewer } = this.props;
         if(viewer === "Requester") {
+            //calculate time left from now to request expiration time
+            this.calculateTimeLeft();
             //fetch driver's info
             fetch(`/api/users/${this.props.request.driverID}`)
             .then(response => {
@@ -119,6 +138,7 @@ class RequestItem extends Component {
         const {requester, driver, ride} = this.state;
         const {request, viewer, isPending} = this.props;//version controls what to display
         const {comment, startLoc, endLoc, status} = request;
+
         if(viewer === "Other") {//from RideDetails Page
             if(status !== 1) { //hide non-confirmed requests
                 return null;
@@ -139,6 +159,7 @@ class RequestItem extends Component {
             const dateString = dateObject.toLocaleDateString('en-US');
             const timeString = dateObject.toLocaleTimeString('en-US');
 
+            const { hours,minutes,seconds} = this.state.timeLeft;
             return(
                 <List.Item>
                     <List.Header>
@@ -154,6 +175,9 @@ class RequestItem extends Component {
                                 <List.Item>Seats: {ride.capacity}</List.Item>
                             </List>
                             <span style={{paddingLeft: '5%'}}>${ride.price}</span>
+                        </div>
+                        <div>
+                        Time left for driver to confirm: {hours}hrs {minutes}mins {seconds}s
                         </div>
                         <a href={"/ride/"+driver._id+"/"+ride._id}>View Ride</a>
                         {
