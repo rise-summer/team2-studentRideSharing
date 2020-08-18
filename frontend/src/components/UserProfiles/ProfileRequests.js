@@ -43,7 +43,7 @@ class ProfileRequests extends Component {
                         <List className='requestsList' divided animated>
                             {confirmedRequests.map((request, index) =>
                                 <RequestItem
-                                    key={index} request={request} viewer={viewer}
+                                    key={index} request={request} viewer={viewer} parentRefetch={ () => this.fetchUserRequests() } 
                             />)}
                         </List>
                     </div>
@@ -60,7 +60,7 @@ class ProfileRequests extends Component {
                         <List className='requestsList' divided animated>
                             {pendingRequests.map((request,index) =>
                                 <RequestItem
-                                    key={index} request={request} viewer={viewer} onActionButtonClick={ () => this.fetchUserRequests() } isPending='true'
+                                    key={index} request={request} viewer={viewer} parentRefetch={ () => this.fetchUserRequests() } isPending='true'
                             />)}
                         </List>
                     </div>

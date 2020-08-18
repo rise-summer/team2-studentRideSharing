@@ -25,14 +25,17 @@ class RequestItem extends Component {
         //update timeLeft every second
         setInterval(() => {
             let difference = new Date(this.props.request.expirationTime) - new Date();
+            if (difference <= 0) { //request is expired
+                this.props.parentRefetch();//data fetching function from the parent component
+            }
             let timeLeft = {
                 hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
                 minutes: Math.floor((difference / 1000 / 60) % 60),
                 seconds: Math.floor((difference / 1000) % 60)
-            }
+            };
             this.setState({
                 timeLeft: timeLeft
-            })
+            });
         }, 1000);
     }
 
@@ -86,7 +89,7 @@ class RequestItem extends Component {
                 if(this.props.viewer === "Driver") {
                     this.sendEmailNotificationToRequester(action);
                 }
-                this.props.onActionButtonClick();//data fetching function from the parent component RideProfile
+                this.props.parentRefetch();//data fetching function from the parent component
             }
             return response.text();
         })
@@ -159,7 +162,7 @@ class RequestItem extends Component {
             const dateString = dateObject.toLocaleDateString('en-US');
             const timeString = dateObject.toLocaleTimeString('en-US');
 
-            const { hours,minutes,seconds} = this.state.timeLeft;
+            const { hours,minutes,seconds } = this.state.timeLeft;
             return(
                 <List.Item>
                     <List.Header>
@@ -176,9 +179,12 @@ class RequestItem extends Component {
                             </List>
                             <span style={{paddingLeft: '5%'}}>${ride.price}</span>
                         </div>
-                        <div>
-                        Time left for driver to confirm: {hours}hrs {minutes}mins {seconds}s
-                        </div>
+                        { hours >= 0 && minutes >= 0 && seconds >= 0 &&
+                            <div>
+                            Time left for driver to confirm: {hours}hrs {minutes}mins {seconds}s
+                            </div>
+                        }
+
                         <a href={"/ride/"+driver._id+"/"+ride._id}>View Ride</a>
                         {
                             isPending &&

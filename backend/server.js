@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const cron = require('node-schedule');
 // const cors = require('cors');
 const client = require('./db');
 const apiKey = require('./apiKey');
@@ -24,7 +25,7 @@ app.get('/', (req, res) => {
 app.use('/api/rides', ridesRouter.router);
 app.use('/api/users', usersRouter);
 app.use('/api/vehicles', vehiclesRouter);
-app.use('/api/requests', requestsRouter);
+app.use('/api/requests', requestsRouter.router);
 
 //Connect to Mongo on start
 // const uri = "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true&w=majority";
@@ -33,6 +34,12 @@ client.connect(apiKey.mongouri, function(err) {
     if(err) {
         console.log(err);
         process.exit(1);
+    }
+    else {
+        //Set up scheduled task
+        cron.scheduleJob('* */1 * * * *', function() { //execute every minute
+            requestsRouter.updateExpiredRequests();
+        });
     }
     console.log("DB Connected.");
 });

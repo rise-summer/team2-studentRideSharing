@@ -252,4 +252,21 @@ router.post('/email/:action/:requestID', async function(req, res, next){
     });
 })
 
-module.exports = router;
+function updateExpiredRequests() {
+    const collection = client.dbCollection(collectionName);
+    collection.updateMany({
+        status: 0,
+        expirationTime: {$lte: new Date()}
+    }, {
+        $set: {status: 2} //change the status to be "denied"
+    }).then(function (rep) {
+        if (rep.modifiedCount == 1) {
+            console.log(rep.modifiedCount + " request has been automatically denied.");
+        }
+        else if (rep.modifiedCount > 1) {
+            console.log(rep.modifiedCount + " requests have been automatically denied.");
+        }
+    });
+}
+
+module.exports = {router, updateExpiredRequests};

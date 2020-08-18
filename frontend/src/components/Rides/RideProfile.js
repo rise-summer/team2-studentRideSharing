@@ -89,7 +89,7 @@ class RideProfile extends Component {
                                     key={index}
                                     viewer="Driver"
                                     request={request} ride={ride} dateString={dateString} timeString={timeString}
-                                    onActionButtonClick={ () => this.fetchRequests() }
+                                    parentRefetch={ () => this.fetchRequests() }
                             />)}
                         </List>
                     </div>
@@ -109,7 +109,7 @@ class RideProfile extends Component {
                                     key={index}
                                     viewer="Driver"
                                     request={request} ride={ride} dateString={dateString} timeString={timeString}
-                                    onActionButtonClick={ () => this.fetchRequests() }
+                                    parentRefetch={ () => this.fetchRequests() }
                             />)}
                         </List>
                     </div>
