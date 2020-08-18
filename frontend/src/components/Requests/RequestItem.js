@@ -176,9 +176,12 @@ class RequestItem extends Component {
                             </List>
                             <span style={{paddingLeft: '5%'}}>${ride.price}</span>
                         </div>
-                        <div>
-                        Time left for driver to confirm: {hours}hrs {minutes}mins {seconds}s
-                        </div>
+                        {
+                            isPending &&
+                            <div>
+                            Time left for driver to confirm: {hours}hrs {minutes}mins {seconds}s
+                            </div>
+                        }
                         <a href={"/ride/"+driver._id+"/"+ride._id}>View Ride</a>
                         {
                             isPending &&
