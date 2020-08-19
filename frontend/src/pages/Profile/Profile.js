@@ -22,8 +22,7 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        const userId = "5f34f3f66a7bcd0c1dbf17e4";// temporary testing
-        // const { userId } = this.props;
+        const { userId } = this.props;
         fetch(`/api/users/${userId}`)
             .then((response) => response.json())//TODO: error handling
             .then(user => {
@@ -64,6 +63,7 @@ class Profile extends Component {
     };
 
     render() {
+        const { userId } = this.props;
         const {user, vehicles, rides, errorMessage} = this.state;
         const {
             firstName,
@@ -94,6 +94,7 @@ class Profile extends Component {
                             <Header.Subheader>{school}</Header.Subheader>
                         </Header>
                         <ProfileTabs
+                            userID={userId}
                             vehicles={vehicles}
                             contact={contact}
                             email={email}
