@@ -18,12 +18,13 @@ class RequestItem extends Component {
             },
             errorMessage: "",
             timeLeft: "",
+            intervalID: 0
         }
     }
 
     calculateTimeLeft() {
         //update timeLeft every second
-        setInterval(() => {
+        const intervalID = setInterval(() => {
             let difference = new Date(this.props.request.expirationTime) - new Date();
             if (difference <= 0) { //request is expired
                 this.props.parentRefetch();//data fetching function from the parent component
@@ -37,11 +38,12 @@ class RequestItem extends Component {
                 timeLeft: timeLeft
             });
         }, 1000);
+        this.setState({intervalID: intervalID});
     }
 
     componentDidMount() {
         const { viewer } = this.props;
-        if(viewer === "Requester") {
+        if (viewer === "Requester") {
             //calculate time left from now to request expiration time
             this.calculateTimeLeft();
             //fetch driver's info
@@ -74,6 +76,10 @@ class RequestItem extends Component {
             })
             .catch(error => console.log('error', error));
         }
+    }
+
+    componentWillUnmount() {
+      clearInterval(this.state.intervalID);
     }
 
     handleClick = (event) => {
@@ -163,6 +169,10 @@ class RequestItem extends Component {
             const timeString = dateObject.toLocaleTimeString('en-US');
 
             const { hours,minutes,seconds } = this.state.timeLeft;
+            if ( isPending && (hours < 0 || minutes < 0 || seconds < 0) ) {
+                return null;//don't display expired pending request
+            }
+
             return(
                 <List.Item>
                     <List.Header>

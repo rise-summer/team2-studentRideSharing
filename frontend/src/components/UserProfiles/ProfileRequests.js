@@ -3,6 +3,8 @@ import { List, Divider } from 'semantic-ui-react';
 import RequestItem from '../Requests/RequestItem';
 
 class ProfileRequests extends Component {
+    _isMounted = false;
+
     constructor (props) {
         super(props);
         this.state = {
@@ -12,7 +14,12 @@ class ProfileRequests extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.fetchUserRequests();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     fetchUserRequests() {
@@ -22,7 +29,9 @@ class ProfileRequests extends Component {
                 return response.json();
             })
             .then(requests => {
-                this.setState({ requests });
+                if(this._isMounted) {//To prevent state update on an unmounted component
+                    this.setState({ requests });
+                }
             })
             .catch(error => console.log('error', error));
     }
@@ -43,7 +52,7 @@ class ProfileRequests extends Component {
                         <List className='requestsList' divided animated>
                             {confirmedRequests.map((request, index) =>
                                 <RequestItem
-                                    key={index} request={request} viewer={viewer} parentRefetch={ () => this.fetchUserRequests() } 
+                                    key={index} request={request} viewer={viewer} parentRefetch={ () => this.fetchUserRequests() }
                             />)}
                         </List>
                     </div>
