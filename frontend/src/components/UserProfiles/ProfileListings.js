@@ -2,7 +2,7 @@ import React from 'react';
 import RideProfile from '../Rides/RideProfile';
 import { Header } from 'semantic-ui-react';
 
-const ProfileListings = ({ rides, handleCancel }) => {
+const ProfileListings = ({ rides, handleError }) => {
     // startName, destName, datetime, price, seats
     // Would it be better to pass rides directly into RideProfile and unpack everything in there?
     // TODO: render displayname instead of city
@@ -13,7 +13,7 @@ const ProfileListings = ({ rides, handleCancel }) => {
             <RideProfile
                 key={index}
                 ride={ride}
-                handleCancel={handleCancel}
+                handleError={handleError}
             />
         )
     );
@@ -22,7 +22,7 @@ const ProfileListings = ({ rides, handleCancel }) => {
             <RideProfile
                 key={index}
                 ride={ride}
-                handleCancel={handleCancel}
+                handleError={handleError}
                 isCancelled
             />
         )
@@ -33,7 +33,6 @@ const ProfileListings = ({ rides, handleCancel }) => {
             {activeRideList}
             <Header as="h4" content="Cancelled" />
             {cancelledRideList}
-            {/* <pre>{JSON.stringify(rides, null, 4)}</pre> */}
         </div>
     );
 };

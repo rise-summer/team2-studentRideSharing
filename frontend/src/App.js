@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
 import DriverListing from './pages/DriverListing/DriverListing';
 import Search from './pages/Search/Search';
@@ -28,7 +28,7 @@ function App() {
                     </Route>
                     <Route path="/ride/:driverID/:rideID" component={RideDetails}/>
                     <Route path="/newride">
-                        <DriverListing />
+                        <DriverListing userId="5f29a088bc6acb9e9da9e65e" />
                     </Route>
                     <Route path="/login">
                         <LoginPage />

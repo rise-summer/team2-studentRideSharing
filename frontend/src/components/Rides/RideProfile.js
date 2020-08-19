@@ -29,7 +29,7 @@ class RideProfile extends Component {
     }
 
     render() {
-        const {ride, handleCancel, isCancelled} = this.props;
+        const {ride, handleError, isCancelled} = this.props;
         const {requests} = this.state;
         const {
             startLoc,
@@ -64,7 +64,8 @@ class RideProfile extends Component {
                                     startName={startLoc.city}
                                     destName={endLoc.city}
                                     id={_id}
-                                    handleCancel={handleCancel}
+                                    handleError={handleError}
+                                    driverID={driverID}
                                 />
                             )}
                         </span>
@@ -109,17 +110,6 @@ class RideProfile extends Component {
                     </div>
                 }
                 </div>
-                {/*
-                // <Grid columns="equal">
-                //     <Grid.Row>
-                //         <Grid.Column></Grid.Column>
-                //         <Grid.Column></Grid.Column>
-                //     </Grid.Row>
-                //     <Grid.Row>
-                //         <Grid.Column></Grid.Column>
-                //         <Grid.Column></Grid.Column>
-                //     </Grid.Row>
-                // </Grid>*/}
             </Segment>
         );
     }
