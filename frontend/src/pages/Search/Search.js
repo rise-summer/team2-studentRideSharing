@@ -76,10 +76,15 @@ class Search extends Component {
         });
     }
 
+    // TODO: We could just store coords. The input value is stored in the GeoSearch component,
+    // and coords are the only thing needed for the API call
     handleGeoChange = (resp, fieldName) => {
         this.setState({
             [fieldName]: resp,
         });
+        // this.setState({
+        //     [fieldName]: [resp.lat, resp.lng]
+        // })
     };
 
     editBeginDate = (d) => {
@@ -124,7 +129,6 @@ class Search extends Component {
         const xurl =
             '/api/rides?' +
             querystring.stringify({ query: JSON.stringify(query) });
-        console.log(xurl);
         fetch(xurl)
             .then((res) => res.json())
             .then((res) => {
@@ -145,10 +149,9 @@ class Search extends Component {
                     startLoc: ride.startLoc,
                     endLoc: ride.endLoc,
                     time: ride.time,
-                    rideId: ride._id,
-                    driverId: ride.driverId,
+                    rideID: ride._id,
+                    driverID: ride.driverID,
                 }));
-                console.log(queried_rides);
                 this.setState({
                     filteredRides: queried_rides,
                 });
@@ -159,6 +162,7 @@ class Search extends Component {
     };
 
     // helper function for filterRides()
+    // I changed the way queried_rides is stored (see above), might need to make tweaks at either spot later
     checkMatch = (dest, dateArray, date) => {
         var startMatch = dest[0]
             .toLowerCase()

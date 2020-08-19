@@ -11,8 +11,8 @@ class RideList extends Component {
                         start={ride.startLoc.city + ', ' + ride.startLoc.state}
                         dest={ride.endLoc.city + ', ' + ride.endLoc.state}
                         time={new Date(ride.time)}
-                        rideId={ride.rideId}
-                        driverId={ride.driverId}
+                        rideID={ride.rideID}
+                        driverID={ride.driverID}
                         key={i}
                     />
                 ))}

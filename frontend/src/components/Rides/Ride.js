@@ -37,7 +37,7 @@ class Ride extends Component {
     };
 
     render() {
-        const { start, dest, driverId, rideId } = this.props;
+        const { start, dest, driverID, rideID } = this.props;
         return (
             <div className="ride">
                 <Accordion className="accordion">
@@ -54,7 +54,7 @@ class Ride extends Component {
                         className="accordion-dropdown"
                         active={this.state.activeIndex === 0}>
                         <b>Departure Time: {this.formatTime(this.props.time)}</b>
-                        <Link to={`/ride/${driverId}/${rideId}`}>
+                        <Link to={`/ride/${driverID}/${rideID}`}>
                             <button className="view-button">View Ride</button>
                         </Link>
                     </Accordion.Content>
