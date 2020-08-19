@@ -12,9 +12,10 @@ class Map extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lng: this.props.origin ? this.props.origin[0] : -99,
-            lat: this.props.origin ? this.props.origin[1] : 40,
+            lng: -99,
+            lat: 40,
             zoom: 2.5,
+            directionObject: null,
         };
         this.mapRef = React.createRef();
     }
@@ -38,14 +39,20 @@ class Map extends Component {
             accessToken: mapboxgl.accessToken,
         });
         map.addControl(directions);
+        this.setState({ directionObject: directions });
+    }
 
-        const { origin, destination } = this.props;
-        map.on('load', function () {
-            if (origin && destination) {
-                directions.setOrigin(origin);
-                directions.setDestination(destination);
+    componentDidUpdate(prevProps) {
+        if (
+            prevProps.origin !== this.props.origin ||
+            prevProps.destination !== this.props.destination
+        ) {
+            const { origin, destination } = this.props;
+            if (origin.length > 0 && destination.length > 0) {
+                this.state.directionObject.setOrigin(origin);
+                this.state.directionObject.setDestination(destination);
             }
-        });
+        }
     }
     render() {
         return (

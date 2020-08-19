@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Button } from 'semantic-ui-react';
+import { List, Button, Icon } from 'semantic-ui-react';
 import './RequestItem.css'
 
 class RequestItem extends Component {
@@ -43,6 +43,14 @@ class RequestItem extends Component {
             .catch((error) => console.log('error', error));
     }
 
+    handleMapRequest = () => {
+        const { originCoords, destCoords } = this.props.request;
+        console.log(originCoords);
+        this.props.setMapCoords({
+            origin: originCoords.coordinates,
+            destination: destCoords.coordinates,
+        });
+    }
     sendEmailNotificationToRequester(action) {
         const {ride, dateString, timeString} = this.props;
         const {firstName, lastName, email} = this.state.requester;
@@ -108,6 +116,13 @@ class RequestItem extends Component {
                 <List.Header className='requester'>
                     <div className='name'>{firstName} {lastName[0]}.</div>
                     <div className='school'>{school}</div>
+                    <span style={{float: "right"}}>
+                        {/* TODO: debounce button */}
+                        <Button icon labelPosition="right" size="tiny" onClick={this.handleMapRequest}>
+                            <Icon name="map marker alternate" />
+                            Map View
+                        </Button>
+                    </span>
                 </List.Header>
                 <List.Content>
                     <div className='requestInfo'>

@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import CancelRideButton from '../CancelRideButton/CancelRideButton';
 import RequestItem from './RequestItem';
 import { Segment, Header, Icon, List, Divider } from 'semantic-ui-react';
-import './RideProfile.css'
+import './RideProfile.css';
 
 class RideProfile extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
-            requests: []
-        }
+            requests: [],
+        };
     }
 
     fetchRequests() {
@@ -18,36 +18,32 @@ class RideProfile extends Component {
             .then((response) => response.json())
             .then((requests) =>
                 this.setState({
-                    requests
+                    requests,
                 })
             )
             .catch((error) => console.log('error', error));
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.fetchRequests();
     }
 
     render() {
-        const {ride, handleError, isCancelled} = this.props;
-        const {requests} = this.state;
-        const {
-            startLoc,
-            endLoc,
-            time,
-            price,
-            capacity,
-            _id,
-            driverID
-        } = ride;
-        const pendingRequests = requests.filter((request) => request.status === 0);
-        const confirmedRequests = requests.filter((request) => request.status === 1);
+        const { ride, handleError, isCancelled } = this.props;
+        const { requests } = this.state;
+        const { startLoc, endLoc, time, price, capacity, _id, driverID } = ride;
+        const pendingRequests = requests.filter(
+            (request) => request.status === 0
+        );
+        const confirmedRequests = requests.filter(
+            (request) => request.status === 1
+        );
         const pendingCount = pendingRequests.length;
         const confirmedCount = confirmedRequests.length;
         const dateObject = new Date(time);
         const dateString = dateObject.toLocaleDateString('en-US');
         const timeString = dateObject.toLocaleTimeString('en-US');
-
+        
         return (
             <Segment>
                 <Header>
@@ -56,8 +52,8 @@ class RideProfile extends Component {
                         <Icon name="arrow right" />
                         {endLoc.city}, {endLoc.state}
                     </span>
-                    <span style={{float: "right"}}>
-                        <a href={"/ride/"+driverID+"/"+_id} >View Ride</a>
+                    <span style={{ float: 'right' }}>
+                        <a href={'/ride/' + driverID + '/' + _id}>View Ride</a>
                         <span>
                             {!isCancelled && (
                                 <CancelRideButton
@@ -71,44 +67,64 @@ class RideProfile extends Component {
                         </span>
                     </span>
                 </Header>
-                <div className='rideInfo'>
+                <div className="rideInfo">
                     <List divided horizontal>
                         <List.Item>{dateString}</List.Item>
                         <List.Item>{timeString}</List.Item>
                         <List.Item>Seats: {capacity}</List.Item>
                     </List>
-                    <span style={{paddingLeft: '5%'}}>${price}</span>
+                    <span style={{ paddingLeft: '5%' }}>${price}</span>
                 </div>
-                <div className='requestsList'>
-                {
-                    confirmedCount > 0 &&
-                    <div className='confirmedRiders'>
-                        <div>{confirmedCount} Confirmed {confirmedCount > 1 ? "Riders": "Rider"}</div>
-                        <List className='requestsList' divided animated>
-                            {confirmedRequests.map((request, index) =>
-                                <RequestItem
-                                    key={index} request={request} ride={ride} dateString={dateString} timeString={timeString} onActionButtonClick={ () => this.fetchRequests() }
-                            />)}
-                        </List>
-                    </div>
-                }
-                {
-                    /*display the divder only when there are both confirmed and pending requests*/
-                    confirmedCount > 0 && pendingCount > 0 &&
-                    <Divider />
-                }
-                {
-                    pendingCount > 0 &&
-                    <div className='pendingRequests'>
-                        <div>{pendingCount} Pending {pendingCount > 1 ? "Requests": "Request"}</div>
-                        <List className='requestsList' divided animated>
-                            {pendingRequests.map(request =>
-                                <RequestItem
-                                    request={request} ride={ride} dateString={dateString} timeString={timeString} onActionButtonClick={ () => this.fetchRequests() }
-                            />)}
-                        </List>
-                    </div>
-                }
+                <div className="requestsList">
+                    {confirmedCount > 0 && (
+                        <div className="confirmedRiders">
+                            <div>
+                                {confirmedCount} Confirmed{' '}
+                                {confirmedCount > 1 ? 'Riders' : 'Rider'}
+                            </div>
+                            <List className="requestsList" divided animated>
+                                {confirmedRequests.map((request, index) => (
+                                    <RequestItem
+                                        key={index}
+                                        request={request}
+                                        ride={ride}
+                                        dateString={dateString}
+                                        timeString={timeString}
+                                        onActionButtonClick={() =>
+                                            this.fetchRequests()
+                                        }
+                                        setMapCoords={this.props.setMapCoords}
+                                    />
+                                ))}
+                            </List>
+                        </div>
+                    )}
+                    {
+                        /*display the divder only when there are both confirmed and pending requests*/
+                        confirmedCount > 0 && pendingCount > 0 && <Divider />
+                    }
+                    {pendingCount > 0 && (
+                        <div className="pendingRequests">
+                            <div>
+                                {pendingCount} Pending{' '}
+                                {pendingCount > 1 ? 'Requests' : 'Request'}
+                            </div>
+                            <List className="requestsList" divided animated>
+                                {pendingRequests.map((request) => (
+                                    <RequestItem
+                                        request={request}
+                                        ride={ride}
+                                        dateString={dateString}
+                                        timeString={timeString}
+                                        onActionButtonClick={() =>
+                                            this.fetchRequests()
+                                        }
+                                        setMapCoords={this.props.setMapCoords}
+                                    />
+                                ))}
+                            </List>
+                        </div>
+                    )}
                 </div>
             </Segment>
         );
