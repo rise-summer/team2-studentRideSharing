@@ -69,7 +69,7 @@ class Profile extends Component {
                         negative
                         floating
                         onDismiss={this.handleErrorDismiss}
-                        header="Cancellation Error"
+                        header="Cancellation"
                         content={errorMessage}
                     />
                 )}
