@@ -131,16 +131,24 @@ class Search extends Component {
                 if (DEBUG) {
                     console.log(res);
                 }
-                const queried_rides = [];
-                for (let ride in res) {
-                    queried_rides.push([
-                        res[ride].startLoc.city +
-                            ', ' +
-                            res[ride].startLoc.state,
-                        res[ride].endLoc.city + ', ' + res[ride].endLoc.state,
-                        new Date(res[ride].time),
-                    ]);
-                }
+                // const queried_rides = [];
+                // for (let ride in res) {
+                //     queried_rides.push([
+                //         res[ride].startLoc.city +
+                //             ', ' +
+                //             res[ride].startLoc.state,
+                //         res[ride].endLoc.city + ', ' + res[ride].endLoc.state,
+                //         new Date(res[ride].time),
+                //     ]);
+                // }
+                const queried_rides = res.map((ride) => ({
+                    startLoc: ride.startLoc,
+                    endLoc: ride.endLoc,
+                    time: ride.time,
+                    rideId: ride._id,
+                    driverId: ride.driverId,
+                }));
+                console.log(queried_rides);
                 this.setState({
                     filteredRides: queried_rides,
                 });
