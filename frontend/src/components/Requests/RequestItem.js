@@ -18,27 +18,32 @@ class RequestItem extends Component {
             },
             errorMessage: "",
             timeLeft: "",
+            intervalID: 0
         }
     }
 
     calculateTimeLeft() {
         //update timeLeft every second
-        setInterval(() => {
+        const intervalID = setInterval(() => {
             let difference = new Date(this.props.request.expirationTime) - new Date();
+            if (difference <= 0) { //request is expired
+                this.props.parentRefetch();//data fetching function from the parent component
+            }
             let timeLeft = {
                 hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
                 minutes: Math.floor((difference / 1000 / 60) % 60),
                 seconds: Math.floor((difference / 1000) % 60)
-            }
+            };
             this.setState({
                 timeLeft: timeLeft
-            })
+            });
         }, 1000);
+        this.setState({intervalID: intervalID});
     }
 
     componentDidMount() {
         const { viewer } = this.props;
-        if(viewer === "Requester") {
+        if (viewer === "Requester") {
             //calculate time left from now to request expiration time
             this.calculateTimeLeft();
             //fetch driver's info
@@ -73,6 +78,10 @@ class RequestItem extends Component {
         }
     }
 
+    componentWillUnmount() {
+      clearInterval(this.state.intervalID);
+    }
+
     handleClick = (event) => {
         const action = event.target.name; //deny or confirm or cancel
         //event.target.name
@@ -86,7 +95,7 @@ class RequestItem extends Component {
                 if(this.props.viewer === "Driver") {
                     this.sendEmailNotificationToRequester(action);
                 }
-                this.props.onActionButtonClick();//data fetching function from the parent component RideProfile
+                this.props.parentRefetch();//data fetching function from the parent component
             }
             return response.text();
         })
@@ -159,7 +168,11 @@ class RequestItem extends Component {
             const dateString = dateObject.toLocaleDateString('en-US');
             const timeString = dateObject.toLocaleTimeString('en-US');
 
-            const { hours,minutes,seconds} = this.state.timeLeft;
+            const { hours,minutes,seconds } = this.state.timeLeft;
+            if ( isPending && (hours < 0 || minutes < 0 || seconds < 0) ) {
+                return null;//don't display expired pending request
+            }
+
             return(
                 <List.Item>
                     <List.Header>
