@@ -5,21 +5,22 @@ import { Link } from "react-router-dom";
 import './DriverInfo.css';
 
 class DriverInfo extends React.Component {
-    constructor() {
-        super();
-
+    constructor(props) {
+        super(props);
+        // console.log(props);
         this.state = {
             plate: '',
             make: '',
             model: '',
             color: '',
             capacity: 4,
+            showModal: true,
         };
     }
 
     postFetch = () => {
-        const userId = '5f2f0fdb12db250479914d5b';  //TODO: get currentUserID, implement onAuthStateChange
-        fetch(`/api/vehicles/${userId}`, {
+        //TODO: get currentUserID, implement onAuthStateChange
+        fetch(`/api/vehicles/${this.props.userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,14 +52,20 @@ class DriverInfo extends React.Component {
         this.setState({ [name]: value });
     }
 
+    closeModal = () => {
+        this.setState({ showModal: false })
+        
+    }
+
     render() {
-        const { plate, make, model, color } = this.state;
+        const { plate, make, model, color, showModal} = this.state;
         return (
             <div>
                 <Modal
                     closeIcon
                     size={'tiny'}
-                    trigger={<Button>Show Modal</Button>}
+                    onClose={this.closeModal}
+                    open={showModal}
                 >
                     <Modal.Content >
                         <Form className='input-form' onSubmit={this.handleSubmit}>
@@ -89,7 +96,7 @@ class DriverInfo extends React.Component {
                                 onChange={this.handleChange}
                                 label='Car Color'
                             />
-                            <Form.Button id="submit-button">Submit</Form.Button>
+                            <Form.Button to='/newride' id="submit-button">Submit</Form.Button>
                         </Form>
                     </Modal.Content>
                 </Modal>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import DriverListing from './pages/DriverListing/DriverListing';
+import CreateRide from './pages/DriverListing/createRide';
 import Search from './pages/Search/Search';
 import RideDetails from './pages/RideDetails/RideDetails';
 import LoginPage from './pages/LoginPage/LoginPage';
@@ -28,7 +29,7 @@ function App() {
                     </Route>
                     <Route path="/ride/:driverID/:rideID" component={RideDetails} />
                     <Route path="/newride">
-                        <DriverListing />
+                        <CreateRide userId={'5f2f0fdb12db250479914d5b'} />
                     </Route>
                     <Route path="/login">
                         <LoginPage />
