@@ -1,9 +1,10 @@
 import React from 'react';
 import ProfileDetails from './ProfileDetails';
 import ProfileListings from './ProfileListings';
+import ProfileRequests from './ProfileRequests';
 import { Tab, Menu, Label } from 'semantic-ui-react';
 
-const ProfileTabs = ({ vehicles, contact, email, rides, handleError }) => {
+const ProfileTabs = ({ userID, vehicles, contact, email, rides, handleError }) => {
     const panes = [
         {
             menuItem: (
@@ -24,10 +25,7 @@ const ProfileTabs = ({ vehicles, contact, email, rides, handleError }) => {
             menuItem: {content: 'My Requests', key: "requests"},
             render: () => (
                 <Tab.Pane attached={false}>
-                    TODO: Implement 'My Request' Tab
-                    This is a placeholder.
-                    This tab should display all requests belongs to the current user.
-                    Go to ProfileTabs.js to edit this placeholder.
+                    <ProfileRequests userID={userID}/>
                 </Tab.Pane>
             ),
         },

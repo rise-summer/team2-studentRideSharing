@@ -14,37 +14,46 @@ const ProfileListings = ({ rides, handleError }) => {
 
     const [waypoints, setWaypoints] = useState([]);
 
-    const activeRides = rides.filter(
-        (ride) => !ride.status || ride.status === 0
+    const activeRides = rides.filter((ride) => !ride.status || ride.status === 0);
+    const completedRides = rides.filter((ride) => ride.status && ride.status === 1);
+    // const cancelledRides = rides.filter((ride) => ride.status && ride.status === 2);
+    const activeRideList = activeRides.map(
+        (ride, index) => (
+            <RideProfile
+                key={index}
+                ride={ride}
+                isActive
+                handleError={handleError}
+                setMapCoords={setMapCoords}
+                setWaypoints={setWaypoints}
+            />
+        )
     );
-    const cancelledRides = rides.filter(
-        (ride) => ride.status && ride.status === 2
+    const completedRideList = completedRides.map(
+        (ride, index) => (
+            <RideProfile
+                key={index}
+                ride={ride}
+                handleError={handleError}
+                setMapCoords={setMapCoords}
+                setWaypoints={setWaypoints}
+                />
+        )
     );
-    const activeRideList = activeRides.map((ride, index) => (
-        <RideProfile
-            key={index}
-            ride={ride}
-            handleError={handleError}
-            setMapCoords={setMapCoords}
-            setWaypoints={setWaypoints}
-        />
-    ));
-    const cancelledRideList = cancelledRides.map((ride, index) => (
-        <RideProfile
-            key={index}
-            ride={ride}
-            handleError={handleError}
-            // setMapCoords={setMapCoords}
-            isCancelled
-        />
-    ));
+    // const cancelledRideList = cancelledRides.map((ride, index) => (
+    //     <RideProfile
+    //         key={index}
+    //         ride={ride}
+    //         isCancelled
+    //     />
+    // ));
     return (
         <Grid>
             <Grid.Column width={10}>
                 <Header as="h4" content="Active" />
                 {activeRideList}
-                <Header as="h4" content="Cancelled" />
-                {cancelledRideList}
+                <Header as="h4" content="Completed" />
+                {completedRideList}
             </Grid.Column>
             <Grid.Column width={6}>
                 <Map

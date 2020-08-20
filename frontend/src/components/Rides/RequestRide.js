@@ -100,6 +100,7 @@ class RequestRide extends Component {
         //post the request to database
         var raw = {
             "ownerID": this.state.ownerID,
+            "driverID": this.props.driver._id,
             "origin": this.state.origin,
             "destination": this.state.dest,
             "originCoords": {
@@ -112,7 +113,7 @@ class RequestRide extends Component {
             },//<longitude>, <latitude>
             "comment": this.state.comment
         };
-        const url = "/api/requests/" + this.props.rideID;
+        const postRequestUrl = "/api/requests/" + this.props.rideID;
         var requestOptions = {
           method: 'POST',
           headers: {
@@ -121,7 +122,7 @@ class RequestRide extends Component {
           body: JSON.stringify(raw),
         };
 
-        fetch(url, requestOptions)
+        fetch(postRequestUrl, requestOptions)
             .then(response => {
                 if(response.status === 201) {
                     this.initialize();

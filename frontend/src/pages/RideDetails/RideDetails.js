@@ -3,7 +3,7 @@ import './RideDetails.css';
 import { Icon, Button, List } from 'semantic-ui-react';
 import { Link } from "react-router-dom";
 import RequestRide from '../../components/Rides/RequestRide';
-import RequestItem from '../../components/Rides/RequestItem';
+import RequestItem from '../../components/Requests/RequestItem';
 
 class RideDetails extends Component {
     constructor (props) {
@@ -65,8 +65,7 @@ class RideDetails extends Component {
             })
             .catch(error => console.log('error', error));
         //fetch requests info
-        const requestURL = "/api/requests/" + rideID;
-        fetch(requestURL, requestOptions)
+        fetch(`/api/requests?ride=${rideID}`)
             .then(response => {
                 if(response.ok) {
                     this.setState({render: true})
@@ -146,7 +145,7 @@ class RideDetails extends Component {
                             <List className='requestCards'>
                                 {requests.map((request, index) =>
                                     <RequestItem
-                                        key={index} request={request} dateString={dateString} timeString={timeString} version="RideDetailsPage"
+                                        key={index} request={request} dateString={dateString} timeString={timeString} viewer="Other"
                                 />)}
                             </List>
                         </div>
