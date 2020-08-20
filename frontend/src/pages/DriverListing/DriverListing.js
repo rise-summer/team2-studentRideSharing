@@ -2,6 +2,7 @@ import React from 'react';
 import TimePicker from '../../components/TimePicker/TimePicker';
 import NumberPicker from '../../components/NumberPicker/NumberPicker';
 import GeoSearch from '../../components/GeoSearch/GeoSearch';
+import DriverInfo from '../../components/DriverInfo/DriverInfo';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
@@ -246,6 +247,7 @@ class DriverListing extends React.Component {
                     />
                 </form>
                 <h2>{this.state.errorMessage}</h2>
+                <DriverInfo/>
             </div>
         );
     }
