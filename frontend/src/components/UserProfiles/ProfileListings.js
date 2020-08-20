@@ -12,7 +12,8 @@ const ProfileListings = ({ rides, handleError }) => {
         destination: [],
     });
 
-    
+    const [waypoints, setWaypoints] = useState([]);
+
     const activeRides = rides.filter(
         (ride) => !ride.status || ride.status === 0
     );
@@ -25,6 +26,7 @@ const ProfileListings = ({ rides, handleError }) => {
             ride={ride}
             handleError={handleError}
             setMapCoords={setMapCoords}
+            setWaypoints={setWaypoints}
         />
     ));
     const cancelledRideList = cancelledRides.map((ride, index) => (
@@ -48,6 +50,7 @@ const ProfileListings = ({ rides, handleError }) => {
                 <Map
                     origin={mapCoords.origin}
                     destination={mapCoords.destination}
+                    waypoints={waypoints}
                 />
             </Grid.Column>
         </Grid>

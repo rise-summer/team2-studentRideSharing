@@ -28,6 +28,14 @@ class RideProfile extends Component {
         this.fetchRequests();
     }
 
+    handleMapRequest = () => {
+        const { originCoords, destCoords } = this.props.ride;
+        this.props.setMapCoords({
+            origin: originCoords.coordinates,
+            destination: destCoords.coordinates,
+        });
+    }
+    
     render() {
         const { ride, handleError, isCancelled } = this.props;
         const { requests } = this.state;
@@ -93,7 +101,8 @@ class RideProfile extends Component {
                                         onActionButtonClick={() =>
                                             this.fetchRequests()
                                         }
-                                        setMapCoords={this.props.setMapCoords}
+                                        handleMapRequest={this.handleMapRequest}
+                                        setWaypoints={this.props.setWaypoints}
                                     />
                                 ))}
                             </List>
@@ -119,7 +128,8 @@ class RideProfile extends Component {
                                         onActionButtonClick={() =>
                                             this.fetchRequests()
                                         }
-                                        setMapCoords={this.props.setMapCoords}
+                                        handleMapRequest={this.handleMapRequest}
+                                        setWaypoints={this.props.setWaypoints}
                                     />
                                 ))}
                             </List>

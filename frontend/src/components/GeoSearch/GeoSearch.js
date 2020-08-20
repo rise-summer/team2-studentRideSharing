@@ -7,6 +7,7 @@ mapboxgl.accessToken =
     'pk.eyJ1IjoicmlzZXRlYW0yIiwiYSI6ImNrZDIzdDJkbjBzcnEyc3E5YnViazdoYWEifQ.6O1AdDa4j5XR9qSRWMkcWQ';
 
 /* TODO:
+-Add custom proximity
 - Change wrapper to make it work with semantic- possibly use different library? (one without GUI)
 - Conceal api key
 -Add optional map display

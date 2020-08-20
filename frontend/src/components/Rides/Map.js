@@ -20,7 +20,6 @@ class Map extends Component {
         this.mapRef = React.createRef();
     }
     componentDidMount() {
-        console.log(this.props.origin);
         const map = new mapboxgl.Map({
             container: this.mapRef.current,
             style: 'mapbox://styles/mapbox/streets-v11',
@@ -44,13 +43,22 @@ class Map extends Component {
 
     componentDidUpdate(prevProps) {
         if (
+          //TODO: add advanced equality for array comparison
+            prevProps.waypoints !== this.props.waypoints ||
             prevProps.origin !== this.props.origin ||
             prevProps.destination !== this.props.destination
         ) {
-            const { origin, destination } = this.props;
+            const { origin, destination, waypoints } = this.props;
             if (origin.length > 0 && destination.length > 0) {
-                this.state.directionObject.setOrigin(origin);
-                this.state.directionObject.setDestination(destination);
+                const dir = this.state.directionObject;
+                dir.removeRoutes();
+                dir.setOrigin(origin);
+                dir.setDestination(destination);
+                waypoints.reverse().forEach((waypoint) => {
+                  console.log(waypoint);
+                    dir.addWaypoint(0, waypoint);
+                });
+                console.log(dir.getWaypoints())
             }
         }
     }
