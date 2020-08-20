@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { List, Button, Icon } from 'semantic-ui-react';
+import queryString from 'query-string';
 import './RequestItem.css';
 
 class RequestItem extends Component {
@@ -23,6 +24,8 @@ class RequestItem extends Component {
                 this.setState({ requester });
             })
             .catch((error) => console.log('error', error));
+
+        this.calculateAddedTime();
     }
 
     handleClick = (event) => {
@@ -52,6 +55,35 @@ class RequestItem extends Component {
             destCoords.coordinates,
         ]);
     };
+
+    /* TODO: Gather all coordinates together: origin, dest, and any waypoints
+        then plug them into this function
+        if possible, have a way to label them as pickup and dropoff
+        store all confirmed waypoints in one place
+        then add in the new waypoint into this method
+        store in state somewhere
+    */
+    calculateAddedTime = () => {
+        const coordinates = '12,12;12.01,12.01';
+        const parameters = {
+            // distributions: '',
+            source: 'first',
+            // overview: 'false',
+            destination: 'last',
+            access_token:
+                'pk.eyJ1IjoicmlzZXRlYW0yIiwiYSI6ImNrY3dnbmxkbzAyaWQycm5qemVmYzF0NnUifQ.iBcVduGfqvv6KsXReFG7Jg',
+        };
+
+        const url = `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinates}?${queryString.stringify(parameters)}`;
+
+        fetch(url)
+            .then((res) => res.json())
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((error) => console.log(error));
+    };
+
     sendEmailNotificationToRequester(action) {
         const { ride, dateString, timeString } = this.props;
         const { firstName, lastName, email } = this.state.requester;
@@ -138,6 +170,7 @@ class RequestItem extends Component {
                         <div>Pick Up: {startLoc}</div>
                         <div>Drop off: {endLoc}</div>
                         {comment && <div>Comment: {comment}</div>}
+                        <div>{`${firstName}'s ride would add about ${14} minutes to your trip`}</div>
                     </div>
                     {status === 0 && (
                         <div className="requestActions">
