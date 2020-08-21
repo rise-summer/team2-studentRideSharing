@@ -1,35 +1,43 @@
 import React, { Component } from 'react';
 import CancelRideButton from '../CancelRideButton/CancelRideButton';
-import RequestItem from './RequestItem';
+import RequestItem from '../Requests/RequestItem';
 import { Segment, Header, Icon, List, Divider } from 'semantic-ui-react';
-import './RideProfile.css'
+import './RideProfile.css';
 
 class RideProfile extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
-            requests: []
-        }
+            requests: [],
+        };
     }
 
     fetchRequests() {
         //fetch requests of the current ride
-        fetch(`/api/requests/${this.props.ride._id}`)
+        fetch(`/api/requests?ride=${this.props.ride._id}`)
             .then((response) => response.json())
             .then((requests) =>
                 this.setState({
-                    requests
+                    requests,
                 })
             )
             .catch((error) => console.log('error', error));
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.fetchRequests();
     }
 
+    handleMapRequest = () => {
+        const { originCoords, destCoords } = this.props.ride;
+        this.props.setMapCoords({
+            origin: originCoords.coordinates,
+            destination: destCoords.coordinates,
+        });
+    }
+    
     render() {
-        const {ride, handleCancel, isCancelled} = this.props;
+        const {ride, handleError, isActive} = this.props;
         const {requests} = this.state;
         const {
             startLoc,
@@ -47,7 +55,7 @@ class RideProfile extends Component {
         const dateObject = new Date(time);
         const dateString = dateObject.toLocaleDateString('en-US');
         const timeString = dateObject.toLocaleTimeString('en-US');
-
+        
         return (
             <Segment>
                 <Header>
@@ -56,27 +64,28 @@ class RideProfile extends Component {
                         <Icon name="arrow right" />
                         {endLoc.city}, {endLoc.state}
                     </span>
-                    <span style={{float: "right"}}>
-                        <a href={"/ride/"+driverID+"/"+_id} >View Ride</a>
+                    <span style={{ float: 'right' }}>
+                        <a href={'/ride/' + driverID + '/' + _id}>View Ride</a>
                         <span>
-                            {!isCancelled && (
+                            {isActive && (
                                 <CancelRideButton
                                     startName={startLoc.city}
                                     destName={endLoc.city}
                                     id={_id}
-                                    handleCancel={handleCancel}
+                                    handleError={handleError}
+                                    driverID={driverID}
                                 />
                             )}
                         </span>
                     </span>
                 </Header>
-                <div className='rideInfo'>
+                <div className="rideInfo">
                     <List divided horizontal>
                         <List.Item>{dateString}</List.Item>
                         <List.Item>{timeString}</List.Item>
                         <List.Item>Seats: {capacity}</List.Item>
                     </List>
-                    <span style={{paddingLeft: '5%'}}>${price}</span>
+                    <span style={{ paddingLeft: '5%' }}>${price}</span>
                 </div>
                 <div className='requestsList'>
                 {
@@ -86,7 +95,12 @@ class RideProfile extends Component {
                         <List className='requestsList' divided animated>
                             {confirmedRequests.map((request, index) =>
                                 <RequestItem
-                                    key={index} request={request} ride={ride} dateString={dateString} timeString={timeString} onActionButtonClick={ () => this.fetchRequests() }
+                                    key={index}
+                                    viewer="Driver"
+                                    request={request} ride={ride} dateString={dateString} timeString={timeString}
+                                    parentRefetch={ () => this.fetchRequests() }
+                                    handleMapRequest={this.handleMapRequest}
+                                    setWaypoints={this.props.setWaypoints}
                             />)}
                         </List>
                     </div>
@@ -101,25 +115,19 @@ class RideProfile extends Component {
                     <div className='pendingRequests'>
                         <div>{pendingCount} Pending {pendingCount > 1 ? "Requests": "Request"}</div>
                         <List className='requestsList' divided animated>
-                            {pendingRequests.map(request =>
+                            {pendingRequests.map((request, index) =>
                                 <RequestItem
-                                    request={request} ride={ride} dateString={dateString} timeString={timeString} onActionButtonClick={ () => this.fetchRequests() }
+                                    key={index}
+                                    viewer="Driver"
+                                    request={request} ride={ride} dateString={dateString} timeString={timeString}
+                                    parentRefetch={ () => this.fetchRequests() }
+                                    handleMapRequest={this.handleMapRequest}
+                                    setWaypoints={this.props.setWaypoints}
                             />)}
                         </List>
                     </div>
                 }
                 </div>
-                {/*
-                // <Grid columns="equal">
-                //     <Grid.Row>
-                //         <Grid.Column></Grid.Column>
-                //         <Grid.Column></Grid.Column>
-                //     </Grid.Row>
-                //     <Grid.Row>
-                //         <Grid.Column></Grid.Column>
-                //         <Grid.Column></Grid.Column>
-                //     </Grid.Row>
-                // </Grid>*/}
             </Segment>
         );
     }

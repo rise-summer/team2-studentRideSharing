@@ -5,12 +5,15 @@ import RideList from '../../components/Rides/RideList';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
-import './Search.css'
+import './Search.css';
 import { Dropdown } from 'semantic-ui-react';
 import GeoSearch from '../../components/GeoSearch/GeoSearch';
 import { Link } from 'react-router-dom';
-import { SEARCH_RIDES_SUCCESS } from "../../actions/SearchPageStates";
-import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
+import { SEARCH_RIDES_SUCCESS } from '../../actions/SearchPageStates';
+import {
+    getRidesError,
+    getRidesSuccess,
+} from '../../reducers/SearchRidesReducer';
 
 const querystring = require('querystring');
 const DEBUG = true;
@@ -39,12 +42,10 @@ class Search extends Component {
         // new Date(year, month, date, hours, minutes, seconds, ms)
         super(props);
         this.state = {
-            start: '',
-            endDest: '',
+            start: {},
+            endDest: {},
             beginDate: '',
             endDate: '',
-            originCoords: '',
-            destCoords: '',
             distance: 5,
             // rides: sample_rides,
             rides: [],
@@ -52,11 +53,9 @@ class Search extends Component {
             roundtrip: false,
             /* Use this.state.query.* when passing to redux */
             query: {
-                start: '',
-                endDest: '',
+                start: {},
+                endDest: {},
                 time: '',
-                originCoords: '',
-                destCoords: '',
                 distance: '',
             },
         };
@@ -77,22 +76,25 @@ class Search extends Component {
         });
     }
 
-    editStart = (sd) => {
-        this.setState({start: sd.target.value})
-    };
-
-    editEndDest = (ed) => {
-        this.setState({endDest: ed.target.value})
+    // TODO: We could just store coords. The input value is stored in the GeoSearch component,
+    // and coords are the only thing needed for the API call
+    handleGeoChange = (resp, fieldName) => {
+        this.setState({
+            [fieldName]: resp,
+        });
+        // this.setState({
+        //     [fieldName]: [resp.lat, resp.lng]
+        // })
     };
 
     editBeginDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({beginDate: date});
+        this.setState({ beginDate: date });
     };
 
     editEndDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({endDate: date})
+        this.setState({ endDate: date });
     };
 
     /* filter upon button click */
@@ -104,8 +106,10 @@ class Search extends Component {
         var date = new Date(dateArray[2], dateArray[0] - 1, dateArray[1]);
 
         this.setState({
-            filteredRides: this.state.rides.filter(dest => this.checkMatch(dest, dateArray, date))
-        })
+            filteredRides: this.state.rides.filter((dest) =>
+                this.checkMatch(dest, dateArray, date)
+            ),
+        });
     };
 
     queryRides = () => {
@@ -114,42 +118,60 @@ class Search extends Component {
         const date = new Date(this.state.beginDate);
         const dateEnd = new Date(date);
         dateEnd.setHours(23, 59, 59);
+        const { start, endDest } = this.state;
         const query = {
-            originCoords: this.state.originCoords,
-            destCoords: this.state.destCoords,
+            originCoords: [start.lng, start.lat],
+            destCoords: [endDest.lng, endDest.lat],
             beginDate: date,
             endDate: dateEnd,
             distance: this.state.distance,
         };
-        const xurl = '/api/rides?' + querystring.stringify({'query': JSON.stringify(query)});
+        const xurl =
+            '/api/rides?' +
+            querystring.stringify({ query: JSON.stringify(query) });
         fetch(xurl)
-            .then(res => res.json())
-            .then(res => {
-                if (DEBUG) { console.log(res); }
-                const queried_rides = [];
-                for (let ride in res) {
-                    queried_rides.push(
-                        [
-                            res[ride].startLoc.city + ', ' + res[ride].startLoc.state,
-                            res[ride].endLoc.city + ', ' + res[ride].endLoc.state,
-                            new Date(res[ride].time),
-                        ]
-                    )
+            .then((res) => res.json())
+            .then((res) => {
+                if (DEBUG) {
+                    console.log(res);
                 }
+                // const queried_rides = [];
+                // for (let ride in res) {
+                //     queried_rides.push([
+                //         res[ride].startLoc.city +
+                //             ', ' +
+                //             res[ride].startLoc.state,
+                //         res[ride].endLoc.city + ', ' + res[ride].endLoc.state,
+                //         new Date(res[ride].time),
+                //     ]);
+                // }
+                const queried_rides = res.map((ride) => ({
+                    startLoc: ride.startLoc,
+                    endLoc: ride.endLoc,
+                    time: ride.time,
+                    rideID: ride._id,
+                    driverID: ride.driverID,
+                }));
                 this.setState({
-                    filteredRides: queried_rides
+                    filteredRides: queried_rides,
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log(error);
-            })
+            });
     };
 
     // helper function for filterRides()
+    // I changed the way queried_rides is stored (see above), might need to make tweaks at either spot later
     checkMatch = (dest, dateArray, date) => {
-        var startMatch = dest[0].toLowerCase().includes(this.state.start.toLowerCase());
-        var destMatch = dest[1].toLowerCase().includes(this.state.endDest.toLowerCase());
-        var dateMatch = dateArray.length === 1 ||
+        var startMatch = dest[0]
+            .toLowerCase()
+            .includes(this.state.start.toLowerCase());
+        var destMatch = dest[1]
+            .toLowerCase()
+            .includes(this.state.endDest.toLowerCase());
+        var dateMatch =
+            dateArray.length === 1 ||
             (date.getFullYear() === dest[2].getFullYear() &&
                 date.getMonth() === dest[2].getMonth() &&
                 date.getDate() === dest[2].getDate());
@@ -163,19 +185,19 @@ class Search extends Component {
             filteredRides: this.state.rides,
             beginDate: '',
             endDate: '',
-        })
+        });
     };
 
     changeRideType = (e, data) => {
         if (data.value === 'One Way') {
-            this.setState({roundtrip: false})
+            this.setState({ roundtrip: false });
         } else {
-            this.setState({roundtrip: true})
+            this.setState({ roundtrip: true });
         }
     };
 
     render() {
-        const {roundtrip} = this.state;
+        const { roundtrip } = this.state;
         const renderReturnDate = () => {
             if (roundtrip) {
                 return (
@@ -197,31 +219,32 @@ class Search extends Component {
             <div className="search-wrapper">
                 <div className="search-subwrapper">
                     <div className="ride-type-wrapper">
-                        <Dropdown className="ride-type-selector"
-                                  defaultValue="One Way"
-                                  selection
-                                  compact
-                                  onChange={this.changeRideType}
-                                  options={rideOptions}
+                        <Dropdown
+                            className="ride-type-selector"
+                            defaultValue="One Way"
+                            selection
+                            compact
+                            onChange={this.changeRideType}
+                            options={rideOptions}
                         />
                     </div>
                     <div className="search-box">
                         <div className="search-field">
                             <div className="field-desc">Start Location</div>
-                            <SearchBar
-                                className="input"
-                                text={this.state.start}
-                                editfn={this.editStart}
+                            <GeoSearch
+                                handleChange={this.handleGeoChange}
                                 placeholder="Choose Start Location..."
+                                name="start"
+                                types="region,postcode,district,place,locality,neighborhood,address,poi"
                             />
                         </div>
                         <div className="search-field">
                             <div className="field-desc">Destination</div>
-                            <SearchBar
-                                className="input"
-                                text={this.state.endDest}
-                                editfn={this.editEndDest}
+                            <GeoSearch
+                                handleChange={this.handleGeoChange}
                                 placeholder="Choose Destination..."
+                                name="endDest"
+                                types="region,postcode,district,place,locality,neighborhood,address,poi"
                             />
                         </div>
                         <div className="search-field">
@@ -236,7 +259,12 @@ class Search extends Component {
                             />
                         </div>
                         {renderReturnDate()}
-                        <div onClick={this.queryRides} className="search-button">Search Rides</div>
+                        <div
+                            onClick={this.queryRides}
+                            className="search-button"
+                        >
+                            Search Rides
+                        </div>
                     </div>
                 </div>
                 <br />
@@ -244,7 +272,6 @@ class Search extends Component {
                 {/*<button onClick={this.queryRides}>Search DB</button>*/}
                 <h3>Available Rides</h3>
                 <RideList rides={this.state.filteredRides} />
-
             </div>
         );
     }
