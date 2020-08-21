@@ -58,6 +58,7 @@ class Search extends Component {
                 time: '',
                 distance: '',
             },
+            numberTime: 1,
         };
         this.state.filteredRides = this.state.rides;
         this.beginDateRef = React.createRef();
@@ -270,6 +271,24 @@ class Search extends Component {
                 <br />
                 {/*<button onClick={this.clearFilter}>Clear</button>*/}
                 {/*<button onClick={this.queryRides}>Search DB</button>*/}
+
+                <Grid.Column>
+                    <Segment secondary>
+                        <Input
+                            min={1}
+                            max={10}
+                            type='range'
+                            onChange={function (value) {
+                                var
+                                    $self = $(this),
+                                    firstVal = $self.range('get thumb value'),
+                                    secVal = $self.range('get thumb value', 'second');
+                                $('#display-d').html('|' + firstVal + " - " + secVal + '| = ' + value);
+                            }}
+                        />
+                    </Segment>
+                </Grid.Column>
+
                 <h3>Available Rides</h3>
                 <RideList rides={this.state.filteredRides} />
             </div>
