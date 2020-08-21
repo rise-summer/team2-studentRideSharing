@@ -25,7 +25,8 @@
     /*display: block;*/
     display: flex;
     height: 100%;
-    background-color: black;
+    background-color: #9C4A7A;
+    border-radius: 5px;
     padding: 0 10px;
     color: white;
     margin-left: -10px;
@@ -35,7 +36,7 @@
 }
 
 .search-button:hover {
-    background-color: #3a4a49;
+    background-color: #7f3d59;
     cursor: pointer;
 }
 

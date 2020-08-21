@@ -41,9 +41,8 @@ class SearchBox extends Component {
     };
 
     render() {
-        const {roundtrip} = this.state;
         const renderReturnDate = () => {
-            if (roundtrip) {
+            if (this.props.refs.roundtrip) {
                 return (
                     <div className="search-field">
                         <div className="field-desc">Return Date</div>
@@ -57,12 +56,14 @@ class SearchBox extends Component {
         return (
             <div>
                 <div className="ride-type-wrapper">
-                    <Dropdown className="ride-type-selector"
-                              defaultValue="One Way"
-                              selection
-                              compact
-                              onChange={this.changeRideType}
-                              options={rideOptions}
+                    <Dropdown
+                        className="ride-type-selector"
+                        text={this.props.functions.getRideType}
+                        value={this.props.functions.getRideType}
+                        selection
+                        compact
+                        onChange={this.props.functions.changeRideType}
+                        options={rideOptions}
                     />
                 </div>
                 <div className="search-box">
@@ -86,15 +87,15 @@ class SearchBox extends Component {
                     </div>
                     <div className="search-field">
                         <div className="field-desc">Depart Date</div>
-                        <DatePicker onChange={this.props.functions.editBeginDate}
-                                    className="date-picker-box input"
-                                    value={this.props.query.beginDate} />
+                        <DatePicker
+                            onChange={this.props.functions.editBeginDate}
+                            className="date-picker-box input"
+                            value={this.props.query.beginDate} />
                     </div>
                     {renderReturnDate()}
                     <div onClick={this.props.functions.query} className="search-button">Search Rides</div>
                 </div>
             </div>
-
         );
     }
 }
