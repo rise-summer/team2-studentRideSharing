@@ -12,7 +12,16 @@ class SignIn extends React.Component {
             email: '',
             password: '',
             loggedIn: false,
+            uid: '',
         };
+    }
+
+    componentDidMount() {
+        auth.onAuthStateChanged((data) => {
+            if (data) {
+                this.setState({uid: data.uid});
+            }
+        });
     }
 
     handleChange = (event, {name, value}) => {
@@ -22,10 +31,8 @@ class SignIn extends React.Component {
     handleSubmit = (event) => {
         // alert('Submitted ' + JSON.stringify(this.state));
         const {email, password} = this.state;
+
         auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                this.setState({loggedIn: true});
-            })
             .catch(function (error) {
                 // Handle Errors here.
                 var errorCode = error.code;
@@ -44,7 +51,7 @@ class SignIn extends React.Component {
     };
 
     render() {
-        if (this.state.loggedIn) {
+        if (this.state.uid !== '') {
             return <Redirect to="/searchlanding" />
         } else {
             return (

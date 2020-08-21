@@ -1,8 +1,8 @@
 import React from 'react';
-import { Segment, Menu, Icon } from 'semantic-ui-react';
+import { Segment, Menu, Icon, Button } from 'semantic-ui-react';
 import { Link, useLocation } from 'react-router-dom';
 
-const Navbar = ({ isLoggedIn }) => {
+const Navbar = ({ isLoggedIn, signOut }) => {
     //TODO: add mobile layout
     /* TODO: Fix routing https://stackoverflow.com/questions/55105402/react-router-click-same-link-more-than-one-times-and-browser-back-button*/
     const { pathname } = useLocation();
@@ -25,6 +25,11 @@ const Navbar = ({ isLoggedIn }) => {
                             Profile <Icon name="user circle outline" />
                         </Menu.Item>
                     </Link>
+                    <Menu.Menu position='right'>
+                        <Menu.Item>
+                            <Button onClick={signOut}>Log Out</Button>
+                        </Menu.Item>
+                    </Menu.Menu>
                 </Menu>
             ) : (
                 <Menu inverted secondary pointing size="large">
@@ -33,11 +38,13 @@ const Navbar = ({ isLoggedIn }) => {
                             Search
                         </Menu.Item>
                     </Link>
-                    <Link to="/login">
-                        <Menu.Item active={pathname === '/login'}>
-                            Login / Sign Up
-                        </Menu.Item>
-                    </Link>
+                    <Menu.Menu position='right'>
+                        <Link to="/login">
+                            <Menu.Item active={pathname === '/login'}>
+                                Login / Sign Up
+                            </Menu.Item>
+                        </Link>
+                    </Menu.Menu>
                 </Menu>
             )}
         </Segment>
