@@ -1,13 +1,11 @@
 import React from 'react';
 import { Form, Icon, Button, Modal } from 'semantic-ui-react';
-import { Link } from "react-router-dom";
 
 import './DriverInfo.css';
 
 class DriverInfo extends React.Component {
     constructor(props) {
         super(props);
-        // console.log(props);
         this.state = {
             plate: '',
             make: '',
@@ -18,8 +16,8 @@ class DriverInfo extends React.Component {
         };
     }
 
+    //POST request to create new vehicle infomation
     postFetch = () => {
-        //TODO: get currentUserID, implement onAuthStateChange
         fetch(`/api/vehicles/${this.props.userId}`, {
             method: 'POST',
             headers: {
@@ -54,49 +52,49 @@ class DriverInfo extends React.Component {
 
     closeModal = () => {
         this.setState({ showModal: false })
-        
+
     }
 
     render() {
-        const { plate, make, model, color, showModal} = this.state;
+        const { plate, make, model, color, showModal } = this.state;
         return (
             <div>
                 <Modal
                     closeIcon
-                    size={'tiny'}
+                    size="tiny"
                     onClose={this.closeModal}
                     open={showModal}
                 >
                     <Modal.Content >
-                        <Form className='input-form' onSubmit={this.handleSubmit}>
-                            <Icon classname='car-icon' name='car' size='huge' />
+                        <Form className="input-form" onSubmit={this.handleSubmit}>
+                            <Icon classname="car-icon" name="car" size="huge" />
                             <br />
                             <br />
                             <Form.Input
-                                name='plate'
+                                name="plate"
                                 value={plate}
                                 onChange={this.handleChange}
-                                label='Car License Plate'
+                                label="Car License Plate"
                             />
                             <Form.Input
-                                name='make'
+                                name="make"
                                 value={make}
                                 onChange={this.handleChange}
-                                label='Car Make'
+                                label="Car Make"
                             />
                             <Form.Input
-                                name='model'
+                                name="model"
                                 value={model}
                                 onChange={this.handleChange}
-                                label='Car Model'
+                                label="Car Model"
                             />
                             <Form.Input
-                                name='color'
+                                name="color"
                                 value={color}
                                 onChange={this.handleChange}
-                                label='Car Color'
+                                label="Car Color"
                             />
-                            <Form.Button to='/newride' id="submit-button">Submit</Form.Button>
+                            <Form.Button to="/newride" id="submit-button">Submit</Form.Button>
                         </Form>
                     </Modal.Content>
                 </Modal>
@@ -106,13 +104,3 @@ class DriverInfo extends React.Component {
 }
 
 export default DriverInfo;
-
-
-
-{/* < div className="driver-info">
-    <div id='close-icon'>
-        <Button icon to='/search' as={Link}>
-            <Icon link name='close' size='tiny' />
-        </Button>
-    </div>
-</div > */}

@@ -137,12 +137,16 @@ class DriverListing extends React.Component {
     render() {
         return (
             <div>
-                {!this.props.haveCarInfo ? <DriverInfo userId={this.props.userId}/> : console.log('user have car info')}
+                {!this.props.haveCarInfo ? (
+                    <DriverInfo userId={this.props.userId} />
+                ) : (
+                        console.log('user have car info')
+                    )}
                 {this.state.step === 1 ? (
                     <h1>Create a ride</h1>
                 ) : (
-                    <h1>Create a return ride</h1>
-                )}
+                        <h1>Create a return ride</h1>
+                    )}
                 <form onSubmit={this.handleSubmit} autoComplete="off">
                     {/* Replace with location picker*/}
                     <GeoSearch

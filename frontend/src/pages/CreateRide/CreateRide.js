@@ -2,27 +2,28 @@ import React from 'react';
 import DriverListing from '../../components/CreateRideComponents/DriverListing';
 
 class CreateRide extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             haveInfo: true
         };
     }
 
-    async componentDidMount () {
+    //Check to see if Driver have vehicle infomation
+    async componentDidMount() {
         await fetch(`/api/vehicles/${this.props.userId}`, {
             method: 'GET'
         }).then(response => {
-            if(response.status === 200){
-                this.setState({ haveInfo: true});
+            if (response.status === 200) {
+                this.setState({ haveInfo: true });
             }
-        })
+        });
     }
 
-    render(){
+    render() {
         const { haveInfo } = this.state;
-        console.log(this.state.haveInfo);
-        return < DriverListing userId = { this.props.userId } haveCarInfo = {haveInfo}/>;
+        //sent check to DriverListing component as props
+        return < DriverListing userId={this.props.userId} haveCarInfo={haveInfo} />;
     }
 }
 
