@@ -79,7 +79,7 @@ class DriverListing extends React.Component {
             price,
             capacity,
         } = this.state;
-        const userId = 'abc';
+        const userId = this.props.userId;
         const url = `/api/rides/${userId}`;
         const bodyData = {
             origin: {
