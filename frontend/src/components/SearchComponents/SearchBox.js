@@ -5,6 +5,7 @@ import Pikaday from 'pikaday';
 import moment from 'moment';
 import { Dropdown } from 'semantic-ui-react';
 import DatePicker from './DatePicker';
+import GeoSearch from '../../components/GeoSearch/GeoSearch';
 
 const querystring = require('querystring');
 const DEBUG = true;
@@ -69,20 +70,33 @@ class SearchBox extends Component {
                 <div className="search-box">
                     <div className="search-field">
                         <div className="field-desc">Start Location</div>
-                        <SearchBar
-                            className="input"
-                            text={this.props.query.start}
-                            editfn={this.props.functions.editStart}
-                            placeholder="Choose Start Location..."
+                        {/*<SearchBar*/}
+                        {/*    className="input"*/}
+                        {/*    text={this.props.query.start}*/}
+                        {/*    editfn={this.props.functions.editStart}*/}
+                        {/*    placeholder="Choose Start Location..."*/}
+                        {/*/>*/}
+                        <GeoSearch
+                            handleChange={this.props.functions.handleGeoChange}
+                            placeholder="Choose Start location..."
+                            name="endDest"
+                            types="region,postcode,district,place,locality,neighborhood,address,poi"
                         />
                     </div>
                     <div className="search-field">
                         <div className="field-desc">Destination</div>
-                        <SearchBar
+                        {/*<SearchBar*/}
+                        {/*    className="input"*/}
+                        {/*    text={this.props.query.endDest}*/}
+                        {/*    editfn={this.props.functions.editEndDest}*/}
+                        {/*    placeholder="Choose Destination..."*/}
+                        {/*/>*/}
+                        <GeoSearch
                             className="input"
-                            text={this.props.query.endDest}
-                            editfn={this.props.functions.editEndDest}
+                            handleChange={this.props.functions.handleGeoChange}
                             placeholder="Choose Destination..."
+                            name="endDest"
+                            types="region,postcode,district,place,locality,neighborhood,address,poi"
                         />
                     </div>
                     <div className="search-field">

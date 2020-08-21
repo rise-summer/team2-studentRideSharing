@@ -1,20 +1,35 @@
 import React from 'react';
 import { Button, Modal, Icon } from 'semantic-ui-react';
 
-const CancelRideButton = ({ startName, destName, id, handleCancel }) => {
+const CancelRideButton = ({
+    startName,
+    destName,
+    id,
+    driverID,
+    handleError,
+}) => {
     const [open, setOpen] = React.useState(false);
 
     const handleClose = () => setOpen(false);
     const handleOpen = () => setOpen(true);
-    const handleCancelButton = () => {
-        setOpen(false);
-        handleCancel(id);
-    };
     const button = (
-        <Button basic color="red">
+        <Button size="tiny" basic color="red">
             Cancel Ride
         </Button>
     );
+
+    const handleCancel = () => {
+        fetch(`/api/rides/cancel/${driverID}/${id}`, { method: 'PUT' })
+            .then((response) => response.text())
+            .then((result) => handleError(result))
+            .catch((error) => console.log('error', error));
+    };
+
+    const handleCancelButton = () => {
+        setOpen(false);
+        handleCancel();
+    };
+
     return (
         <Modal
             closeIcon

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import GeoSearch from '../GeoSearch/GeoSearch';
 import './RequestRide.css';
 import { Modal, Button, Icon, Form } from 'semantic-ui-react';
 
@@ -15,7 +16,7 @@ class RequestRide extends Component {
             "openConfirmation": false,
             "ownerID": "5f2f11554bbc5304bcefda01", //TODO: use actual user info
             "origin": "",
-            "destination": "",
+            "dest": "",
             "originCoords": {
                 "type": "Point",
                 "coordinates": []
@@ -32,7 +33,7 @@ class RequestRide extends Component {
             this.setState({openConfirmation: true});
         }
         else {
-            this.setState(initialState);
+            this.state = initialState;
         }
     };
 
@@ -45,23 +46,34 @@ class RequestRide extends Component {
     }
 
     requestRide() {
-        const rideID = this.props.rideID;
-        var raw = {
-            "driverMail": this.props.driver.email,
-            "driverFirstName": this.props.driver.firstName,
-            "driverLastName":  this.props.driver.lastName,
+        const {rideID, ride, driver, dateString, timeString} = this.props;
+        console.log(window.location);
+        const dynamic_template_data = {
+            "startLoc": ride.startLoc.displayName,
+            "endLoc": ride.endLoc.displayName,
+            "driverFirstName": driver.firstName,
             "requesterFirstName": "Evelyn", //TODO: current user's first name
-            "startLoc": this.props.ride.startLoc.displayName,
-            "endLoc": this.props.ride.endLoc.displayName
+            "startDate": dateString,
+            "startTime": timeString,
+            "contact": "999-999-9999", //TODO: current user's contact info
+            //"rideURL": window.location.href,
+            "requestURL": window.location.origin + "/profile",
+            "siteURL": window.location.origin
         };
-        console.log(raw);
+        var requestBody = {
+            "driverMail": driver.email,
+            "driverFirstName": driver.firstName,
+            "driverLastName":  driver.lastName,
+            "dynamic_template_data": dynamic_template_data
+        };
+        console.log(requestBody);
         const url = "/api/requests/email/" + rideID;
         var requestOptions = {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify(raw),
+          body: JSON.stringify(requestBody),
         };
 
         fetch(url, requestOptions)
@@ -76,24 +88,32 @@ class RequestRide extends Component {
         });
     }
 
+    handleGeoChange = (resp, fieldName) => {
+        this.setState({
+            [fieldName]: resp.address,
+            [`${fieldName}Coords`]: [resp.lng, resp.lat],
+        });
+    };
+
     handleSubmit = (event) => {
         //validate form input
         //post the request to database
         var raw = {
             "ownerID": this.state.ownerID,
+            "driverID": this.props.driver._id,
             "origin": this.state.origin,
-            "destination": this.state.destination,
+            "destination": this.state.dest,
             "originCoords": {
                 "type": "Point",
-                "coordinates": [-119.159392, 34.164958] //TODO: use actual coordinates after integrate Mapbox
+                "coordinates": this.state.originCoords
             },
             "destCoords": {
                 "type": "Point",
-                "coordinates": [-117.221505, 32.873788]
+                "coordinates": this.state.destCoords
             },//<longitude>, <latitude>
             "comment": this.state.comment
         };
-        const url = "/api/requests/" + this.props.rideID;
+        const postRequestUrl = "/api/requests/" + this.props.rideID;
         var requestOptions = {
           method: 'POST',
           headers: {
@@ -102,7 +122,7 @@ class RequestRide extends Component {
           body: JSON.stringify(raw),
         };
 
-        fetch(url, requestOptions)
+        fetch(postRequestUrl, requestOptions)
             .then(response => {
                 if(response.status === 201) {
                     this.initialize();
@@ -119,6 +139,15 @@ class RequestRide extends Component {
             .catch(error => console.log('error', error));
     }
 
+    triggerButton() {
+        if (this.props.disable === true) {
+            return <Button disabled>No Longer Accepting Requests</Button>;
+        }
+        else {
+            return <Button>Request a Ride</Button>;
+        }
+    }
+
     render() {
         return (
             <div>
@@ -126,7 +155,7 @@ class RequestRide extends Component {
                 closeIcon
                 as={Form}
                 onSubmit={this.handleSubmit}
-                trigger={<Button>Request a Ride</Button>}
+                trigger={this.triggerButton()}
                 onClose={() => this.setOpen(false)}
                 onOpen={() => this.setOpen(true)}
                 open={this.state.open}
@@ -146,8 +175,18 @@ class RequestRide extends Component {
                     </div>
                     <div className="subtitle padding">Date: {this.props.dateString}</div>
                     <div className="subtitle padding">Departure Time: {this.props.timeString}</div>
-                    <Form.Input value={this.state.origin} name="origin"  label="Pick Up Location" required type="text" onChange={this.handleChange} />
-                    <Form.Input value={this.state.destination} name="destination" label="Drop Off Location" required type="text" onChange={this.handleChange} />
+                    <GeoSearch
+                        handleChange={this.handleGeoChange}
+                        placeholder="Pick Up Location"
+                        name="origin"
+                        types="address"
+                    />
+                    <GeoSearch
+                        handleChange={this.handleGeoChange}
+                        placeholder="Drop Off Location"
+                        name="dest"
+                        types="address"
+                    />
                     <Form.Input value={this.state.comment} name="comment" label="Additional Comments" type="text" onChange={this.handleChange}/>
                 </Modal.Content>
                 <Modal.Actions>

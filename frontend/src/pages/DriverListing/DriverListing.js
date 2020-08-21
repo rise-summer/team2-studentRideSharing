@@ -38,34 +38,9 @@ class DriverListing extends React.Component {
         this.setState({ startDate: date });
     };
 
-    handleGeoSubmit = (resp, fieldName) => {
-        const { context, place_type, place_name, center } = resp;
-
-        // Parses attribute types from resp.context
-        const getObj = (name) => context.find((obj) => obj.id.startsWith(name));
-
-        // Address can show up in various places, below searches all of them
-        const displayName =
-            resp.address && place_type[0] === 'address'
-                ? resp.address + ' ' + resp.text
-                : resp.text;
-        const address = place_name;
-
-        // If query is a place, place will not be in context
-        const city = place_type[0] === 'place' ? resp : getObj('place');
-        const zip = getObj('postcode');
-        const state = getObj('region');
-
+    handleGeoChange = (resp, fieldName) => {
         this.setState({
-            [fieldName]: {
-                lng: center[0],
-                lat: center[1],
-                address: address,
-                city: city ? city.text : '',
-                state: state ? state.text : '',
-                zip: zip ? zip.text : '',
-                displayName: displayName || '',
-            },
+            [fieldName]: resp,
         });
     };
 
@@ -78,8 +53,7 @@ class DriverListing extends React.Component {
             price,
             capacity,
         } = this.state;
-        const userId = 'abc';
-        const url = `/api/rides/${userId}`;
+        const url = `/api/rides/${this.props.userId}`;
         const bodyData = {
             origin: {
                 address: startLocation.address,
@@ -170,13 +144,13 @@ class DriverListing extends React.Component {
                 <form onSubmit={this.handleSubmit} autoComplete="off">
                     {/* Replace with location picker*/}
                     <GeoSearch
-                        handleChange={this.handleGeoSubmit}
+                        handleChange={this.handleGeoChange}
                         placeholder="Where from?"
                         name="startLocation"
                         types="postcode,district,locality,neighborhood,address,poi"
                     />
                     <GeoSearch
-                        handleChange={this.handleGeoSubmit}
+                        handleChange={this.handleGeoChange}
                         placeholder="Where to?"
                         name="endLocation"
                         types="postcode,district,locality,neighborhood,address,poi"

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Ride from "./Ride";
 import './RideList.css'
 import { Tab } from 'semantic-ui-react';
-import ProfileDetails from '../UserProfiles/ProfileDetails';
-import ProfileListings from '../UserProfiles/ProfileListings';
 
 class RideList extends Component {
     render() {
@@ -11,9 +9,9 @@ class RideList extends Component {
 
         const departRides = <div className='ridelist'>
             {this.props.rides.map((ride, i) =>
-                <Ride start={ride[0]}
-                      dest={ride[1]}
-                      time={ride[2]}
+                <Ride start={ride.startLoc}
+                      dest={ride.endLoc}
+                      time={ride.time}
                       key={i}
                 />)}
         </div>;
@@ -35,7 +33,7 @@ class RideList extends Component {
             <div>
                 {renderResults()}
             </div>
-        )
+        );
     }
 }
 

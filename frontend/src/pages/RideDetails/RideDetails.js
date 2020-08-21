@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './RideDetails.css';
-import { Icon, Button } from 'semantic-ui-react';
+import { Icon, Button, List } from 'semantic-ui-react';
 import { Link } from "react-router-dom";
 import RequestRide from '../../components/Rides/RequestRide';
+import RequestItem from '../../components/Requests/RequestItem';
 
 class RideDetails extends Component {
     constructor (props) {
@@ -18,6 +19,7 @@ class RideDetails extends Component {
                 endLoc: {},
                 car: {}
             },
+            requests: [],
             render: true, //temporary solution for RideID 404
             isCopied:false
         };
@@ -62,6 +64,23 @@ class RideDetails extends Component {
                 // console.log(this.state);
             })
             .catch(error => console.log('error', error));
+        //fetch requests info
+        fetch(`/api/requests?ride=${rideID}`)
+            .then(response => {
+                if(response.ok) {
+                    this.setState({render: true})
+                    return response.json();
+                } else {
+                    this.setState({render: false})
+                    throw new Error('Bad Request');
+                }
+            })
+            .then(requests => {
+                this.setState({ requests });
+                // console.log(this.state);
+            })
+            .catch(error => console.log('error', error));
+
     }
 
     copyToClipboard = (event) => {
@@ -74,16 +93,19 @@ class RideDetails extends Component {
     }
 
     render() {
-        var dateObject = new Date(this.state.ride.time);
+        const {requests, ride, render, driver} = this.state;
+        var dateObject = new Date(ride.time);
         const dateString = dateObject.toLocaleDateString('en-US');
         const timeString = dateObject.toLocaleTimeString('en-US');
+        const confirmedCount = requests.filter((request) => request.status === 1).length;
+        const remainCapacity = ride.capacity - confirmedCount;
         return (
             <div>
-            <div hidden={!this.state.render}>
+            <div hidden={!render}>
                 <div className="left-column">
                 </div>
                 <div className="left-section">
-                    <center>{this.state.ride.car.color} {this.state.ride.car.make} {this.state.ride.car.model}</center>
+                    <center>{ride.car.color} {ride.car.make} {ride.car.model}</center>
                     <br/>
                     <center>
                         <Button icon onClick={this.copyToClipboard}>
@@ -93,52 +115,62 @@ class RideDetails extends Component {
                     </center>
                 </div>
                 <div className="right-column">
-                    <div className="price">Total: ${this.state.ride.price}</div>
+                    <div className="price">Total: ${ride.price}</div>
                     {/*TODO: disable the button if ride not available for new request*/}
-                    <RequestRide ride={this.state.ride} driver={this.state.driver} rideID={this.props.match.params.rideID} dateString={dateString} timeString={timeString} />
+                    <RequestRide ride={ride} driver={driver} rideID={this.props.match.params.rideID} dateString={dateString} timeString={timeString} disable={remainCapacity < 1 ? true: false} />
                 </div>
                 <div className="center-column">
                     <Link to='/search/'>
                         <button className="view-button">Back</button>
                     </Link>
-                    <div className="name padding">{this.state.driver.firstName} {this.state.driver.lastName}</div>
-                    <div className="subtitle padding">{this.state.driver.school} </div>
+                    <div className="name padding">{driver.firstName} {driver.lastName}</div>
+                    <div className="subtitle padding">{driver.school} </div>
                     <div className="itinerary">
-                        <div className="location">{this.state.ride.startLoc.city}, {this.state.ride.startLoc.state}</div>
+                        <div className="location">{ride.startLoc.city}, {ride.startLoc.state}</div>
                         <Icon name="arrow right" />
-                        <div className="location">{this.state.ride.endLoc.city}, {this.state.ride.endLoc.state}</div>
+                        <div className="location">{ride.endLoc.city}, {ride.endLoc.state}</div>
                     </div>
                     <div className="subtitle padding">Date: {dateString}</div>
                     <div className="subtitle padding">Departure Time: {timeString}</div>
                     <div className="name padding">Ride Details</div>
                     <div className="ride-detail-wrapper">
                         <Icon name="user" />
-                        <div className="ride-detail indent">{this.state.ride.capacity} {this.state.ride.capacity > 1 ? 'spots' : 'spot'} available</div>
+                        <div className="ride-detail indent">
+                            {remainCapacity} {remainCapacity > 1 ? 'spots' : 'spot'} remaining
+                        </div>
+                        <div className="indent2">
+                            {confirmedCount > 0 &&
+                            <div>Booked Riders</div>
+                            }
+                            <List className='requestCards'>
+                                {requests.map((request, index) =>
+                                    <RequestItem
+                                        key={index} request={request} dateString={dateString} timeString={timeString} viewer="Other"
+                                />)}
+                            </List>
+                        </div>
                     </div>
                     <div className="ride-detail-wrapper">
                         <Icon name="phone square" />
                         <div className="ride-detail indent">Preferred Methods of Contact</div>
-                        <ul>
-                            {
-                                Object.keys(this.state.driver.contact).map((key, index) => {
-                                    return index === 0 ? <li key={index}>{key}</li> : <li key={index}>, {key}</li>
-                                })
-                            }
-                        </ul>
+                        <div className="indent2">
+                            {Object.keys(driver.contact).map((key, index) => {
+                                return index === 0 ? <span key={index}>{key}</span> : <span key={index}>, {key}</span>
+                            })}
+                        </div>
                     </div>
                     <div className="ride-detail-wrapper">
                         <Icon name="credit card" />
-                        <div className="ride-detail indent">Preferred Methods of Payment
-                            <ul>
-                                {this.state.driver.paymentMethods.map((value, index) => {
-                                    return index === 0 ? <li key={index}>{value}</li> : <li key={index}>, {value}</li>
-                              })}
-                            </ul>
-                        </div>
+                        <div className="ride-detail indent">Preferred Methods of Payment</div>
+                        {/* <div className="indent2">
+                            {driver.paymentMethods.map((value, index) => {
+                                return index === 0 ? <span key={index}>{value}</span> : <span key={index}>, {value}</span>
+                            })}
+                        </div> */}
                     </div>
                 </div>
             </div>
-            <div hidden={this.state.render}><center>Ride not found (404).</center></div>
+            <div hidden={render}><center>Ride not found (404).</center></div>
             </div>
         )
     }

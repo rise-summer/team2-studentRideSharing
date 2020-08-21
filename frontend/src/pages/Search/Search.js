@@ -5,7 +5,7 @@ import RideList from '../../components/Rides/RideList';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
-import './Search.css'
+import './Search.css';
 import { Dropdown } from 'semantic-ui-react';
 import GeoSearch from '../../components/GeoSearch/GeoSearch';
 import { Link } from 'react-router-dom';
@@ -41,28 +41,28 @@ class Search extends Component {
             roundtrip: false,
             searched: false,
             query: {
-                start: '',
-                endDest: '',
+                start: {},
+                endDest: {},
                 beginDate: '',
                 endDate: '',
                 originCoords: '',
                 destCoords: '',
-                distance: 5,
+                time: '',
+                distance: '',
             },
         };
         this.state.filteredRides = this.state.rides;
     }
 
-    editStart = (sd) => {
-        let newQuery = this.state.query;
-        newQuery.start = sd.target.value;
-        this.setState({ query: newQuery })
-    };
-
-    editEndDest = (ed) => {
-        let newQuery = this.state.query;
-        newQuery.endDest = ed.target.value;
-        this.setState({ query: newQuery });
+    // TODO: We could just store coords. The input value is stored in the GeoSearch component,
+    // and coords are the only thing needed for the API call
+    handleGeoChange = (resp, fieldName) => {
+        this.setState({
+            [fieldName]: resp,
+        });
+        // this.setState({
+        //     [fieldName]: [resp.lat, resp.lng]
+        // })
     };
 
     editBeginDate = (d) => {
@@ -86,35 +86,37 @@ class Search extends Component {
         const date = new Date(this.state.query.beginDate);
         const dateEnd = new Date(date);
         dateEnd.setHours(23, 59, 59);
+        const { start, endDest } = this.state;
         const query = {
-            originCoords: this.state.query.originCoords,
-            destCoords: this.state.query.destCoords,
+            originCoords: [start.lng, start.lat],
+            destCoords: [endDest.lng, endDest.lat],
             beginDate: date,
             endDate: dateEnd,
             distance: this.state.query.distance,
         };
-        const xurl = '/api/rides?' + querystring.stringify({ 'query': JSON.stringify(query) });
+        const xurl =
+            '/api/rides?' +
+            querystring.stringify({ query: JSON.stringify(query) });
         fetch(xurl)
-            .then(res => res.json())
-            .then(res => {
+            .then((res) => res.json())
+            .then((res) => {
                 if (DEBUG) {
                     console.log(res);
                 }
-                const queried_rides = [];
-                for (let ride in res) {
-                    queried_rides.push([
-                        res[ride].startLoc.city + ', ' + res[ride].startLoc.state,
-                        res[ride].endLoc.city + ', ' + res[ride].endLoc.state,
-                        new Date(res[ride].time),
-                    ])
-                }
+                const queried_rides = res.map((ride) => ({
+                    startLoc: ride.startLoc,
+                    endLoc: ride.endLoc,
+                    time: ride.time,
+                    rideID: ride._id,
+                    driverID: ride.driverID,
+                }));
                 this.setState({
                     filteredRides: queried_rides,
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log(error);
-            })
+            });
     };
 
     clearFilter = () => {
@@ -124,7 +126,7 @@ class Search extends Component {
             filteredRides: this.state.rides,
             beginDate: '',
             endDate: '',
-        })
+        });
     };
 
     changeRideType = (e, data) => {
@@ -146,14 +148,16 @@ class Search extends Component {
     render() {
         const { roundtrip } = this.state;
         const functions = {
-            editStart: this.editStart,
-            editEndDest: this.editEndDest,
+            // editStart: this.editStart,
+            // editEndDest: this.editEndDest,
             editBeginDate: this.editBeginDate,
             editEndDate: this.editEndDate,
             query: this.queryRides,
             changeRideType: this.changeRideType,
             getRideType: this.getRideType,
+            handleGeoChange: this.handleGeoChange
         };
+
         const refs = {
             beginDateRef: this.beginDateRef,
             endDateRef: this.endDateRef,
