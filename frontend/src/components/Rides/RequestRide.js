@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import GeoSearch from '../GeoSearch/GeoSearch';
 import './RequestRide.css';
 import { Modal, Button, Icon, Form } from 'semantic-ui-react';
 
@@ -15,7 +16,7 @@ class RequestRide extends Component {
             "openConfirmation": false,
             "ownerID": "5f2f11554bbc5304bcefda01", //TODO: use actual user info
             "origin": "",
-            "destination": "",
+            "dest": "",
             "originCoords": {
                 "type": "Point",
                 "coordinates": []
@@ -87,6 +88,13 @@ class RequestRide extends Component {
         });
     }
 
+    handleGeoChange = (resp, fieldName) => {
+        this.setState({
+            [fieldName]: resp.address,
+            [`${fieldName}Coords`]: [resp.lng, resp.lat],
+        });
+    };
+
     handleSubmit = (event) => {
         //validate form input
         //post the request to database
@@ -94,14 +102,14 @@ class RequestRide extends Component {
             "ownerID": this.state.ownerID,
             "driverID": this.props.driver._id,
             "origin": this.state.origin,
-            "destination": this.state.destination,
+            "destination": this.state.dest,
             "originCoords": {
                 "type": "Point",
-                "coordinates": [-119.159392, 34.164958] //TODO: use actual coordinates after integrate Mapbox
+                "coordinates": this.state.originCoords
             },
             "destCoords": {
                 "type": "Point",
-                "coordinates": [-117.221505, 32.873788]
+                "coordinates": this.state.destCoords
             },//<longitude>, <latitude>
             "comment": this.state.comment
         };
@@ -167,8 +175,18 @@ class RequestRide extends Component {
                     </div>
                     <div className="subtitle padding">Date: {this.props.dateString}</div>
                     <div className="subtitle padding">Departure Time: {this.props.timeString}</div>
-                    <Form.Input value={this.state.origin} name="origin"  label="Pick Up Location" required type="text" onChange={this.handleChange} />
-                    <Form.Input value={this.state.destination} name="destination" label="Drop Off Location" required type="text" onChange={this.handleChange} />
+                    <GeoSearch
+                        handleChange={this.handleGeoChange}
+                        placeholder="Pick Up Location"
+                        name="origin"
+                        types="address"
+                    />
+                    <GeoSearch
+                        handleChange={this.handleGeoChange}
+                        placeholder="Drop Off Location"
+                        name="dest"
+                        types="address"
+                    />
                     <Form.Input value={this.state.comment} name="comment" label="Additional Comments" type="text" onChange={this.handleChange}/>
                 </Modal.Content>
                 <Modal.Actions>
