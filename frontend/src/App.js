@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import DriverListing from './pages/DriverListing/DriverListing';
-import CreateRide from './pages/DriverListing/createRide';
+import CreateRide from './pages/CreateRide/CreateRide';
 import Search from './pages/Search/Search';
 import RideDetails from './pages/RideDetails/RideDetails';
 import LoginPage from './pages/LoginPage/LoginPage';

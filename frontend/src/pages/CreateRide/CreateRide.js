@@ -1,12 +1,11 @@
 import React from 'react';
-import DriverListing from './DriverListing';
-import DriverInfo from '../../components/DriverInfo/DriverInfo';
+import DriverListing from '../../components/CreateRideComponents/DriverListing';
 
 class CreateRide extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            haveInfo: false
+            haveInfo: true
         };
     }
 
@@ -14,7 +13,6 @@ class CreateRide extends React.Component {
         await fetch(`/api/vehicles/${this.props.userId}`, {
             method: 'GET'
         }).then(response => {
-            console.log(response.status)
             if(response.status === 200){
                 this.setState({ haveInfo: true});
             }
@@ -22,13 +20,9 @@ class CreateRide extends React.Component {
     }
 
     render(){
-        // this.getFetch()
-        console.log(this.state.haveInfo)
-        if(!this.state.haveInfo){
-            return <DriverListing userId={this.props.userId}/>;
-        } else {
-            return <DriverInfo userId={this.props.userId}/>;
-        }
+        const { haveInfo } = this.state;
+        console.log(this.state.haveInfo);
+        return < DriverListing userId = { this.props.userId } haveCarInfo = {haveInfo}/>;
     }
 }
 
