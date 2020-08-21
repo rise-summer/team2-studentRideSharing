@@ -1,0 +1,12 @@
+.landing {
+    padding: 30px;
+    border: 2px solid black;
+    text-align: center;
+    margin: 20px 40px;
+}
+
+.landing-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin: 10px 0;
+}

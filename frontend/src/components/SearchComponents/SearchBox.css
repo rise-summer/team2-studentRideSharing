@@ -21,7 +21,6 @@
     margin-bottom: 5px;
 }
 
-
 .search-button {
     /*display: block;*/
     display: flex;
@@ -33,4 +32,16 @@
     white-space: nowrap;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
+}
+
+.search-button:hover {
+    background-color: #3a4a49;
+    cursor: pointer;
+}
+
+.date-picker-box {
+    /*font-size: 16px;*/
+    border: none;
+    outline: none;
+    border-bottom: 1px solid black;
 }

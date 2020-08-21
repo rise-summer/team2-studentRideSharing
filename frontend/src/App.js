@@ -8,6 +8,7 @@ import Profile from './pages/Profile/Profile';
 import Navbar from './components/Navbar/Navbar';
 import { Router, Switch, Route, } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+import SearchLanding from './components/SearchComponents/SearchLanding';
 
 const history = createBrowserHistory();
 
