@@ -13,7 +13,8 @@ class Profile extends Component {
                 firstName: '',
                 lastName: '',
                 email: '',
-                contact: { // TODO: put email and phone in .contact
+                contact: {
+                    // TODO: put email and phone in .contact
                     phone: '',
                 },
             },
@@ -60,13 +61,8 @@ class Profile extends Component {
         });
     }
 
-    // TODO: handleCancel doesn't affect how rides are displayed
-    handleCancel = (id) => {
-        fetch(`/api/rides/cancel/${this.props.userId}/${id}`, { method: 'PUT' })
-            .then((response) => response.text())
-            .then((result) => this.setState({errorMessage: result}))
-            .catch((error) => console.log('error', error));
-    };
+    handleError = (errorMessage) =>
+        this.setState({ errorMessage: errorMessage });
 
     handleErrorDismiss = () => {
         this.setState({ errorMessage: '' });
@@ -92,13 +88,18 @@ class Profile extends Component {
                         negative
                         floating
                         onDismiss={this.handleErrorDismiss}
-                        header="Cancellation Error"
+                        header="Cancellation"
                         content={errorMessage}
                     />
                 )}
 
                 <Grid
-                    style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    style={{
+                        height: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
                     verticalAlign="middle"
                 >
                     <Grid.Column style={{ width: '80%' }}>
@@ -112,7 +113,7 @@ class Profile extends Component {
                             contact={contact}
                             email={email}
                             rides={rides}
-                            handleCancel={this.handleCancel}
+                            handleError={this.handleError}
                         />
                     </Grid.Column>
                 </Grid>

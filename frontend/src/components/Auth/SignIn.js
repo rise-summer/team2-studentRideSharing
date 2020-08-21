@@ -51,8 +51,9 @@ class SignIn extends React.Component {
     };
 
     render() {
-        if (this.state.uid !== '') {
-            return <Redirect to="/searchlanding" />
+        if (false) {
+        // if (this.state.uid !== '') {
+            return <Redirect to="/searchlanding" />;
         } else {
             return (
                 <div>

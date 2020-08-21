@@ -47,16 +47,16 @@ function App() {
             <Router initialEntries={['/']} initialIndex={0} history={history}>
                 <Navbar isLoggedIn={isLoggedIn} signOut={signOut} />
                 <Switch>
-                    {/* should be search if user logged in */}
+                    {/* should be search landing page */}
                     <Route exact path="/">
-                        <LoginPage />
+                        <Search />
                     </Route>
                     <Route path="/search">
                         <Search />
                     </Route>
                     <Route path="/ride/:driverID/:rideID" component={RideDetails}/>
                     <Route path="/newride">
-                        <DriverListing />
+                        <DriverListing userId="5f29a088bc6acb9e9da9e65e" />
                     </Route>
                     <Route path="/login">
                         <LoginPage />

@@ -41,7 +41,8 @@ class LoginPage extends Component {
                 ),
             },
         ];
-        if(this.state.uid === '') {
+        if(true) {
+        // if(this.state.uid === '') {
             return (
                 <Grid
                     textAlign="center"
@@ -57,9 +58,11 @@ class LoginPage extends Component {
                     </Grid.Column>
                 </Grid>
             )
-        } else {
-            return <Redirect to="/profile" />
         }
+        // return null;
+        // else {
+        //     return <Redirect to="/profile" />
+        // }
     }
 }
 
