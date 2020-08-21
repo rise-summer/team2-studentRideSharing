@@ -17,6 +17,7 @@ class RequestItem extends Component {
             errorMessage: '',
             timeLeft: '',
             intervalID: 0,
+            timeAdded: '',
         };
     }
 
@@ -83,6 +84,12 @@ class RequestItem extends Component {
         clearInterval(this.state.intervalID);
     }
 
+    // componentDidUpdate(prevProps) {
+    //     const { optimalRoute, calcDetour } = this.props;
+    //     if (!isEqual(prevProps.optimalRoute, optimalRoute)) {
+    //     }
+    // }
+
     handleClick = (event) => {
         const action = event.target.name; //deny or confirm or cancel
         //event.target.name
@@ -106,21 +113,32 @@ class RequestItem extends Component {
     };
 
     handleMapClick = () => {
-        this.props.handleMapRequest();
-        const { originCoords, destCoords } = this.props.request;
-        this.props.setWaypoints([
-            originCoords.coordinates,
-            destCoords.coordinates,
-        ]);
+        const {
+            setMapPoints,
+            optimalRoute,
+            calcDetour,
+            request,
+            rideTime,
+        } = this.props;
+        calcDetour &&
+            calcDetour(
+                {
+                    pickup: request.originCoords.coordinates,
+                    dropoff: request.destCoords.coordinates,
+                },
+                (response) => {
+                    setMapPoints(response.optimalRoute);
+                    this.setState({
+                        timeAdded: Math.round(
+                            (response.rideTime - rideTime) / 60
+                        ),
+                    });
+                }
+            );
+        if (!calcDetour) {
+            setMapPoints(optimalRoute);
+        }
     };
-
-    /* TODO: Gather all coordinates together: origin, dest, and any waypoints
-        then plug them into this function
-        if possible, have a way to label them as pickup and dropoff
-        store all confirmed waypoints in one place
-        then add in the new waypoint into this method
-        store in state somewhere
-    */
 
     sendEmailNotificationToRequester(action) {
         const { ride, dateString, timeString } = this.props;
@@ -147,7 +165,7 @@ class RequestItem extends Component {
             requesterLastName: lastName,
             dynamic_template_data: dynamic_template_data,
         };
-        console.log(requestBody);
+        // console.log(requestBody);
         const url = '/api/requests/email/' + action + '/' + ride._id;
         var requestOptions = {
             method: 'POST',
@@ -165,7 +183,7 @@ class RequestItem extends Component {
     render() {
         // Currently, only drivers can view map
 
-        const { requester, driver, ride } = this.state;
+        const { requester, driver, ride, timeAdded } = this.state;
         const { request, viewer, isPending } = this.props; //version controls what to display
         const { comment, startLoc, endLoc, status } = request;
 
@@ -265,6 +283,14 @@ class RequestItem extends Component {
                         <div>Pick Up: {startLoc}</div>
                         <div>Drop off: {endLoc}</div>
                         {comment && <div>Comment: {comment}</div>}
+                        {timeAdded && (
+                            <div>
+                                {requester.firstName}'s ride would add about{' '}
+                                {timeAdded}{' '}
+                                {timeAdded === 1 ? 'minute' : 'minutes'} to your
+                                trip
+                            </div>
+                        )}
                     </div>
                     {status === 0 && (
                         <div className="requestActions">

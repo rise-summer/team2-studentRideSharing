@@ -3,6 +3,7 @@ import CancelRideButton from '../CancelRideButton/CancelRideButton';
 import RequestItem from '../Requests/RequestItem';
 import { Segment, Header, Icon, List, Divider } from 'semantic-ui-react';
 import queryString from 'query-string';
+import { cloneDeep } from 'lodash';
 import './RideProfile.css';
 
 class RideProfile extends Component {
@@ -55,21 +56,32 @@ class RideProfile extends Component {
         };
 
         this.setState({ currentRoute: currentRoute });
-        this.calcRoute(currentRoute);
-    }
+        this.calcRoute(currentRoute, (response) => this.setState(response));
+    };
 
     // Returns optimal path and ride time
-    calcRoute = (route) => {
+    calcRoute = (route, callback) => {
         const originString = route.origin.join(',') + ';';
         const destString = route.dest.join(',');
         let waypointsString = '';
+        let distributionString = '';
+        let counter = 1;
         route.waypoints.forEach((waypoint) => {
-            waypointsString += `${waypoint.pickup.join(',')};${waypoint.pickup.join(',')};`;
+            waypointsString += `${waypoint.pickup.join(
+                ','
+            )};${waypoint.dropoff.join(',')};`;
+            distributionString += `${counter},${counter + 1};`;
+            counter += 2;
         });
+        // Remove trailing semicolon
+        distributionString = distributionString.slice(
+            0,
+            distributionString.length - 1
+        );
+
         const coordinates = originString + waypointsString + destString;
-        console.log(coordinates);
         const parameters = {
-            distributions: '',
+            distributions: distributionString,
             source: 'first',
             // overview: 'false',
             destination: 'last',
@@ -77,15 +89,28 @@ class RideProfile extends Component {
                 'pk.eyJ1IjoicmlzZXRlYW0yIiwiYSI6ImNrY3dnbmxkbzAyaWQycm5qemVmYzF0NnUifQ.iBcVduGfqvv6KsXReFG7Jg',
         };
 
-        const url = `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinates}?${queryString.stringify(parameters)}`;
-
+        const url = `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinates}?${queryString.stringify(
+            parameters
+        )}`;
         fetch(url)
             .then((res) => res.json())
             .then((res) => {
-                console.log(res);
+                callback({
+                    optimalRoute: res.waypoints.map(
+                        (waypoint) => waypoint.location
+                    ),
+                    rideTime: res.trips[0].duration,
+                });
             })
             .catch((error) => console.log(error));
-    }
+    };
+
+    calcDetour = (newWaypoint, callback) => {
+        const route = cloneDeep(this.state.currentRoute);
+        route.waypoints.push(newWaypoint);
+        this.calcRoute(route, callback);
+
+    };
 
     componentDidUpdate(prevProps, prevState) {
         const { requests } = this.state;
@@ -97,17 +122,13 @@ class RideProfile extends Component {
         this.fetchRequests();
     }
 
-    handleMapRequest = () => {
-        const { originCoords, destCoords } = this.props.ride;
-        this.props.setMapCoords({
-            origin: originCoords.coordinates,
-            destination: destCoords.coordinates,
-        });
-    };
+    // handleMapRequest = () => {
+    //     this.props.setMapPoints(this.state.optimalRoute);
+    // };
 
     render() {
-        const { ride, handleError, isActive } = this.props;
-        const { requests } = this.state;
+        const { ride, handleError, isActive, setMapPoints } = this.props;
+        const { requests, optimalRoute, rideTime } = this.state;
         const { startLoc, endLoc, time, price, capacity, _id, driverID } = ride;
         const pendingRequests = requests.filter(
             (request) => request.status === 0
@@ -171,15 +192,15 @@ class RideProfile extends Component {
                                         parentRefetch={() =>
                                             this.fetchRequests()
                                         }
-                                        handleMapRequest={this.handleMapRequest}
-                                        setWaypoints={this.props.setWaypoints}
+                                        optimalRoute={optimalRoute}
+                                        setMapPoints={setMapPoints}
                                     />
                                 ))}
                             </List>
                         </div>
                     )}
                     {
-                        /*display the divder only when there are both confirmed and pending requests*/
+                        /*display the divider only when there are both confirmed and pending requests*/
                         confirmedCount > 0 && pendingCount > 0 && <Divider />
                     }
                     {pendingCount > 0 && (
@@ -200,8 +221,10 @@ class RideProfile extends Component {
                                         parentRefetch={() =>
                                             this.fetchRequests()
                                         }
-                                        handleMapRequest={this.handleMapRequest}
-                                        setWaypoints={this.props.setWaypoints}
+                                        setMapPoints={setMapPoints}
+                                        calcDetour={this.calcDetour}
+                                        optimalRoute={optimalRoute}
+                                        rideTime={rideTime}
                                     />
                                 ))}
                             </List>

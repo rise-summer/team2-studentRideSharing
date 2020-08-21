@@ -6,8 +6,6 @@ import { isEqual } from 'lodash';
 import '@mapbox/mapbox-gl-directions/src/mapbox-gl-directions.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-import Loader from 'semantic-ui-react';
-
 mapboxgl.accessToken =
     'pk.eyJ1IjoicmlzZXRlYW0yIiwiYSI6ImNrZDIzdDJkbjBzcnEyc3E5YnViazdoYWEifQ.6O1AdDa4j5XR9qSRWMkcWQ';
 
@@ -24,6 +22,8 @@ class Map extends Component {
         };
         this.mapRef = React.createRef();
     }
+
+    // Set up mapboxgl objects (map and directions)
     componentDidMount() {
         const map = new mapboxgl.Map({
             container: this.mapRef.current,
@@ -32,6 +32,7 @@ class Map extends Component {
             zoom: this.state.zoom,
         });
 
+        // Updates stored lng/lat on move
         map.on('move', () => {
             this.setState({
                 lng: map.getCenter().lng.toFixed(4),
@@ -40,6 +41,7 @@ class Map extends Component {
             });
         });
 
+        // Creates directions object to generate directions
         const directions = new MapboxDirections({
             profile: 'mapbox/driving',
             interactive: false,
@@ -51,36 +53,49 @@ class Map extends Component {
             accessToken: mapboxgl.accessToken,
         });
         map.addControl(directions);
+
         this.setState({ directionObject: directions });
         this.setState({ mapObject: map });
     }
 
+    // Removes all markers from the map
     clearAllMarkers = () => {
         this.state.currentMarkers.forEach((marker) => marker.remove());
     };
 
     componentDidUpdate(prevProps) {
+        // Reversed because the waypoints are all added at index 0 (in reverse order)
         const newWaypoints = this.props.waypoints.reverse();
+        // Only runs this part if the route changes
         if (
             !isEqual(prevProps.waypoints, newWaypoints) ||
-            prevProps.origin !== this.props.origin ||
-            prevProps.destination !== this.props.destination
+            !isEqual(prevProps.origin, this.props.origin) ||
+            !isEqual(prevProps.dest, this.props.dest)
         ) {
-            const { origin, destination } = this.props;
-            if (origin.length > 0 && destination.length > 0) {
+            const { origin, dest } = this.props;
+            if (origin.length > 0 && dest.length > 0) {
                 const dir = this.state.directionObject;
                 const map = this.state.mapObject;
+
+                // Removes all routes and markers, then creates new route with markers
                 dir.removeRoutes();
                 this.clearAllMarkers();
                 dir.setOrigin(origin);
-                dir.setDestination(destination);
-                newWaypoints.forEach((waypoint) => {
+                dir.setDestination(dest);
+                const markers = [];
+                newWaypoints.forEach((waypoint, index) => {
                     dir.addWaypoint(0, waypoint);
-                    const marker = new mapboxgl.Marker().setLngLat(waypoint);
+                    const marker = new mapboxgl.Marker();
+                    marker.setLngLat(waypoint);
+
+                    // const popup = new mapboxgl.Popup().setText((index + 1));
+                    // marker.setPopup(popup);
+
                     marker.addTo(map);
-                    this.setState({
-                        currentMarkers: [...this.state.currentMarkers, marker],
-                    });
+                    markers.push(marker);
+                });
+                this.setState({
+                    currentMarkers: markers,
                 });
             }
         }
