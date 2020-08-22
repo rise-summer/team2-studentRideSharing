@@ -31,7 +31,6 @@ class DriverInfo extends React.Component {
         event.preventDefault();
 
         try {
-            console.log(this.state)
             this.postFetch();
             this.setState({
                 plate: '',
