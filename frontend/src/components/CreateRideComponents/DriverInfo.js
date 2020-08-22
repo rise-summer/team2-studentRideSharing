@@ -31,7 +31,6 @@ class DriverInfo extends React.Component {
         event.preventDefault();
 
         try {
-            console.log(this.state)
             this.postFetch();
             this.setState({
                 plate: '',
@@ -94,7 +93,7 @@ class DriverInfo extends React.Component {
                                 onChange={this.handleChange}
                                 label="Car Color"
                             />
-                            <Form.Button to="/newride" id="submit-button">Submit</Form.Button>
+                            <Form.Button to="/newride" type="submit">Submit</Form.Button>
                         </Form>
                     </Modal.Content>
                 </Modal>

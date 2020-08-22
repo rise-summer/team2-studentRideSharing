@@ -1,5 +1,4 @@
 .driver-info{
-    /* position: absolute; */
     padding: 10px;
     width: 35%;
     background: #FFFFFF;
@@ -13,21 +12,3 @@
     position: absolute;
     margin: 5% 15% ;
 }
-
-#close-icon{
-    display: flex;
-    justify-content: flex-end;
-
-}
-
-#submit-button{
-    width: 100%;
-    color:white;
-    background-color: black;
-}
-
-#submit-button:hover{
-    color: black;
-    background-color: rgb(197, 196, 196);
-}
-
