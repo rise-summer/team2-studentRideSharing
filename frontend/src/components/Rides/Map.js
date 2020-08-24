@@ -63,9 +63,10 @@ class Map extends Component {
         this.state.currentMarkers.forEach((marker) => marker.remove());
     };
 
+    // TODO: change directions to optimization api route display
     componentDidUpdate(prevProps) {
         // Reversed because the waypoints are all added at index 0 (in reverse order)
-        const newWaypoints = this.props.waypoints.reverse();
+        const newWaypoints = this.props.waypoints;
         // Only runs this part if the route changes
         if (
             !isEqual(prevProps.waypoints, newWaypoints) ||
@@ -74,6 +75,7 @@ class Map extends Component {
         ) {
             const { origin, dest } = this.props;
             if (origin.length > 0 && dest.length > 0) {
+              console.log(origin.join(',') + ';' + newWaypoints.join(';') + ';' + dest.join(','));
                 const dir = this.state.directionObject;
                 const map = this.state.mapObject;
 
@@ -84,7 +86,7 @@ class Map extends Component {
                 dir.setDestination(dest);
                 const markers = [];
                 newWaypoints.forEach((waypoint, index) => {
-                    dir.addWaypoint(0, waypoint);
+                    dir.addWaypoint(index, waypoint);
                     const marker = new mapboxgl.Marker();
                     marker.setLngLat(waypoint);
 
