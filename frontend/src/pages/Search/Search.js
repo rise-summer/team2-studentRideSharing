@@ -1,48 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import SearchBar from '../../components/SearchBar/SearchBar';
 import RideList from '../../components/Rides/RideList';
-import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css';
-import { Dropdown } from 'semantic-ui-react';
-import GeoSearch from '../../components/GeoSearch/GeoSearch';
-import { Link } from 'react-router-dom';
 import { SEARCH_RIDES_SUCCESS } from '../../actions/SearchPageStates';
 import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
-import DatePicker from '../../components/SearchComponents/DatePicker';
 import SearchBox from '../../components/SearchComponents/SearchBox';
 
 const querystring = require('querystring');
 const DEBUG = true;
-
-const rideOptions = [
-    {
-        key: 'One Way',
-        text: 'One Way',
-        value: 'One Way',
-    },
-    {
-        key: 'Roundtrip',
-        text: 'Roundtrip',
-        value: 'Roundtrip',
-    },
-];
 
 class Search extends Component {
     constructor(props) {
         // new Date(year, month, date, hours, minutes, seconds, ms)
         super(props);
         this.state = {
-            rides: [],
+            // rides: [],
+            rides: {
+                outboundRides: [],
+                returnRides: []
+            },
             filteredRides: [],
             roundtrip: false,
             searched: false,
             query: {
-                start: {},
-                endDest: {},
+                start: null,
+                endDest: null,
                 beginDate: '',
                 endDate: '',
                 originCoords: '',
@@ -57,12 +42,10 @@ class Search extends Component {
     // TODO: We could just store coords. The input value is stored in the GeoSearch component,
     // and coords are the only thing needed for the API call
     handleGeoChange = (resp, fieldName) => {
+        console.log(resp);
         this.setState({
             [fieldName]: resp,
         });
-        // this.setState({
-        //     [fieldName]: [resp.lat, resp.lng]
-        // })
     };
 
     editBeginDate = (d) => {
@@ -86,14 +69,35 @@ class Search extends Component {
         const date = new Date(this.state.query.beginDate);
         const dateEnd = new Date(date);
         dateEnd.setHours(23, 59, 59);
-        const { start, endDest } = this.state;
-        const query = {
-            originCoords: [start.lng, start.lat],
-            destCoords: [endDest.lng, endDest.lat],
+        const { start, endDest, distance } = this.state.query;
+        /* If no distance specified, default to 5 */
+        const dist = (distance) ? distance : 5;
+        const origin = (start) ? [start.lng, start.lat] : '';
+        const dest = (endDest) ? [endDest.lng, endDest.lat] : '';
+        const outboundQuery = {
+            originCoords: origin,
+            destCoords: dest,
             beginDate: date,
             endDate: dateEnd,
-            distance: this.state.query.distance,
+            distance: dist,
         };
+        this.queryOutbound(outboundQuery);
+
+        // if roundtrip selected
+        const returnDate = new Date(this.state.query.endDate);
+        const returnDateEnd = new Date(returnDate);
+        returnDateEnd.setHours(23, 59, 59);
+        const returnQuery = {
+            originCoords: dest,
+            destCoords: origin,
+            beginDate: returnDate,
+            endDate: returnDateEnd,
+            distance: dist,
+        }
+        this.queryReturn(returnQuery);
+    };
+
+    queryOutbound = (query) => {
         const xurl =
             '/api/rides?' +
             querystring.stringify({ query: JSON.stringify(query) });
@@ -110,8 +114,38 @@ class Search extends Component {
                     rideID: ride._id,
                     driverID: ride.driverID,
                 }));
+                const newRides = this.state.rides;
+                newRides.outboundRides = queried_rides;
                 this.setState({
-                    filteredRides: queried_rides,
+                    rides: newRides,
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    queryReturn = (query) => {
+        const xurl =
+            '/api/rides?' +
+            querystring.stringify({ query: JSON.stringify(query) });
+        fetch(xurl)
+            .then((res) => res.json())
+            .then((res) => {
+                if (DEBUG) {
+                    console.log(res);
+                }
+                const queried_rides = res.map((ride) => ({
+                    startLoc: ride.startLoc,
+                    endLoc: ride.endLoc,
+                    time: ride.time,
+                    rideID: ride._id,
+                    driverID: ride.driverID,
+                }));
+                const newRides = this.state.rides;
+                newRides.returnRides = queried_rides;
+                this.setState({
+                    rides: newRides,
                 });
             })
             .catch((error) => {
@@ -146,16 +180,13 @@ class Search extends Component {
     };
 
     render() {
-        const { roundtrip } = this.state;
         const functions = {
-            // editStart: this.editStart,
-            // editEndDest: this.editEndDest,
             editBeginDate: this.editBeginDate,
             editEndDate: this.editEndDate,
             query: this.queryRides,
             changeRideType: this.changeRideType,
             getRideType: this.getRideType,
-            handleGeoChange: this.handleGeoChange
+            handleGeoChange: this.handleGeoChange,
         };
 
         const refs = {
@@ -179,7 +210,7 @@ class Search extends Component {
                 <div>
                     <br />
                     <h3>Available Rides</h3>
-                    <RideList roundtrip={this.state.roundtrip} rides={this.state.filteredRides} />
+                    <RideList roundtrip={this.state.roundtrip} rides={this.state.rides} />
                 </div>;
         }
 
@@ -201,5 +232,4 @@ const mapStateToProps = (state) => ({
     endDate: state.endDate,
 });
 
-// export default Search;
 export default connect(mapStateToProps)(Search);

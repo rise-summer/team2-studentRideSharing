@@ -8,17 +8,28 @@ class RideList extends Component {
         const roundtrip = this.props.roundtrip;
 
         const departRides = <div className='ridelist'>
-            {this.props.rides.map((ride, i) =>
-                <Ride start={ride.startLoc}
-                      dest={ride.endLoc}
-                      time={ride.time}
-                      key={i}
+            {this.props.rides.outboundRides.map((ride, i) =>
+                <Ride
+                    start={ride.startLoc.city}
+                    dest={ride.endLoc.city}
+                    time={ride.time}
+                    key={i}
+                />)}
+        </div>;
+
+        const returnRides = <div className='ridelist'>
+            {this.props.rides.returnRides.map((ride, i) =>
+                <Ride
+                    start={ride.startLoc.city}
+                    dest={ride.endLoc.city}
+                    time={ride.time}
+                    key={i}
                 />)}
         </div>;
 
         const panes = [
-            { menuItem: 'First Ride', render: () => <Tab.Pane>{departRides}</Tab.Pane> },
-            { menuItem: 'Return Ride', render: () => <Tab.Pane>Return Rides</Tab.Pane> },
+            { menuItem: 'Outbound Rides', render: () => <Tab.Pane>{departRides}</Tab.Pane> },
+            { menuItem: 'Return Ride', render: () => <Tab.Pane>{returnRides}</Tab.Pane> },
         ];
 
         const renderResults = () => {

@@ -53,7 +53,7 @@ class Ride extends Component {
                     <Accordion.Content
                         className="accordion-dropdown"
                         active={this.state.activeIndex === 0}>
-                        <b>Departure Time: {this.formatTime(this.props.time)}</b>
+                        <b>Departure Time: {this.formatTime(new Date(this.props.time))}</b>
                         <Link to={`/ride/${driverID}/${rideID}`}>
                             <button className="view-button">View Ride</button>
                         </Link>

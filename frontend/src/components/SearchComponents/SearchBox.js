@@ -59,7 +59,7 @@ class SearchBox extends Component {
                 <div className="ride-type-wrapper">
                     <Dropdown
                         className="ride-type-selector"
-                        text={this.props.functions.getRideType}
+                        text={this.props.functions.getRideType()}
                         value={this.props.functions.getRideType}
                         selection
                         compact
