@@ -43,7 +43,7 @@ class Map extends Component {
 
     componentDidUpdate(prevProps) {
         if (
-          //TODO: add advanced equality for array comparison
+            //TODO: add advanced equality for array comparison
             prevProps.waypoints !== this.props.waypoints ||
             prevProps.origin !== this.props.origin ||
             prevProps.destination !== this.props.destination
@@ -55,7 +55,7 @@ class Map extends Component {
                 dir.setOrigin(origin);
                 dir.setDestination(destination);
                 waypoints.reverse().forEach((waypoint) => {
-                  console.log(waypoint);
+                    console.log(waypoint);
                     dir.addWaypoint(0, waypoint);
                 });
                 console.log(dir.getWaypoints())

@@ -1,7 +1,8 @@
 import React from 'react';
-import TimePicker from '../../components/TimePicker/TimePicker';
-import NumberPicker from '../../components/NumberPicker/NumberPicker';
-import GeoSearch from '../../components/GeoSearch/GeoSearch';
+import TimePicker from '../TimePicker/TimePicker';
+import NumberPicker from '../NumberPicker/NumberPicker';
+import GeoSearch from '../GeoSearch/GeoSearch';
+import DriverInfo from './DriverInfo';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
@@ -147,11 +148,16 @@ class DriverListing extends React.Component {
     render() {
         return (
             <div>
+                {!this.props.haveCarInfo ? (
+                    <DriverInfo userId={this.props.userId} />
+                ) : (
+                        console.log('user have car info')
+                    )}
                 {this.state.step === 1 ? (
                     <h1>Create a ride</h1>
                 ) : (
-                    <h1>Create a return ride</h1>
-                )}
+                        <h1>Create a return ride</h1>
+                    )}
                 <form onSubmit={this.handleSubmit} autoComplete="off">
                     {/* Replace with location picker*/}
                     <GeoSearch

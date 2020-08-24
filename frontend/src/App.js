@@ -1,13 +1,14 @@
 import React, { Component, useState, useEffect } from 'react';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import DriverListing from './pages/DriverListing/DriverListing';
+import CreateRide from './pages/CreateRide/CreateRide';
 import Search from './pages/Search/Search';
 import RideDetails from './pages/RideDetails/RideDetails';
 import LoginPage from './pages/LoginPage/LoginPage';
 import Profile from './pages/Profile/Profile';
 import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/Navigation/PrivateRoute';
+import SearchLanding from './components/SearchComponents/SearchLanding';
 import { auth } from "./firebase";
 import './App.css';
 
@@ -106,7 +107,7 @@ class App extends Component {
                             <Profile />
                         </PrivateRoute>
                         <PrivateRoute path="/newride" isAuthenticated={isAuthenticated}>
-                            <DriverListing userId="5f29a088bc6acb9e9da9e65e" />
+                            <CreateRide userId="5f29a088bc6acb9e9da9e65e" />
                         </PrivateRoute>
                         <Route path="/">
                             <Search /> {/* should be search landing page */}
