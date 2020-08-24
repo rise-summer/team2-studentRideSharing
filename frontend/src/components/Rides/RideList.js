@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
-import Ride from "./Ride";
-import './RideList.css'
+import Ride from './Ride';
+import './RideList.css';
 import { Tab } from 'semantic-ui-react';
 
 class RideList extends Component {
     render() {
         const roundtrip = this.props.roundtrip;
 
-        const departRides = <div className='ridelist'>
+        const departRides = <div className="ridelist">
             {this.props.rides.outboundRides.map((ride, i) =>
                 <Ride
-                    start={ride.startLoc.city}
-                    dest={ride.endLoc.city}
+                    start={ride.startLoc.city + ', ' + ride.startLoc.state}
+                    dest={ride.endLoc.city + ', ' + ride.endLoc.state}
                     time={ride.time}
                     key={i}
                 />)}
         </div>;
 
-        const returnRides = <div className='ridelist'>
+        const returnRides = <div className="ridelist">
             {this.props.rides.returnRides.map((ride, i) =>
                 <Ride
                     start={ride.startLoc.city}

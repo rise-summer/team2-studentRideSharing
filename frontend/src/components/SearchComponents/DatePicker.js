@@ -21,7 +21,7 @@ class DatePicker extends Component {
 
     render() {
         return <div>
-            <input type='text'
+            <input type="text"
                    className={this.props.className}
                    ref={this.dateRef}
                    value={this.props.value}

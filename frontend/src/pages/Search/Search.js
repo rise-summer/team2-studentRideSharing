@@ -5,7 +5,7 @@ import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css';
 import { SEARCH_RIDES_SUCCESS } from '../../actions/SearchPageStates';
-import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
+import { getRidesError, getRidesSuccess } from '../../reducers/SearchRidesReducer';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
 
@@ -42,7 +42,6 @@ class Search extends Component {
     // TODO: We could just store coords. The input value is stored in the GeoSearch component,
     // and coords are the only thing needed for the API call
     handleGeoChange = (resp, fieldName) => {
-        console.log(resp);
         this.setState({
             [fieldName]: resp,
         });
@@ -93,7 +92,7 @@ class Search extends Component {
             beginDate: returnDate,
             endDate: returnDateEnd,
             distance: dist,
-        }
+        };
         this.queryReturn(returnQuery);
     };
 
@@ -165,9 +164,9 @@ class Search extends Component {
 
     changeRideType = (e, data) => {
         if (data.value === 'One Way') {
-            this.setState({ roundtrip: false })
+            this.setState({ roundtrip: false });
         } else {
-            this.setState({ roundtrip: true })
+            this.setState({ roundtrip: true });
         }
     };
 
