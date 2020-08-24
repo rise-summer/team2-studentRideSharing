@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { withRouter } from "react-router";
+
+import { connect } from "react-redux";
 import { auth } from "../../firebase";
 import SignIn from '../../components/Auth/SignIn';
 import SignUp from '../../components/Auth/SignUp';
-import { Grid, Tab } from 'semantic-ui-react';
+import Auth from '../../components/Auth/Auth';
+
+import { Grid, Tab, Button } from 'semantic-ui-react';
 import './LoginPage.css';
 
 class LoginPage extends Component {
@@ -15,11 +20,24 @@ class LoginPage extends Component {
     }
 
     componentDidMount() {
-        auth.onAuthStateChanged((data) => {
-            if (data) { //logged in
-                this.setState({uid: data.uid});
-            }
-        });
+        // auth.onAuthStateChanged((data) => {
+        //     if (data) { //logged in
+        //         Auth.authenticate(data.uid);
+        //         this.setState({uid: data.uid});
+        //     }
+        // });
+    }
+
+    login = () => {
+        //Prepare for redirect after login
+        //reference: https://reactrouter.com/web/example/auth-workflow
+        const { history, location } = this.props;
+        let { from } = location.state || { from: { pathname: "/"} };
+        console.log("from:");
+        console.log(from);
+        this.props.login();
+        history.replace(from);
+        console.log("here");
     }
 
     render() {
@@ -28,7 +46,7 @@ class LoginPage extends Component {
                 menuItem: 'Log In',
                 render: () => (
                     <Tab.Pane attached={false} textAlign="left">
-                        <SignIn />
+                        <SignIn login={this.login}/>
                     </Tab.Pane>
                 ),
             },
@@ -36,7 +54,7 @@ class LoginPage extends Component {
                 menuItem: 'Sign Up',
                 render: () => (
                     <Tab.Pane attached={false} textAlign="left">
-                        <SignUp />
+                        <SignUp login={this.login}/>
                     </Tab.Pane>
                 ),
             },
@@ -66,4 +84,4 @@ class LoginPage extends Component {
     }
 }
 
-export default LoginPage;
+export default withRouter(LoginPage);

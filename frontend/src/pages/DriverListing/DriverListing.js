@@ -5,6 +5,7 @@ import GeoSearch from '../../components/GeoSearch/GeoSearch';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
+import { auth } from "../../firebase";
 
 // TODO: change so first ride is stored and everything is submitted at the end
 
@@ -12,6 +13,7 @@ class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            uid: "",
             startLocation: {},
             endLocation: {},
             startDate: '',
@@ -31,6 +33,14 @@ class DriverListing extends React.Component {
             onSelect: this.editStartDate,
             minDate: new Date(),
         });
+
+        auth.onAuthStateChanged((data) => {
+            if (data) { //logged in
+                this.setState({uid: data.uid});
+            } else {
+                this.setState({uid: ""});
+            }
+        });
     }
 
     editStartDate = (d) => {
@@ -46,6 +56,7 @@ class DriverListing extends React.Component {
 
     postData = async () => {
         const {
+            uid,
             startLocation,
             endLocation,
             startDate,
@@ -53,7 +64,7 @@ class DriverListing extends React.Component {
             price,
             capacity,
         } = this.state;
-        const url = `/api/rides/${this.props.userId}`;
+        const url = `/api/rides/${uid}`;
         const bodyData = {
             origin: {
                 address: startLocation.address,

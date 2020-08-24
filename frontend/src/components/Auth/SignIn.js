@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
+import { withRouter } from "react-router";
 import { Form, Divider, Button } from 'semantic-ui-react';
 import firebase, { auth } from "../../firebase";
 import { uiConfig } from "../../firebase";
@@ -17,11 +18,11 @@ class SignIn extends React.Component {
     }
 
     componentDidMount() {
-        auth.onAuthStateChanged((data) => {
-            if (data) {
-                this.setState({uid: data.uid});
-            }
-        });
+        // auth.onAuthStateChanged((data) => {
+        //     if (data) {
+        //         this.setState({uid: data.uid});
+        //     }
+        // });
     }
 
     handleChange = (event, {name, value}) => {
@@ -31,8 +32,12 @@ class SignIn extends React.Component {
     handleSubmit = (event) => {
         // alert('Submitted ' + JSON.stringify(this.state));
         const {email, password} = this.state;
-
         auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+                this.props.login();
+                console.log(this.props.history);
+                // console.log(from);
+            })
             .catch(function (error) {
                 // Handle Errors here.
                 var errorCode = error.code;
@@ -92,4 +97,4 @@ class SignIn extends React.Component {
     }
 }
 
-export default SignIn;
+export default withRouter(SignIn);
