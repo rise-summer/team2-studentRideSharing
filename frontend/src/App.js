@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import DriverListing from './pages/DriverListing/DriverListing';
+import CreateRide from './pages/CreateRide/CreateRide';
 import Search from './pages/Search/Search';
 import RideDetails from './pages/RideDetails/RideDetails';
 import LoginPage from './pages/LoginPage/LoginPage';
@@ -27,9 +27,9 @@ function App() {
                     <Route path="/search">
                         <Search />
                     </Route>
-                    <Route path="/ride/:driverID/:rideID" component={RideDetails}/>
+                    <Route path="/ride/:driverID/:rideID" component={RideDetails} />
                     <Route path="/newride">
-                        <DriverListing userId="5f29a088bc6acb9e9da9e65e" />
+                        <CreateRide userId="5f2f0fdb12db250479914d5b" />
                     </Route>
                     <Route path="/login">
                         <LoginPage />
