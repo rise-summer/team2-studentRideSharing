@@ -7,7 +7,8 @@ const ProfileListings = ({ rides, handleError }) => {
     // startName, destName, datetime, price, seats
     // Would it be better to pass rides directly into RideProfile and unpack everything in there?
     // TODO: render displayname instead of city
-    const [mapPoints, setMapPoints] = useState([]);
+    const [waypoints, setWaypoints] = useState([]);
+    const [lineString, setLineString] = useState([]);
 
     const activeRides = rides.filter(
         (ride) => !ride.status || ride.status === 0
@@ -22,7 +23,8 @@ const ProfileListings = ({ rides, handleError }) => {
             ride={ride}
             isActive
             handleError={handleError}
-            setMapPoints={setMapPoints}
+            setWaypoints={setWaypoints}
+            setLineString={setLineString}
         />
     ));
     const completedRideList = completedRides.map((ride, index) => (
@@ -30,7 +32,8 @@ const ProfileListings = ({ rides, handleError }) => {
             key={index}
             ride={ride}
             handleError={handleError}
-            setMapPoints={setMapPoints}
+            setWaypoints={setWaypoints}
+            setLineString={setLineString}
         />
     ));
     // const cancelledRideList = cancelledRides.map((ride, index) => (
@@ -50,9 +53,8 @@ const ProfileListings = ({ rides, handleError }) => {
             </Grid.Column>
             <Grid.Column width={6}>
                 <Map
-                    origin={mapPoints[0] || []}
-                    dest={mapPoints[mapPoints.length - 1] || []}
-                    waypoints={mapPoints.slice(1, mapPoints.length - 1) || []}
+                    waypoints={waypoints}
+                    lineString={lineString}
                 />
             </Grid.Column>
         </Grid>

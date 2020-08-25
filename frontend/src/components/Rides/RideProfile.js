@@ -20,6 +20,7 @@ class RideProfile extends Component {
             //array of points in optimal path
             optimalRoute: [],
             rideTime: '',
+            lineString: [],
         };
     }
 
@@ -35,7 +36,8 @@ class RideProfile extends Component {
             .catch((error) => console.log('error', error));
     }
 
-    setCurrentOptimizedRoute = () => {
+    // TODO: revise this function, it has a lot of side effects
+    setCurrentOptimizedRoute = async () => {
         const { requests } = this.state;
         const confirmedRequests = requests.filter(
             (request) => request.status === 1
@@ -56,11 +58,15 @@ class RideProfile extends Component {
         };
 
         this.setState({ currentRoute: currentRoute });
-        this.calcRoute(currentRoute, (response) => this.setState(response));
+        const response = await this.calcRoute(currentRoute);
+        this.setState(response);
+
+        // TODO: Find better solution
+        return { currentRoute: currentRoute, response: response };
     };
 
     // Returns optimal path and ride time
-    calcRoute = (route, callback) => {
+    calcRoute = async (route) => {
         const originString = route.origin.join(',') + ';';
         const destString = route.dest.join(',');
         let waypointsString = '';
@@ -83,8 +89,10 @@ class RideProfile extends Component {
         const parameters = {
             distributions: distributionString,
             source: 'first',
-            // overview: 'false',
+            overview: 'full',
+            geometries: 'geojson',
             destination: 'last',
+            roundtrip: 'false',
             access_token:
                 'pk.eyJ1IjoicmlzZXRlYW0yIiwiYSI6ImNrY3dnbmxkbzAyaWQycm5qemVmYzF0NnUifQ.iBcVduGfqvv6KsXReFG7Jg',
         };
@@ -92,42 +100,68 @@ class RideProfile extends Component {
         const url = `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${coordinates}?${queryString.stringify(
             parameters
         )}`;
-        fetch(url)
-            .then((res) => res.json())
-            .then((res) => {
-                callback({
-                    optimalRoute: res.waypoints.map(
-                        (waypoint) => waypoint.location
-                    ),
-                    rideTime: res.trips[0].duration,
-                });
-            })
-            .catch((error) => console.log(error));
-    };
-
-    calcDetour = (newWaypoint, callback) => {
-        const route = cloneDeep(this.state.currentRoute);
-        route.waypoints.push(newWaypoint);
-        this.calcRoute(route, callback);
-
-    };
-
-    componentDidUpdate(prevProps, prevState) {
-        const { requests } = this.state;
-        if (prevState.requests !== requests) {
-            this.setCurrentOptimizedRoute();
+        try {
+            const response = await fetch(url);
+            const responseJson = await response.json();
+            return {
+                optimalRoute: responseJson.waypoints.map(
+                    (waypoint) => waypoint.location
+                ),
+                rideTime: responseJson.trips[0].duration,
+                lineString: responseJson.trips[0].geometry.coordinates,
+            };
+        } catch (error) {
+            console.log(error);
         }
-    }
+    };
+
+    getCurrentRoute = async () => {
+        const currentRoute = this.state.currentRoute;
+        if (currentRoute.origin.length > 0 && currentRoute.dest.length > 0)
+            return currentRoute;
+        else {
+            const response = await this.setCurrentOptimizedRoute();
+            return response.currentRoute;
+        }
+    };
+
+    getRequestRoute = async (newWaypoint) => {
+        const route = await this.getCurrentRoute().currentRoute;
+        route.waypoints.push(newWaypoint);
+        const routeOptimization = await this.calcRoute(route, console.log);
+        return routeOptimization;
+
+        //TODO: Add so that confirmed rides still have base route in state
+    };
+
+    updateMap = async (isNewRoute, newOptimalRoute, newLineString) => {
+        const { setWaypoints, setLineString } = this.props;
+        if (isNewRoute) {
+            setWaypoints(newOptimalRoute);
+            setLineString(newLineString);
+        } else {
+            const { currentRoute } = this.state;
+            if (
+                currentRoute.origin.length > 0 &&
+                currentRoute.dest.length > 0 &&
+                this.state.lineString.length > 0
+            ) {
+                setLineString(this.state.lineString);
+                setWaypoints(this.state.optimalRoute);
+            } else {
+                const res = await this.setCurrentOptimizedRoute();
+                setLineString(res.response.lineString);
+                setWaypoints(res.response.optimalRoute);
+            }
+        }
+    };
+
     componentDidMount() {
         this.fetchRequests();
     }
 
-    // handleMapRequest = () => {
-    //     this.props.setMapPoints(this.state.optimalRoute);
-    // };
-
     render() {
-        const { ride, handleError, isActive, setMapPoints } = this.props;
+        const { ride, handleError, isActive } = this.props;
         const { requests, optimalRoute, rideTime } = this.state;
         const { startLoc, endLoc, time, price, capacity, _id, driverID } = ride;
         const pendingRequests = requests.filter(
@@ -142,6 +176,34 @@ class RideProfile extends Component {
         const dateString = dateObject.toLocaleDateString('en-US');
         const timeString = dateObject.toLocaleTimeString('en-US');
 
+        const confirmedRequestList = confirmedRequests.map((request, index) => (
+            <RequestItem
+                key={index}
+                viewer="Driver"
+                request={request}
+                ride={ride}
+                dateString={dateString}
+                timeString={timeString}
+                parentRefetch={() => this.fetchRequests()}
+                getRequestRoute={this.getRequestRoute}
+                updateMap={this.updateMap}
+            />
+        ));
+
+        const pendingRequestList = pendingRequests.map((request, index) => (
+            <RequestItem
+                key={index}
+                viewer="Driver"
+                request={request}
+                ride={ride}
+                dateString={dateString}
+                timeString={timeString}
+                parentRefetch={() => this.fetchRequests()}
+                rideTime={rideTime}
+                getRequestRoute={this.getRequestRoute}
+                updateMap={this.updateMap}
+            />
+        ));
         return (
             <Segment>
                 <Header>
@@ -181,21 +243,7 @@ class RideProfile extends Component {
                                 {confirmedCount > 1 ? 'Riders' : 'Rider'}
                             </div>
                             <List className="requestsList" divided animated>
-                                {confirmedRequests.map((request, index) => (
-                                    <RequestItem
-                                        key={index}
-                                        viewer="Driver"
-                                        request={request}
-                                        ride={ride}
-                                        dateString={dateString}
-                                        timeString={timeString}
-                                        parentRefetch={() =>
-                                            this.fetchRequests()
-                                        }
-                                        optimalRoute={optimalRoute}
-                                        setMapPoints={setMapPoints}
-                                    />
-                                ))}
+                                {confirmedRequestList}
                             </List>
                         </div>
                     )}
@@ -210,23 +258,7 @@ class RideProfile extends Component {
                                 {pendingCount > 1 ? 'Requests' : 'Request'}
                             </div>
                             <List className="requestsList" divided animated>
-                                {pendingRequests.map((request, index) => (
-                                    <RequestItem
-                                        key={index}
-                                        viewer="Driver"
-                                        request={request}
-                                        ride={ride}
-                                        dateString={dateString}
-                                        timeString={timeString}
-                                        parentRefetch={() =>
-                                            this.fetchRequests()
-                                        }
-                                        setMapPoints={setMapPoints}
-                                        calcDetour={this.calcDetour}
-                                        optimalRoute={optimalRoute}
-                                        rideTime={rideTime}
-                                    />
-                                ))}
+                                {pendingRequestList}
                             </List>
                         </div>
                     )}

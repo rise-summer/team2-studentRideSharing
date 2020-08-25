@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { List, Button, Icon } from 'semantic-ui-react';
+import { isEqual } from 'lodash';
 import './RequestItem.css';
 
 class RequestItem extends Component {
@@ -17,7 +18,9 @@ class RequestItem extends Component {
             errorMessage: '',
             timeLeft: '',
             intervalID: 0,
-            timeAdded: '',
+            rideTime: '',
+            lineString: [],
+            optimalRoute: [],
         };
     }
 
@@ -42,13 +45,24 @@ class RequestItem extends Component {
         this.setState({ intervalID: intervalID });
     }
 
+    calculateNewRoute = async () => {
+        const { request, getRequestRoute } = this.props;
+        if (request.status === 0) {
+            const newRoute = await getRequestRoute({
+                pickup: request.originCoords.coordinates,
+                dropoff: request.destCoords.coordinates,
+            });
+            this.setState(newRoute);
+        }
+    };
+
     componentDidMount() {
-        const { viewer } = this.props;
+        const { viewer, request } = this.props;
         if (viewer === 'Requester') {
             //calculate time left from now to request expiration time
             this.calculateTimeLeft();
             //fetch driver's info
-            fetch(`/api/users/${this.props.request.driverID}`)
+            fetch(`/api/users/${request.driverID}`)
                 .then((response) => {
                     return response.json();
                 })
@@ -57,9 +71,8 @@ class RequestItem extends Component {
                 })
                 .catch((error) => console.log('error', error));
             //fetch ride info
-            fetch(
-                `/api/rides/${this.props.request.driverID}/${this.props.request.rideID}`
-            )
+            // is this redundant? since ride is a prop
+            fetch(`/api/rides/${request.driverID}/${request.rideID}`)
                 .then((response) => {
                     return response.json();
                 })
@@ -68,8 +81,9 @@ class RequestItem extends Component {
                 })
                 .catch((error) => console.log('error', error));
         } else {
+            this.calculateNewRoute();
             //fetch requester info
-            fetch(`/api/users/${this.props.request.ownerID}`)
+            fetch(`/api/users/${request.ownerID}`)
                 .then((response) => {
                     return response.json();
                 })
@@ -85,9 +99,7 @@ class RequestItem extends Component {
     }
 
     // componentDidUpdate(prevProps) {
-    //     const { optimalRoute, calcDetour } = this.props;
-    //     if (!isEqual(prevProps.optimalRoute, optimalRoute)) {
-    //     }
+
     // }
 
     handleClick = (event) => {
@@ -113,31 +125,11 @@ class RequestItem extends Component {
     };
 
     handleMapClick = () => {
-        const {
-            setMapPoints,
-            optimalRoute,
-            calcDetour,
-            request,
-            rideTime,
-        } = this.props;
-        calcDetour &&
-            calcDetour(
-                {
-                    pickup: request.originCoords.coordinates,
-                    dropoff: request.destCoords.coordinates,
-                },
-                (response) => {
-                    setMapPoints(response.optimalRoute);
-                    this.setState({
-                        timeAdded: Math.round(
-                            (response.rideTime - rideTime) / 60
-                        ),
-                    });
-                }
-            );
-        if (!calcDetour) {
-            setMapPoints(optimalRoute);
-        }
+        this.props.updateMap(
+            this.props.request.status === 0,
+            this.state.optimalRoute,
+            this.state.lineString
+        );
     };
 
     sendEmailNotificationToRequester(action) {
@@ -183,7 +175,7 @@ class RequestItem extends Component {
     render() {
         // Currently, only drivers can view map
 
-        const { requester, driver, ride, timeAdded } = this.state;
+        const { requester, driver, ride } = this.state;
         const { request, viewer, isPending } = this.props; //version controls what to display
         const { comment, startLoc, endLoc, status } = request;
 
@@ -259,6 +251,11 @@ class RequestItem extends Component {
                 </List.Item>
             );
         }
+
+        const timeAdded = Math.round(
+            (this.state.rideTime - this.props.rideTime) / 60
+        );
+
         return (
             <List.Item>
                 <List.Header className="requester">
@@ -283,12 +280,13 @@ class RequestItem extends Component {
                         <div>Pick Up: {startLoc}</div>
                         <div>Drop off: {endLoc}</div>
                         {comment && <div>Comment: {comment}</div>}
-                        {timeAdded && (
+                        {Boolean(timeAdded) && (
                             <div>
-                                {requester.firstName}'s ride would add about{' '}
-                                {timeAdded}{' '}
-                                {timeAdded === 1 ? 'minute' : 'minutes'} to your
-                                trip
+                                {`${
+                                    requester.firstName
+                                }'s ride would add about ${timeAdded} ${
+                                    timeAdded === 1 ? 'minute' : 'minutes'
+                                } to your trip`}
                             </div>
                         )}
                     </div>

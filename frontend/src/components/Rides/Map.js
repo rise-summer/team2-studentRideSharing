@@ -65,41 +65,78 @@ class Map extends Component {
 
     // TODO: change directions to optimization api route display
     componentDidUpdate(prevProps) {
-        // Reversed because the waypoints are all added at index 0 (in reverse order)
+        /* TODO: Optimize RideProfile and RequestItem so that only necessary data is passed around. Needed for map rendering:
+        1. A condition to redraw the map
+        2. LineString
+        3. Waypoints (for markers)
+        4. Possibly some text for the markers in the future
+        */
+
         const newWaypoints = this.props.waypoints;
         // Only runs this part if the route changes
         if (
-            !isEqual(prevProps.waypoints, newWaypoints) ||
-            !isEqual(prevProps.origin, this.props.origin) ||
-            !isEqual(prevProps.dest, this.props.dest)
+            !isEqual(prevProps.waypoints, newWaypoints)
         ) {
-            const { origin, dest } = this.props;
-            if (origin.length > 0 && dest.length > 0) {
-              console.log(origin.join(',') + ';' + newWaypoints.join(';') + ';' + dest.join(','));
-                const dir = this.state.directionObject;
-                const map = this.state.mapObject;
+            const { lineString } = this.props;
+            const map = this.state.mapObject;
+            this.clearAllMarkers();
 
-                // Removes all routes and markers, then creates new route with markers
-                dir.removeRoutes();
-                this.clearAllMarkers();
-                dir.setOrigin(origin);
-                dir.setDestination(dest);
-                const markers = [];
-                newWaypoints.forEach((waypoint, index) => {
-                    dir.addWaypoint(index, waypoint);
-                    const marker = new mapboxgl.Marker();
-                    marker.setLngLat(waypoint);
+            const data = {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: lineString,
+                },
+            };
 
-                    // const popup = new mapboxgl.Popup().setText((index + 1));
-                    // marker.setPopup(popup);
-
-                    marker.addTo(map);
-                    markers.push(marker);
+            if (map.getSource('route')) {
+                map.getSource('route').setData(data);
+            } else {
+                map.addSource('route', {
+                    type: 'geojson',
+                    data: data,
                 });
-                this.setState({
-                    currentMarkers: markers,
+                map.addLayer({
+                    id: 'route',
+                    type: 'line',
+                    source: 'route',
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round',
+                    },
+                    paint: {
+                        'line-color': '#888',
+                        'line-width': 8,
+                    },
                 });
             }
+
+            const markers = [];
+            newWaypoints.forEach((waypoint) => {
+                const marker = new mapboxgl.Marker();
+                marker.setLngLat(waypoint).addTo(map);
+
+                // const popup = new mapboxgl.Popup().setText((index + 1));
+                // marker.setPopup(popup);
+                markers.push(marker);
+            });
+
+            this.setState({
+                currentMarkers: markers,
+            });
+
+            // TODO: This function is not very efficient. Maybe look at optimizing, e.g. with every 10 points (EDIT: done), or just start and end
+            // https://docs.mapbox.com/mapbox-gl-js/example/zoomto-linestring/
+            // const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
+
+            const bounds = lineString.reduce(function (bound, coord) {
+                return bound.extend(coord);
+            }, new mapboxgl.LngLatBounds(lineString[0], lineString[0]));
+
+            map.fitBounds(bounds, {
+                padding: 20,
+            });
         }
     }
     render() {
