@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
 import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 import { isEqual } from 'lodash';
+import { Icon } from 'semantic-ui-react';
 import '@mapbox/mapbox-gl-directions/src/mapbox-gl-directions.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -19,12 +21,15 @@ class Map extends Component {
             directionObject: null,
             mapObject: null,
             currentMarkers: [],
+            markerContainer: null,
         };
         this.mapRef = React.createRef();
     }
 
     // Set up mapboxgl objects (map and directions)
     componentDidMount() {
+        this.setState({ markerContainer: document.createElement('div') });
+
         const map = new mapboxgl.Map({
             container: this.mapRef.current,
             style: 'mapbox://styles/mapbox/streets-v11',
@@ -74,9 +79,7 @@ class Map extends Component {
 
         const newWaypoints = this.props.waypoints;
         // Only runs this part if the route changes
-        if (
-            !isEqual(prevProps.waypoints, newWaypoints)
-        ) {
+        if (!isEqual(prevProps.waypoints, newWaypoints)) {
             const { lineString } = this.props;
             const map = this.state.mapObject;
             this.clearAllMarkers();
@@ -114,6 +117,9 @@ class Map extends Component {
 
             const markers = [];
             newWaypoints.forEach((waypoint) => {
+                // const el = document.createElement('div');
+                // el.innerHTML = 'test';
+                // const el = React.createElement('h1', {}, 'My First React Code');
                 const marker = new mapboxgl.Marker();
                 marker.setLngLat(waypoint).addTo(map);
 
@@ -122,17 +128,29 @@ class Map extends Component {
                 markers.push(marker);
             });
 
+            const m = new mapboxgl.Marker(this.state.markerContainer)
+                .setLngLat(lineString[10])
+                .addTo(map);
+            // const m2 = new mapboxgl.Marker(this.state.markerContainer)
+            //     .setLngLat(lineString[20])
+            //     .addTo(map);
+            ReactDOM.render(
+                React.createElement(Icon, {name: 'map pin'}),
+                this.state.markerContainer
+            );
+
             this.setState({
                 currentMarkers: markers,
             });
 
             // TODO: This function is not very efficient. Maybe look at optimizing, e.g. with every 10 points (EDIT: done), or just start and end
             // https://docs.mapbox.com/mapbox-gl-js/example/zoomto-linestring/
-            // const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
-
-            const bounds = lineString.reduce(function (bound, coord) {
-                return bound.extend(coord);
-            }, new mapboxgl.LngLatBounds(lineString[0], lineString[0]));
+            const nth = 10;
+            const bounds = lineString
+                .filter((e, i) => i % nth === nth - 1)
+                .reduce(function (bound, coord) {
+                    return bound.extend(coord);
+                }, new mapboxgl.LngLatBounds(lineString[0], lineString[0]));
 
             map.fitBounds(bounds, {
                 padding: 20,

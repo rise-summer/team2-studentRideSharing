@@ -253,7 +253,7 @@ class RequestItem extends Component {
         }
 
         const timeAdded = Math.round(
-            (this.state.rideTime - this.props.rideTime) / 60
+            (this.state.rideTime - this.props.baseRideTime) / 60
         );
 
         return (

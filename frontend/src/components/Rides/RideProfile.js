@@ -3,7 +3,6 @@ import CancelRideButton from '../CancelRideButton/CancelRideButton';
 import RequestItem from '../Requests/RequestItem';
 import { Segment, Header, Icon, List, Divider } from 'semantic-ui-react';
 import queryString from 'query-string';
-import { cloneDeep } from 'lodash';
 import './RideProfile.css';
 
 class RideProfile extends Component {
@@ -12,15 +11,15 @@ class RideProfile extends Component {
         this.state = {
             requests: [],
             //collection of points in non-optimal path, with pickups and dropoffs labelled
-            currentRoute: {
+            baseRoute: {
                 origin: [],
                 dest: [],
                 waypoints: [],
             },
             //array of points in optimal path
-            optimalRoute: [],
-            rideTime: '',
-            lineString: [],
+            optimizedBaseRoute: [],
+            baseRideTime: '',
+            baseLineString: [],
         };
     }
 
@@ -51,18 +50,22 @@ class RideProfile extends Component {
             };
         });
         const { originCoords, destCoords } = this.props.ride;
-        const currentRoute = {
+        const baseRoute = {
             origin: originCoords.coordinates,
             dest: destCoords.coordinates,
             waypoints: waypoints,
         };
 
-        this.setState({ currentRoute: currentRoute });
-        const response = await this.calcRoute(currentRoute);
-        this.setState(response);
+        this.setState({ baseRoute: baseRoute });
+        const response = await this.calcRoute(baseRoute);
+        this.setState({
+            optimizedBaseRoute: response.optimalRoute,
+            baseRideTime: response.rideTime,
+            baseLineString: response.lineString,
+        });
 
         // TODO: Find better solution
-        return { currentRoute: currentRoute, response: response };
+        return { baseRoute: baseRoute, response: response };
     };
 
     // Returns optimal path and ride time
@@ -115,18 +118,18 @@ class RideProfile extends Component {
         }
     };
 
-    getCurrentRoute = async () => {
-        const currentRoute = this.state.currentRoute;
-        if (currentRoute.origin.length > 0 && currentRoute.dest.length > 0)
-            return currentRoute;
+    getCurrentBaseRoute = async () => {
+        const { baseRoute } = this.state;
+        if (baseRoute.origin.length > 0 && baseRoute.dest.length > 0)
+            return baseRoute;
         else {
             const response = await this.setCurrentOptimizedRoute();
-            return response.currentRoute;
+            return response.baseRoute;
         }
     };
 
     getRequestRoute = async (newWaypoint) => {
-        const route = await this.getCurrentRoute().currentRoute;
+        const route = await this.getCurrentBaseRoute();
         route.waypoints.push(newWaypoint);
         const routeOptimization = await this.calcRoute(route, console.log);
         return routeOptimization;
@@ -140,14 +143,14 @@ class RideProfile extends Component {
             setWaypoints(newOptimalRoute);
             setLineString(newLineString);
         } else {
-            const { currentRoute } = this.state;
+            const { baseRoute } = this.state;
             if (
-                currentRoute.origin.length > 0 &&
-                currentRoute.dest.length > 0 &&
-                this.state.lineString.length > 0
+                baseRoute.origin.length > 0 &&
+                baseRoute.dest.length > 0 &&
+                this.state.baseLineString.length > 0
             ) {
-                setLineString(this.state.lineString);
-                setWaypoints(this.state.optimalRoute);
+                setLineString(this.state.baseLineString);
+                setWaypoints(this.state.optimizedBaseRoute);
             } else {
                 const res = await this.setCurrentOptimizedRoute();
                 setLineString(res.response.lineString);
@@ -162,7 +165,7 @@ class RideProfile extends Component {
 
     render() {
         const { ride, handleError, isActive } = this.props;
-        const { requests, optimalRoute, rideTime } = this.state;
+        const { requests, baseRideTime } = this.state;
         const { startLoc, endLoc, time, price, capacity, _id, driverID } = ride;
         const pendingRequests = requests.filter(
             (request) => request.status === 0
@@ -199,7 +202,7 @@ class RideProfile extends Component {
                 dateString={dateString}
                 timeString={timeString}
                 parentRefetch={() => this.fetchRequests()}
-                rideTime={rideTime}
+                baseRideTime={baseRideTime}
                 getRequestRoute={this.getRequestRoute}
                 updateMap={this.updateMap}
             />
