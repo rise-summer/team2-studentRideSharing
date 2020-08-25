@@ -65,18 +65,10 @@ class Map extends Component {
         this.state.currentMarkers.forEach((marker) => marker.remove());
     };
 
-    // TODO: change directions to optimization api route display
     componentDidUpdate(prevProps) {
-        /* TODO: Optimize RideProfile and RequestItem so that only necessary data is passed around. Needed for map rendering:
-        1. A condition to redraw the map
-        2. LineString
-        3. Waypoints (for markers)
-        4. Possibly some text for the markers in the future
-        */
-
         const newWaypoints = this.props.waypoints;
         // Only runs this part if the route changes
-        if (!isEqual(prevProps.waypoints, newWaypoints)) {
+        if (!isEqual(prevProps.waypoints, newWaypoints) {
             const { lineString } = this.props;
             const map = this.state.mapObject;
             this.clearAllMarkers();
@@ -139,7 +131,6 @@ class Map extends Component {
                 currentMarkers: markers,
             });
 
-            // TODO: This function is not very efficient. Maybe look at optimizing, e.g. with every 10 points (EDIT: done), or just start and end
             // https://docs.mapbox.com/mapbox-gl-js/example/zoomto-linestring/
             const nth = 10;
             const bounds = lineString
