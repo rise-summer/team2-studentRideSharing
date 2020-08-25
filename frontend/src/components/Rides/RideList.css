@@ -1,3 +1,8 @@
 .ridelist {
     text-align: center;
 }
+
+.results-tabs {
+    width: 60vw!important;
+    margin: 0 auto;
+}
