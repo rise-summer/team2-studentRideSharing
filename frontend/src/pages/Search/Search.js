@@ -8,6 +8,7 @@ import { SEARCH_RIDES_SUCCESS } from '../../actions/SearchPageStates';
 import { getRidesError, getRidesSuccess } from '../../reducers/SearchRidesReducer';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
+import SortBy from '../../components/SortBy/SortBy';
 
 const querystring = require('querystring');
 const DEBUG = true;
@@ -197,6 +198,7 @@ class Search extends Component {
 
         let searchPage;
         let rideResults;
+        let sortBy;
         if (!this.state.searched) {
             searchPage = <SearchLanding query={this.state.query} functions={functions} refs={refs} />
         } else {
@@ -206,6 +208,8 @@ class Search extends Component {
                     functions={functions}
                     refs={refs}
                 />;
+            sortBy = 
+                <SortBy />
             rideResults =
                 <div>
                     <br />
@@ -217,6 +221,7 @@ class Search extends Component {
         return (
             <div className="search-wrapper">
                 {searchPage}
+                {sortBy}
                 {rideResults}
             </div>
         );
