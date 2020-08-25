@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { List, Button, Icon } from 'semantic-ui-react';
-import { isEqual } from 'lodash';
 import './RequestItem.css';
 
 class RequestItem extends Component {

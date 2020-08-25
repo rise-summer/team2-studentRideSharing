@@ -35,7 +35,7 @@ class RequestRide extends Component {
         else {
             this.state = initialState;
         }
-    };
+    }
 
     setOpen(isOpen) {
         this.setState({open: isOpen});

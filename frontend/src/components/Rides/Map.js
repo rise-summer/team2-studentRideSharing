@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
 import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
@@ -68,7 +68,7 @@ class Map extends Component {
     componentDidUpdate(prevProps) {
         const newWaypoints = this.props.waypoints;
         // Only runs this part if the route changes
-        if (!isEqual(prevProps.waypoints, newWaypoints) {
+        if (!isEqual(prevProps.waypoints, newWaypoints)) {
             const { lineString } = this.props;
             const map = this.state.mapObject;
             this.clearAllMarkers();
