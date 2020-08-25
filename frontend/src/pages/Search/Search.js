@@ -272,7 +272,7 @@ class Search extends Component {
                 {/*<button onClick={this.clearFilter}>Clear</button>*/}
                 {/*<button onClick={this.queryRides}>Search DB</button>*/}
 
-                <Grid.Column>
+                {/* <Grid.Column>
                     <Segment secondary>
                         <Input
                             min={1}
@@ -287,7 +287,7 @@ class Search extends Component {
                             }}
                         />
                     </Segment>
-                </Grid.Column>
+                </Grid.Column> */}
 
                 <h3>Available Rides</h3>
                 <RideList rides={this.state.filteredRides} />
