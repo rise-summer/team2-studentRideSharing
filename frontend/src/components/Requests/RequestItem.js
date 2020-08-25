@@ -85,6 +85,7 @@ class RequestItem extends Component {
             //fetch requester info
             fetch(`/api/users/${request.ownerID}`)
                 .then((response) => {
+                    console.log(response);
                     return response.json();
                 })
                 .then((requester) => {

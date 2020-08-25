@@ -4,7 +4,7 @@ import mapboxgl from 'mapbox-gl';
 import './Map.css';
 import * as MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 import { isEqual } from 'lodash';
-import { Icon } from 'semantic-ui-react';
+// import CustomMarker from './CustomMarker';
 import '@mapbox/mapbox-gl-directions/src/mapbox-gl-directions.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -21,15 +21,12 @@ class Map extends Component {
             directionObject: null,
             mapObject: null,
             currentMarkers: [],
-            markerContainer: null,
         };
         this.mapRef = React.createRef();
     }
 
     // Set up mapboxgl objects (map and directions)
     componentDidMount() {
-        this.setState({ markerContainer: document.createElement('div') });
-
         const map = new mapboxgl.Map({
             container: this.mapRef.current,
             style: 'mapbox://styles/mapbox/streets-v11',
@@ -116,28 +113,27 @@ class Map extends Component {
             }
 
             const markers = [];
-            newWaypoints.forEach((waypoint) => {
-                // const el = document.createElement('div');
-                // el.innerHTML = 'test';
-                // const el = React.createElement('h1', {}, 'My First React Code');
-                const marker = new mapboxgl.Marker();
-                marker.setLngLat(waypoint).addTo(map);
+            
+            newWaypoints.forEach((waypoint, index) => {
+                // const markerContainer = document.createElement('div');
+                const markerContainer = null;
+                const marker = new mapboxgl.Marker(markerContainer)
+                    .setLngLat(waypoint)
+                    .addTo(map);
+
+                // ReactDOM.render(
+                //     React.createElement(CustomMarker, {
+                //         content: sampleData[index].content,
+                //         icon: sampleData[index].icon,
+                //     }),
+                //     markerContainer
+                // );
 
                 // const popup = new mapboxgl.Popup().setText((index + 1));
                 // marker.setPopup(popup);
+
                 markers.push(marker);
             });
-
-            const m = new mapboxgl.Marker(this.state.markerContainer)
-                .setLngLat(lineString[10])
-                .addTo(map);
-            // const m2 = new mapboxgl.Marker(this.state.markerContainer)
-            //     .setLngLat(lineString[20])
-            //     .addTo(map);
-            ReactDOM.render(
-                React.createElement(Icon, {name: 'map pin'}),
-                this.state.markerContainer
-            );
 
             this.setState({
                 currentMarkers: markers,
