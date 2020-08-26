@@ -9,6 +9,7 @@ import Navbar from './components/Navbar/Navbar';
 import { Router, Switch, Route, } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import SearchLanding from './components/SearchComponents/SearchLanding';
+import ThemingLayout from './pages/Theme/Theme';
 
 const history = createBrowserHistory();
 
@@ -36,6 +37,9 @@ function App() {
                     </Route>
                     <Route path="/profile">
                         <Profile userId="5f29a088bc6acb9e9da9e65e" />
+                    </Route>
+                    <Route path="/theme">
+                        <ThemingLayout />
                     </Route>
                 </Switch>
             </Router>

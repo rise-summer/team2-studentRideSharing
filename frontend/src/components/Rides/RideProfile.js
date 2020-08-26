@@ -59,12 +59,12 @@ class RideProfile extends Component {
         return (
             <Segment>
                 <Header>
-                    <span>
+                    <h5>
                         {startLoc.city}, {startLoc.state}
                         <Icon name="arrow right" />
                         {endLoc.city}, {endLoc.state}
-                    </span>
-                    <span style={{ float: 'right' }}>
+                    </h5>
+                    <h6 style={{ float: 'right' }}>
                         <a href={'/ride/' + driverID + '/' + _id}>View Ride</a>
                         <span>
                             {isActive && (
@@ -77,7 +77,7 @@ class RideProfile extends Component {
                                 />
                             )}
                         </span>
-                    </span>
+                    </h6>
                 </Header>
                 <div className="rideInfo">
                     <List divided horizontal>
