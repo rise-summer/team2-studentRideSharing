@@ -18,7 +18,7 @@ function App() {
     return (
         <div className="App">
             <Router initialEntries={['/']} initialIndex={0} history={history}>
-                <Navbar isLoggedIn={true} />
+                {/* <Navbar isLoggedIn={true} /> */}
                 <Switch>
                     {/* should be search if user logged in */}
                     <Route exact path="/">

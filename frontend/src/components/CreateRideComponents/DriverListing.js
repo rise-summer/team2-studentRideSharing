@@ -1,11 +1,16 @@
 import React from 'react';
-import TimePicker from '../TimePicker/TimePicker';
-import NumberPicker from '../NumberPicker/NumberPicker';
 import GeoSearch from '../GeoSearch/GeoSearch';
 import DriverInfo from './DriverInfo';
-import Pikaday from 'pikaday';
-import 'pikaday/css/pikaday.css';
-import moment from 'moment';
+import SemanticDatepicker from 'react-semantic-ui-datepickers';
+import createRideSplash from './createRideSplash.png';
+import {
+    Grid,
+    Segment,
+    Header,
+    Form,
+    Button,
+    Dropdown,
+} from 'semantic-ui-react';
 
 // TODO: change so first ride is stored and everything is submitted at the end
 
@@ -15,29 +20,21 @@ class DriverListing extends React.Component {
         this.state = {
             startLocation: {},
             endLocation: {},
-            startDate: '',
+            startDate: null,
             startTime: '',
             price: '',
             capacity: '',
-            isRoundTrip: false,
+            returnStartLocation: {},
+            returnEndLocation: {},
+            returnStartDate: null,
+            returnStartTime: '',
+            returnPrice: '',
+            returnCapacity: '',
+            isRoundtrip: false,
             errorMessage: '',
-            step: 1,
         };
         this.startDateRef = React.createRef();
     }
-
-    componentDidMount() {
-        new Pikaday({
-            field: this.startDateRef.current,
-            onSelect: this.editStartDate,
-            minDate: new Date(),
-        });
-    }
-
-    editStartDate = (d) => {
-        var date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({ startDate: date });
-    };
 
     handleGeoChange = (resp, fieldName) => {
         this.setState({
@@ -105,18 +102,19 @@ class DriverListing extends React.Component {
         }
     };
 
-    handleChange = (event) => {
-        const name = event.target.name;
-        const value =
-            name === 'isRoundTrip' ? event.target.checked : event.target.value;
+    handleChange = (event, { name, value }) => {
         this.setState({ [name]: value });
+    };
+
+    handleRoundtripChange = (event, { value }) => {
+        this.setState({ isRoundtrip: value === 'Roundtrip' });
     };
 
     handleSubmit = (event) => {
         event.preventDefault();
-        const isRoundTrip = this.state.isRoundTrip;
-        // const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
-        // const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
+        const isRoundtrip = this.state.isRoundtrip;
+        // const nextStartLocation = isRoundtrip ? this.state.endLocation : '';
+        // const nextEndLocation = isRoundtrip ? this.state.startLocation : '';
 
         if (this.state.errorMessage === '') {
             this.postData();
@@ -128,105 +126,264 @@ class DriverListing extends React.Component {
                 startTime: '',
                 price: '',
                 capacity: '',
-                isRoundTrip: false,
-                step: isRoundTrip ? 2 : 1,
+                isRoundtrip: false,
             });
         }
     };
 
     render() {
+        const today = new Date();
+        today.setDate(today.getDate() - 1);
         return (
-            <div>
-                {!this.props.haveCarInfo ? (
-                    <DriverInfo userId={this.props.userId} />
-                ) : (
-                        console.log('user have car info')
-                    )}
-                {this.state.step === 1 ? (
-                    <h1>Create a ride</h1>
-                ) : (
-                        <h1>Create a return ride</h1>
-                    )}
-                <form onSubmit={this.handleSubmit} autoComplete="off">
-                    {/* Replace with location picker*/}
-                    <GeoSearch
-                        handleChange={this.handleGeoChange}
-                        placeholder="Where from?"
-                        name="startLocation"
-                        types="postcode,district,locality,neighborhood,address,poi"
-                    />
-                    <GeoSearch
-                        handleChange={this.handleGeoChange}
-                        placeholder="Where to?"
-                        name="endLocation"
-                        types="postcode,district,locality,neighborhood,address,poi"
-                    />
-                    <input
-                        className="date-picker-box"
-                        type="text"
-                        ref={this.startDateRef}
-                        onChange={this.editStartDate}
-                        value={this.state.startDate}
-                        placeholder="Start date"
-                        name="startDate"
-                        required
-                    />
-                    <br />
-                    {/* Not supported in safari, might change to module */}
-                    <label>
-                        Earliest start time
-                        <TimePicker
-                            name="startTime"
-                            value={this.state.startTime}
-                            editfn={this.handleChange}
-                            required
-                        />
-                    </label>
-
-                    <NumberPicker
-                        min={0}
-                        max={100}
-                        step={0.01}
-                        value={this.state.price}
-                        name="price"
-                        placeholder="Price"
-                        editfn={this.handleChange}
-                        required
-                    />
-                    <NumberPicker
-                        min={1}
-                        max={10}
-                        step={1}
-                        value={this.state.capacity}
-                        name="capacity"
-                        placeholder="Capacity"
-                        editfn={this.handleChange}
-                        required
-                    />
-                    <label>
-                        Round Trip
-                        <input
-                            type="checkbox"
-                            name="isRoundTrip"
-                            onChange={this.handleChange}
-                            checked={
-                                this.state.isRoundTrip || this.state.step === 2
-                            }
-                            disabled={this.state.step === 2}
-                        />
-                    </label>
-                    <br />
-                    <input
-                        type="submit"
-                        value={
-                            this.state.isRoundTrip && this.state.step === 1
-                                ? 'Continue'
-                                : 'Submit'
-                        }
-                    />
-                </form>
-                <h2>{this.state.errorMessage}</h2>
-            </div>
+            <Grid
+                style={{
+                    background: `url(${createRideSplash})`,
+                    backgroundSize: 'cover',
+                    height: '100vh', //TEMPORARY
+                }}
+            >
+                <Grid.Column
+                    style={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        // TODO: why does 1em not work?
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    }}
+                    width={11}
+                >
+                    <Form onSubmit={this.handleSubmit} autocomplete="off">
+                        <Segment
+                            style={{
+                                background: '#ffffff',
+                                border: '1px solid #c4c4c4',
+                                boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                                borderRadius: '15px',
+                                padding: '20px 50px',
+                            }}
+                        >
+                            {!this.props.haveCarInfo ? (
+                                <DriverInfo userId={this.props.userId} />
+                            ) : (
+                                console.log('user have car info')
+                            )}
+                            <Header
+                                style={{
+                                    fontFamily: 'Open Sans',
+                                    fontWeight: '600',
+                                    // TODO: convert to rem/em?
+                                    fontSize: '30px',
+                                    lineHeight: '41px',
+                                }}
+                            >
+                                Create a Ride
+                            </Header>
+                            <Dropdown
+                                options={[
+                                    { key: 0, text: 'One Way', value: false },
+                                    { key: 1, text: 'Roundtrip', value: true },
+                                ]}
+                                value={this.state.isRoundtrip}
+                                name="isRoundtrip"
+                                onChange={this.handleChange}
+                            />
+                            <Form.Group widths="equal">
+                                <GeoSearch
+                                    handleChange={this.handleGeoChange}
+                                    placeholder="Specific Address"
+                                    name="startLocation"
+                                    types="postcode,district,locality,neighborhood,address,poi"
+                                />
+                                <GeoSearch
+                                    handleChange={this.handleGeoChange}
+                                    placeholder="Specific Address"
+                                    name="endLocation"
+                                    types="postcode,district,locality,neighborhood,address,poi"
+                                />
+                                {/* <Form.Input
+                                    label="Starting Destination"
+                                    placeholder="Specific Address"
+                                />
+                                <Form.Input
+                                    label="Ending Destination"
+                                    placeholder="Specific Address"
+                                /> */}
+                            </Form.Group>
+                            <Form.Group>
+                                <SemanticDatepicker
+                                    label="Departure Date"
+                                    onChange={this.handleChange}
+                                    value={this.state.startDate}
+                                    name="startDate"
+                                    format="MM/DD/YYYY"
+                                    minDate={today}
+                                    icon="calendar outline"
+                                    iconPosition="left"
+                                    required
+                                />
+                                <Form.Input
+                                    name="startTime"
+                                    value={this.state.startTime}
+                                    onChange={this.handleChange}
+                                    label="Departure Time"
+                                    type="time"
+                                    icon="clock"
+                                    iconPosition="left"
+                                    placeholder="00:00 AM"
+                                    required
+                                />
+                                <Form.Input
+                                    value={this.state.price}
+                                    name="price"
+                                    onChange={this.handleChange}
+                                    label="Price"
+                                    icon="dollar"
+                                    iconPosition="left"
+                                    placeholder="00"
+                                    type="number"
+                                    min={0}
+                                    max={50}
+                                    step={1}
+                                    required
+                                />
+                                <Form.Input
+                                    value={this.state.capacity}
+                                    name="capacity"
+                                    onChange={this.handleChange}
+                                    label="Seats"
+                                    placeholder="1"
+                                    type="number"
+                                    min={1}
+                                    max={10}
+                                    step={1}
+                                    required
+                                />
+                               {!this.state.isRoundtrip && <Form.Button
+                                    content="Publish Ride"
+                                    style={{
+                                        backgroundColor: '#ef724b',
+                                        boxShadow:
+                                            '0px 2px 4px rgba(0, 0, 0, 0.25)',
+                                        borderRadius: '50px',
+                                        height: '45px',
+                                        color: 'white',
+                                    }}
+                                />}
+                            </Form.Group>
+                        </Segment>
+                        {this.state.isRoundtrip && (
+                            <Segment
+                                style={{
+                                    background: '#ffffff',
+                                    border: '1px solid #c4c4c4',
+                                    boxShadow:
+                                        '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                                    borderRadius: '15px',
+                                    padding: '20px 50px',
+                                }}
+                            >
+                                <Header
+                                    style={{
+                                        fontFamily: 'Open Sans',
+                                        fontWeight: '600',
+                                        // TODO: convert to rem/em?
+                                        fontSize: '30px',
+                                        lineHeight: '41px',
+                                    }}
+                                >
+                                    Create a Return Ride
+                                </Header>
+                                <Form.Group widths="equal">
+                                    <GeoSearch
+                                        handleChange={this.handleGeoChange}
+                                        placeholder="Specific Address"
+                                        name="returnStartLocation"
+                                        types="postcode,district,locality,neighborhood,address,poi"
+                                    />
+                                    <GeoSearch
+                                        handleChange={this.handleGeoChange}
+                                        placeholder="Specific Address"
+                                        name="returnEndLocation"
+                                        types="postcode,district,locality,neighborhood,address,poi"
+                                    />
+                                    {/* <Form.Input
+                                    label="Starting Destination"
+                                    placeholder="Specific Address"
+                                />
+                                <Form.Input
+                                    label="Ending Destination"
+                                    placeholder="Specific Address"
+                                /> */}
+                                </Form.Group>
+                                <Form.Group>
+                                    <SemanticDatepicker
+                                        label="Departure Date"
+                                        onChange={this.handleChange}
+                                        value={this.state.returnStartDate}
+                                        name="returnStartDate"
+                                        format="MM/DD/YYYY"
+                                        minDate={today}
+                                        icon="calendar outline"
+                                        iconPosition="left"
+                                        required
+                                    />
+                                    <Form.Input
+                                        name="returnStartTime"
+                                        value={this.state.returnStartTime}
+                                        onChange={this.handleChange}
+                                        label="Departure Time"
+                                        type="time"
+                                        icon="clock"
+                                        iconPosition="left"
+                                        placeholder="00:00 AM"
+                                        required
+                                    />
+                                    <Form.Input
+                                        value={this.state.returnPrice}
+                                        name="returnPrice"
+                                        onChange={this.handleChange}
+                                        label="Price"
+                                        icon="dollar"
+                                        iconPosition="left"
+                                        placeholder="00"
+                                        type="number"
+                                        min={0}
+                                        max={50}
+                                        step={1}
+                                        required
+                                    />
+                                    <Form.Input
+                                        value={this.state.returnCapacity}
+                                        name="returnCapacity"
+                                        onChange={this.handleChange}
+                                        label="Seats"
+                                        placeholder="1"
+                                        type="number"
+                                        min={1}
+                                        max={10}
+                                        step={1}
+                                        required
+                                    />
+                                    <Form.Button
+                                        content="Publish Ride"
+                                        style={{
+                                            backgroundColor: '#ef724b',
+                                            boxShadow:
+                                                '0px 2px 4px rgba(0, 0, 0, 0.25)',
+                                            borderRadius: '50px',
+                                            height: '45px',
+                                            color: 'white',
+                                        }}
+                                    />
+                                </Form.Group>
+                            </Segment>
+                        )}
+                    </Form>
+                </Grid.Column>
+                <Grid.Column width={5} />
+            </Grid>
         );
     }
 }
