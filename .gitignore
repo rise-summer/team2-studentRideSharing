@@ -10,6 +10,7 @@
 
 # production
 frontend/build
+frontend/src/semantic/dist
 
 # misc
 .DS_Store
@@ -31,6 +32,8 @@ Desktop.ini
 
 # Dependency directory
 node_modules/
+src/semantic/dist
+semantic/dist/
 
 # npm
 node_modules
