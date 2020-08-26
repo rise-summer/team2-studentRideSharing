@@ -1,3 +1,22 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+/*--------------------
+        Field
+---------------------*/
+
+@fieldMargin    : 1em 0em 1em;
+
+/*--------------------
+        Labels
+---------------------*/
+
+@labelFontWeight    : regular;
+@labelFontSize      : 1em;
+
+/*--------------------
+    Standard Inputs
+---------------------*/
+@inputFont          : 'Open Sans';
+@inputBorderRadius  : 12px;

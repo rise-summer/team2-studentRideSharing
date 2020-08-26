@@ -2,7 +2,6 @@
     User Variable Overrides
 *******************************/
 @padding        : 10px;
-@border         : #C4C4C4;
-@borderRadius   : 15px;
+@borderRadius   : 12px;
 
 @relativeMedium : 16px;
