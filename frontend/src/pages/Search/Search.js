@@ -4,10 +4,9 @@ import RideList from '../../components/Rides/RideList';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css';
-import { SEARCH_RIDES_SUCCESS } from '../../actions/SearchPageStates';
-import { getRidesError, getRidesSuccess } from '../../reducers/SearchRidesReducer';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
+import {store} from '../../index';
 
 const querystring = require('querystring');
 const DEBUG = true;
@@ -17,7 +16,6 @@ class Search extends Component {
         // new Date(year, month, date, hours, minutes, seconds, ms)
         super(props);
         this.state = {
-            // rides: [],
             rides: {
                 outboundRides: [],
                 returnRides: []
@@ -39,36 +37,66 @@ class Search extends Component {
         this.state.filteredRides = this.state.rides;
     }
 
-    // TODO: We could just store coords. The input value is stored in the GeoSearch component,
-    // and coords are the only thing needed for the API call
+    /* coords are the only thing needed for the API call */
     handleGeoChange = (resp, fieldName) => {
         this.setState({
             [fieldName]: resp,
         });
+        console.log(this.state.query);
+        let newQuery = store.getState().query;
+        switch (fieldName) {
+            case 'start':
+                newQuery.start = resp;
+                break;
+            case 'endDest':
+                newQuery.endDest = resp;
+                break;
+            default:
+                break;
+        }
+
+        this.props.dispatch({
+            type: 'UPDATE_GEO',
+            value: newQuery
+        });
+        console.log(store.getState());
     };
 
     editBeginDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        let newQuery = this.state.query;
+        // let newQuery = this.state.query;
+        let newQuery = store.getState().query;
         newQuery.beginDate = date;
-        this.setState({ query: newQuery });
+        // this.setState({ query: newQuery });
+        this.props.dispatch({
+            type: 'EDIT_BEGIN_DATE',
+            value: newQuery,
+        });
+        // console.log(store.getState());
     };
 
     editEndDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        let newQuery = this.state.query;
+        // let newQuery = this.state.query;
+        let newQuery = store.getState().query;
         newQuery.endDate = date;
-        this.setState({ query: newQuery })
+        // this.setState({ query: newQuery })
+        this.props.dispatch({
+            type: 'EDIT_BEGIN_DATE',
+            value: newQuery,
+        });
+        console.log(store.getState());
+
     };
 
     queryRides = () => {
-        // this.props.dispatch({type: SEARCH_RIDES_SUCCESS});
-        /* dates are store as strings in this.state, must convert to Date object */
+        /* dates are stored as strings in this.state, must convert to Date object */
         this.setState({ searched: true });
-        const date = new Date(this.state.query.beginDate);
+        // const date = new Date(this.state.query.beginDate);
+        const date = new Date(store.getState().query.beginDate);
         const dateEnd = new Date(date);
         dateEnd.setHours(23, 59, 59);
-        const { start, endDest, distance } = this.state.query;
+        const { start, endDest, distance } = store.getState().query;
         /* If no distance specified, default to 5 */
         const dist = (distance) ? distance : 5;
         const origin = (start) ? [start.lng, start.lat] : '';
@@ -223,12 +251,9 @@ class Search extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    start: state.start,
-    endDest: state.endDest,
+    query: state.query,
     rides: state.rides,
-    filteredRides: state.filteredRides,
-    beginDate: state.beginDate,
-    endDate: state.endDate,
+    roundtrip: state.roundtrip,
 });
 
 export default connect(mapStateToProps)(Search);
