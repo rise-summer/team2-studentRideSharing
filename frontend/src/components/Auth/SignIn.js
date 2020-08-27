@@ -68,10 +68,9 @@ class SignIn extends React.Component {
                             required
                         />
                         <Form.Button
+                            primary
                             id="submit"
-                            control={Button}
                             fluid
-                            color="black"
                             content="Log In"
                         />
                     </Form>

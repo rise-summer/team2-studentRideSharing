@@ -1,9 +1,8 @@
 import React from 'react';
 import SignIn from '../../components/Auth/SignIn';
 import SignUp from '../../components/Auth/SignUp';
-import { Grid, Tab } from 'semantic-ui-react';
-import './LoginPage.css';
-
+import { Grid, Tab, Container, Image } from 'semantic-ui-react';
+import loginSplash from './loginSplash.png';
 
 const LoginPage = () => {
     const panes = [
@@ -25,14 +24,33 @@ const LoginPage = () => {
         },
     ];
     return (
-        <Grid
-            textAlign="center"
-            style={{height: '100%'}}
-            verticalAlign="middle"
-        >
-            <Grid.Column style={{maxWidth: 450}}>
+        <Grid style={{ height: '100vh' }}>
+            <Grid.Column
+                width={7}
+                style={{
+                    background:
+                        'linear-gradient(175.08deg, #FECF50 3.96%, #FFD401 50.75%)',
+                }}
+            >
+                {/* <Image fluid src={loginSplash} /> */}
+            </Grid.Column>
+            <Grid.Column
+                width={9}
+                style={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
                 <Tab
-                    menu={{secondary: true, pointing: true}}
+                    menu={{
+                        fluid: true,
+                        widths: 2,
+                        secondary: true,
+                        pointing: true,
+                    }}
                     panes={panes}
                     defaultActiveIndex={0}
                 />

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Form, Divider, Button } from 'semantic-ui-react';
-import firebase, { auth, uiConfig } from '../../firebase';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { Form, Button } from 'semantic-ui-react';
+// import firebase, { auth, uiConfig } from '../../firebase';
+import { auth } from '../../firebase';
+// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 const querystring = require('querystring');
 
@@ -18,17 +19,19 @@ class SignUp extends React.Component {
             phoneNumber: '',
             confirmPassword: '',
             newUserCreated: false,
-        }
+        };
     }
 
-    handleChange = (event, {name, value}) => {
-        this.setState({[name]: value});
+    handleChange = (event, { name, value }) => {
+        this.setState({ [name]: value });
     };
 
     validate = () => {
         let errorMsg = '';
-        const {email, password} = this.state;
-        const reEmail = RegExp('([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.([a-zA-Z]{2,5})$');
+        const { email, password } = this.state;
+        const reEmail = RegExp(
+            '([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.([a-zA-Z]{2,5})$'
+        );
         const reEdu = RegExp('([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.edu$');
         const validEmail = reEmail.test(email) && reEdu.test(email);
         if (!reEmail) {
@@ -37,9 +40,9 @@ class SignUp extends React.Component {
         if (!reEdu) {
             errorMsg += 'Only *.edu e-mail addresses can be used\n';
         }
-        const validPass = (password.length >= 8);
+        const validPass = password.length >= 8;
         if (!validPass) {
-            errorMsg += 'Password must be at least 8 characters long\n'
+            errorMsg += 'Password must be at least 8 characters long\n';
         }
         if (errorMsg) {
             alert(errorMsg);
@@ -52,7 +55,7 @@ class SignUp extends React.Component {
         // alert('Submitted ' + JSON.stringify(this.state));
         // add regex checking and password match
         // pass all info to mongoDB too
-        const {email, password} = this.state;
+        const { email, password } = this.state;
         if (this.validate()) {
             auth.createUserWithEmailAndPassword(email, password);
             this.setState({
@@ -67,7 +70,7 @@ class SignUp extends React.Component {
     };
 
     createUser = () => {
-        const {email, password, confirmPassword} = this.state;
+        const { email, password, confirmPassword } = this.state;
         if (password !== confirmPassword) {
             alert('Passwords do not match.');
             return;
@@ -75,11 +78,11 @@ class SignUp extends React.Component {
 
         auth.createUserWithEmailAndPassword(email, password)
             .then(() => {
-                console.log('New user created!')
-                this.setState({newUserCreate: true})
+                console.log('New user created!');
+                this.setState({ newUserCreate: true });
             })
             .catch(function (error) {
-                alert(error.code + '\n' + error.message)
+                alert(error.code + '\n' + error.message);
             });
 
         const newUserInfo = {
@@ -87,19 +90,19 @@ class SignUp extends React.Component {
             password: this.state.password,
             firstName: this.state.firstName,
             lastName: this.state.lastName,
-            contact: {phone: this.state.phoneNumber},
+            contact: { phone: this.state.phoneNumber },
             paymentMethods: ['Venmo', 'Cash', 'Zelle'],
-            school: 'School University'
+            school: 'School University',
         };
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newUserInfo)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUserInfo),
         };
         const xurl = '/api/users/signup';
         fetch(xurl, requestOptions)
-            .then(response => response.json())
-            .then(data => console.log(data));
+            .then((response) => response.json())
+            .then((data) => console.log(data));
     };
 
     render() {
@@ -134,7 +137,8 @@ class SignUp extends React.Component {
                     <Form.Input
                         id="email"
                         name="email"
-                        label="Email"
+                        label="Student Email"
+                        type="Email"
                         value={email}
                         onChange={this.handleChange}
                         required
@@ -166,10 +170,9 @@ class SignUp extends React.Component {
                         required
                     />
                     <Form.Button
+                        primary
                         id="submit"
-                        control={Button}
                         fluid
-                        color="black"
                         content="Create an account"
                         onClick={this.createUser}
                     />

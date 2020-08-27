@@ -8,7 +8,6 @@ import {
     Segment,
     Header,
     Form,
-    Button,
     Dropdown,
 } from 'semantic-ui-react';
 
@@ -42,7 +41,7 @@ class DriverListing extends React.Component {
         });
     };
 
-    postData = async () => {
+    postData = async (data) => {
         const {
             startLocation,
             endLocation,
@@ -50,23 +49,15 @@ class DriverListing extends React.Component {
             startTime,
             price,
             capacity,
-        } = this.state;
+        } = data;
+        const t = startTime.split(':');
+        startDate.setHours(t[0]);
+        startDate.setMinutes(t[1]);
+
         const url = `/api/rides/${this.props.userId}`;
         const bodyData = {
-            origin: {
-                address: startLocation.address,
-                city: startLocation.city,
-                state: startLocation.state,
-                zip: startLocation.zip,
-                displayName: startLocation.displayName,
-            },
-            destination: {
-                address: endLocation.address,
-                city: endLocation.city,
-                state: endLocation.state,
-                zip: endLocation.zip,
-                displayName: endLocation.displayName,
-            },
+            origin: startLocation,
+            destination: endLocation,
             originCoords: {
                 type: 'Point',
                 coordinates: [startLocation.lng, startLocation.lat],
@@ -75,7 +66,7 @@ class DriverListing extends React.Component {
                 type: 'Point',
                 coordinates: [endLocation.lng, endLocation.lat],
             },
-            time: new Date(startDate + startTime), //year, month (0 to 11), date, hours, minutes
+            time: startDate, //year, month (0 to 11), date, hours, minutes
             price: price,
             capacity: capacity,
             car: {
@@ -111,29 +102,40 @@ class DriverListing extends React.Component {
     };
 
     handleSubmit = (event) => {
+        // TODO: Add more validation (including minDate/maxDate)
+        // TODO: Add confirmation and reset state
         event.preventDefault();
-        const isRoundtrip = this.state.isRoundtrip;
-        // const nextStartLocation = isRoundtrip ? this.state.endLocation : '';
-        // const nextEndLocation = isRoundtrip ? this.state.startLocation : '';
-
         if (this.state.errorMessage === '') {
-            this.postData();
-            // Do I need async/await here? to avoid setting state prematurely
-            this.setState({
-                startLocation: {},
-                endLocation: {},
-                startDate: '',
-                startTime: '',
-                price: '',
-                capacity: '',
-                isRoundtrip: false,
-            });
+            this.postData(this.state);
+            if (this.state.isRoundtrip) {
+                const {
+                    returnStartLocation,
+                    returnEndLocation,
+                    returnStartDate,
+                    returnStartTime,
+                    returnPrice,
+                    returnCapacity,
+                } = this.state;
+                this.postData({
+                    startLocation: returnStartLocation,
+                    endLocation: returnEndLocation,
+                    startDate: returnStartDate,
+                    startTime: returnStartTime,
+                    price: returnPrice,
+                    capacity: returnCapacity,
+                });
+            }
         }
     };
 
     render() {
         const today = new Date();
         today.setDate(today.getDate() - 1);
+        // {!this.props.haveCarInfo ? (
+        //     <DriverInfo userId={this.props.userId} />
+        // ) : (
+        //     console.log('user have car info')
+        // )}
         return (
             <Grid
                 style={{
@@ -149,7 +151,6 @@ class DriverListing extends React.Component {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        // TODO: why does 1em not work?
                         backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     }}
                     width={11}
@@ -157,29 +158,10 @@ class DriverListing extends React.Component {
                     <Form onSubmit={this.handleSubmit} autocomplete="off">
                         <Segment
                             style={{
-                                background: '#ffffff',
-                                border: '1px solid #c4c4c4',
-                                boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                                borderRadius: '15px',
                                 padding: '20px 50px',
                             }}
                         >
-                            {!this.props.haveCarInfo ? (
-                                <DriverInfo userId={this.props.userId} />
-                            ) : (
-                                console.log('user have car info')
-                            )}
-                            <Header
-                                style={{
-                                    fontFamily: 'Open Sans',
-                                    fontWeight: '600',
-                                    // TODO: convert to rem/em?
-                                    fontSize: '30px',
-                                    lineHeight: '41px',
-                                }}
-                            >
-                                Create a Ride
-                            </Header>
+                            <Header as="h3">Create a Ride</Header>
                             <Dropdown
                                 options={[
                                     { key: 0, text: 'One Way', value: false },
@@ -189,7 +171,7 @@ class DriverListing extends React.Component {
                                 name="isRoundtrip"
                                 onChange={this.handleChange}
                             />
-                            <Form.Group widths="equal">
+                            <Form.Group>
                                 <GeoSearch
                                     handleChange={this.handleGeoChange}
                                     placeholder="Specific Address"
@@ -260,41 +242,17 @@ class DriverListing extends React.Component {
                                     step={1}
                                     required
                                 />
-                               {!this.state.isRoundtrip && <Form.Button
-                                    content="Publish Ride"
-                                    style={{
-                                        backgroundColor: '#ef724b',
-                                        boxShadow:
-                                            '0px 2px 4px rgba(0, 0, 0, 0.25)',
-                                        borderRadius: '50px',
-                                        height: '45px',
-                                        color: 'white',
-                                    }}
-                                />}
+                                {!this.state.isRoundtrip && (
+                                    <Form.Button
+                                        primary
+                                        content="Publish Ride"
+                                    />
+                                )}
                             </Form.Group>
                         </Segment>
                         {this.state.isRoundtrip && (
-                            <Segment
-                                style={{
-                                    background: '#ffffff',
-                                    border: '1px solid #c4c4c4',
-                                    boxShadow:
-                                        '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                                    borderRadius: '15px',
-                                    padding: '20px 50px',
-                                }}
-                            >
-                                <Header
-                                    style={{
-                                        fontFamily: 'Open Sans',
-                                        fontWeight: '600',
-                                        // TODO: convert to rem/em?
-                                        fontSize: '30px',
-                                        lineHeight: '41px',
-                                    }}
-                                >
-                                    Create a Return Ride
-                                </Header>
+                            <Segment style={{ padding: '20px 50px' }}>
+                                <Header as="h3">Create a Return Ride</Header>
                                 <Form.Group widths="equal">
                                     <GeoSearch
                                         handleChange={this.handleGeoChange}
@@ -367,15 +325,8 @@ class DriverListing extends React.Component {
                                         required
                                     />
                                     <Form.Button
+                                        primary
                                         content="Publish Ride"
-                                        style={{
-                                            backgroundColor: '#ef724b',
-                                            boxShadow:
-                                                '0px 2px 4px rgba(0, 0, 0, 0.25)',
-                                            borderRadius: '50px',
-                                            height: '45px',
-                                            color: 'white',
-                                        }}
                                     />
                                 </Form.Group>
                             </Segment>
