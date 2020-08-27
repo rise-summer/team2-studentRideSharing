@@ -7,11 +7,8 @@ import * as serviceWorker from './serviceWorker';
 import { createStore } from "redux";
 import { Provider } from "react-redux"
 import * as firebase from "firebase";
-<<<<<<< HEAD
 import 'semantic-ui-less/semantic.less'
-=======
 require('dotenv').config();
->>>>>>> production
 
 const initialState = {
     start: '',

@@ -163,7 +163,6 @@ router.post('/email/:rideID', async function(req, res, next){
     // https://github.com/sendgrid/sendgrid-nodejs
     sgMail.setApiKey(process.env.SENDGRID_API);
     rides.getRide(rideID, function(ride) {
-<<<<<<< HEAD
         if(ride){
             const msg = {
                 // to: driverMail,
@@ -231,19 +230,6 @@ router.post('/email/:action/:requestID', async function(req, res, next){
         template_id: template_id,
         personalizations:[{
             "to": [
-=======
-      if(ride){
-        const msg = {
-          // to: driverMail,
-          from: {
-            "email": process.env.TEAM_EMAIL || apiKey.teamEMAIL,
-            "name": "Student Ride Sharing Team"
-          },
-          reply_to: "no-reply@ridesharing.com",
-          template_id: process.env.DYNAMIC_TEMPLATE_ID || apiKey.dynamicTemplateID,
-          personalizations:[{
-              "to": [
->>>>>>> production
                 {
                     "email": requesterMail,
                     "name": requesterFirstName + " " + requesterLastName
