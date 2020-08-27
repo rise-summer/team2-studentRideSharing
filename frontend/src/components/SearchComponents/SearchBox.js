@@ -88,7 +88,6 @@ class SearchBox extends Component {
                             onChange={this.props.functions.editBeginDate}
                             className="date-picker-box input"
                             // value={this.props.query.beginDate}
-                            value={this.props.query.beginDate}
                         />
                     </div>
                     {renderReturnDate()}

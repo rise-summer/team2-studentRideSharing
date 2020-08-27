@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import CreateRide from './pages/CreateRide/CreateRide';
 import Search from './pages/Search/Search';
@@ -11,6 +12,7 @@ import PrivateRoute from './components/Navigation/PrivateRoute';
 import SearchLanding from './components/SearchComponents/SearchLanding';
 import { auth } from "./firebase";
 import './App.css';
+import { store } from './index';
 
 const history = createBrowserHistory();
 
@@ -29,13 +31,24 @@ class App extends Component {
                 this.setState({
                     uid: data.uid,
                     isAuthenticated: true
+                });
+                this.props.dispatch({
+                    type: 'UPDATE_AUTH_STATUS',
+                    loggedIn: true,
+                    uid: data.uid,
                 })
+
                 // console.log("true: " + this.state.isAuthenticated);
             }
             else {
                 this.setState({
                     uid: "",
                     isAuthenticated: false
+                });
+                this.props.dispatch({
+                    type: 'UPDATE_AUTH_STATUS',
+                    loggedIn: true,
+                    uid: "",
                 })
                 // console.log("false: " + this.state.isAuthenticated);
             }
@@ -121,4 +134,17 @@ class App extends Component {
     // e.g. /user/5f29astecr0s965e
 }
 
-export default App;
+/* makes info from redux store available as prop for this component
+*   - loggedIn: accessible via this.props.loggedIn
+*   - uid: accessible via this.props.uid
+* */
+const mapStateToProps = (state) => ({
+    loggedIn: state.loggedIn,
+    uid: state.uid,
+    query: state.query,
+    rides: state.rides,
+    searched: state.searched,
+    roundtrip: state.roundtrip,
+});
+
+export default connect(mapStateToProps)(App);

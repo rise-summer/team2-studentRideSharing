@@ -6,7 +6,6 @@ import moment from 'moment';
 import './Search.css';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
-import {store} from '../../index';
 
 const querystring = require('querystring');
 const DEBUG = true;
@@ -42,8 +41,7 @@ class Search extends Component {
         this.setState({
             [fieldName]: resp,
         });
-        console.log(this.state.query);
-        let newQuery = store.getState().query;
+        let newQuery = this.props.query;
         switch (fieldName) {
             case 'start':
                 newQuery.start = resp;
@@ -59,33 +57,33 @@ class Search extends Component {
             type: 'UPDATE_GEO',
             value: newQuery
         });
-        console.log(store.getState());
+        console.log(this.props);
     };
 
     editBeginDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
         // let newQuery = this.state.query;
-        let newQuery = store.getState().query;
+        let newQuery = this.props.query;
         newQuery.beginDate = date;
         // this.setState({ query: newQuery });
         this.props.dispatch({
             type: 'EDIT_BEGIN_DATE',
             value: newQuery,
         });
-        // console.log(store.getState());
+        // console.log(this.props);
     };
 
     editEndDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
         // let newQuery = this.state.query;
-        let newQuery = store.getState().query;
+        let newQuery = this.props.query;
         newQuery.endDate = date;
         // this.setState({ query: newQuery })
         this.props.dispatch({
             type: 'EDIT_BEGIN_DATE',
             value: newQuery,
         });
-        console.log(store.getState());
+        console.log(this.props);
 
     };
 
@@ -93,10 +91,10 @@ class Search extends Component {
         /* dates are stored as strings in this.state, must convert to Date object */
         this.setState({ searched: true });
         // const date = new Date(this.state.query.beginDate);
-        const date = new Date(store.getState().query.beginDate);
+        const date = new Date(this.props.query.beginDate);
         const dateEnd = new Date(date);
         dateEnd.setHours(23, 59, 59);
-        const { start, endDest, distance } = store.getState().query;
+        const { start, endDest, distance } = this.props.query;
         /* If no distance specified, default to 5 */
         const dist = (distance) ? distance : 5;
         const origin = (start) ? [start.lng, start.lat] : '';
@@ -111,7 +109,7 @@ class Search extends Component {
         this.queryOutbound(outboundQuery);
 
         // if roundtrip selected
-        const returnDate = new Date(this.state.query.endDate);
+        const returnDate = new Date(this.props.query.endDate);
         const returnDateEnd = new Date(returnDate);
         returnDateEnd.setHours(23, 59, 59);
         const returnQuery = {
@@ -225,7 +223,7 @@ class Search extends Component {
         let searchPage;
         let rideResults;
         if (!this.state.searched) {
-            searchPage = <SearchLanding query={this.state.query} functions={functions} refs={refs} />
+            searchPage = <SearchLanding functions={functions} refs={refs} />
         } else {
             searchPage =
                 <SearchBox

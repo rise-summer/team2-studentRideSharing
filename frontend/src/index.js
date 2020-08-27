@@ -27,22 +27,41 @@ const initialState = {
         distance: '',
     },
     loggedIn: false,
-    uid: null
+    uid: ''
 };
 
 function reducer(state = initialState, action) {
     // console.log(action);
     switch (action.type) {
         case 'EDIT_BEGIN_DATE':
-            return { query: action.value };
+            return {
+                ...state,
+                query: action.value
+            };
         case 'EDIT_END_DATE':
-            return { query: action.value };
+            return {
+                ...state,
+                query: action.value
+            };
         case 'UPDATE_RIDES':
-            return {};
+            return {
+                ...state,
+            };
         case 'UPDATE_GEO':
-            return { query: action.value };
+            return {
+                ...state,
+                query: action.value
+            };
         case 'CHANGE_RIDE_TYPE':
-            return {};
+            return {
+                ...state,
+            };
+        case 'UPDATE_AUTH_STATUS':
+            return {
+                ...state,
+                loggedIn: action.loggedIn,
+                uid: action.uid,
+            };
         default:
             return state;
     }
