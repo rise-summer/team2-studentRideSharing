@@ -34,7 +34,7 @@ const LoginPage = () => {
                 <Tab
                     menu={{secondary: true, pointing: true}}
                     panes={panes}
-                    defaultActiveIndex={0}
+                    defaultActiveIndex={1}
                 />
             </Grid.Column>
         </Grid>
