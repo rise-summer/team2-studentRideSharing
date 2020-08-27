@@ -10,7 +10,7 @@ import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
 
 const querystring = require('querystring');
-const DEBUG = true;
+const DEBUG = false;
 
 class Search extends Component {
     constructor(props) {
@@ -45,20 +45,52 @@ class Search extends Component {
         this.setState({
             [fieldName]: resp,
         });
+<<<<<<< HEAD
+=======
+    }
+
+    editStart = (sd) => {
+        this.setState({ start: sd.target.value })
+    };
+
+    editEndDest = (ed) => {
+        this.setState({ endDest: ed.target.value })
+>>>>>>> production
     };
 
     editBeginDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
+<<<<<<< HEAD
         let newQuery = this.state.query;
         newQuery.beginDate = date;
         this.setState({ query: newQuery });
+=======
+        this.setState({ beginDate: date });
+>>>>>>> production
     };
 
     editEndDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
+<<<<<<< HEAD
         let newQuery = this.state.query;
         newQuery.endDate = date;
         this.setState({ query: newQuery })
+=======
+        this.setState({ endDate: date })
+    };
+
+    /* filter upon button click */
+    filterRides = () => {
+        // split searched departure date into array
+        var dateArray = this.state.beginDate.split('/');
+        // create Date object from array information
+        // new Date(YYYY, MM, DD), month is 0-indexed
+        var date = new Date(dateArray[2], dateArray[0] - 1, dateArray[1]);
+
+        this.setState({
+            filteredRides: this.state.rides.filter(dest => this.checkMatch(dest, dateArray, date))
+        })
+>>>>>>> production
     };
 
     queryRides = () => {
@@ -93,6 +125,7 @@ class Search extends Component {
             endDate: returnDateEnd,
             distance: dist,
         };
+<<<<<<< HEAD
         this.queryReturn(returnQuery);
     };
 
@@ -100,6 +133,9 @@ class Search extends Component {
         const xurl =
             '/api/rides?' +
             querystring.stringify({ query: JSON.stringify(query) });
+=======
+        const xurl = '/api/rides?' + querystring.stringify({ 'query': JSON.stringify(query) });
+>>>>>>> production
         fetch(xurl)
             .then((res) => res.json())
             .then((res) => {
@@ -164,6 +200,7 @@ class Search extends Component {
 
     changeRideType = (e, data) => {
         if (data.value === 'One Way') {
+<<<<<<< HEAD
             this.setState({ roundtrip: false });
         } else {
             this.setState({ roundtrip: true });
@@ -175,10 +212,16 @@ class Search extends Component {
             return "Roundtrip";
         } else {
             return "One Way";
+=======
+            this.setState({ roundtrip: false })
+        } else {
+            this.setState({ roundtrip: true })
+>>>>>>> production
         }
     };
 
     render() {
+<<<<<<< HEAD
         const functions = {
             editBeginDate: this.editBeginDate,
             editEndDate: this.editEndDate,
@@ -192,6 +235,25 @@ class Search extends Component {
             beginDateRef: this.beginDateRef,
             endDateRef: this.endDateRef,
             roundtrip: this.state.roundtrip,
+=======
+        const { roundtrip } = this.state;
+        const renderReturnDate = () => {
+            if (roundtrip) {
+                return (
+                    <div className="search-field">
+                        <div className="field-desc">Return Date</div>
+                        <input
+                            className="date-picker-box input"
+                            type="text"
+                            ref={this.endDateRef}
+                            onChange={this.editEndDate}
+                            value={this.state.endDate}
+                            placeholder="Choose Date..."
+                        />
+                    </div>
+                );
+            }
+>>>>>>> production
         };
 
         let searchPage;
@@ -215,8 +277,61 @@ class Search extends Component {
 
         return (
             <div className="search-wrapper">
+<<<<<<< HEAD
                 {searchPage}
                 {rideResults}
+=======
+                <div className="search-subwrapper">
+                    <div className="ride-type-wrapper">
+                        <Dropdown className="ride-type-selector"
+                            defaultValue="One Way"
+                            selection
+                            compact
+                            onChange={this.changeRideType}
+                            options={rideOptions}
+                        />
+                    </div>
+                    <div className="search-box">
+                        <div className="search-field">
+                            <div className="field-desc">Start Location</div>
+                            <SearchBar
+                                className="input"
+                                text={this.state.start}
+                                editfn={this.editStart}
+                                placeholder="Choose Start Location..."
+                            />
+                        </div>
+                        <div className="search-field">
+                            <div className="field-desc">Destination</div>
+                            <SearchBar
+                                className="input"
+                                text={this.state.endDest}
+                                editfn={this.editEndDest}
+                                placeholder="Choose Destination..."
+                            />
+                        </div>
+                        <div className="search-field">
+                            <div className="field-desc">Depart Date</div>
+                            <input
+                                className="date-picker-box input"
+                                type="text"
+                                ref={this.beginDateRef}
+                                onChange={this.editBeginDate}
+                                value={this.state.beginDate}
+                                placeholder="Choose Date..."
+                            />
+                        </div>
+                        {renderReturnDate()}
+                        <div onClick={this.queryRides} className="search-button">Search Rides</div>
+                    </div>
+                </div>
+                <br />
+                {/*<button onClick={this.clearFilter}>Clear</button>*/}
+                {/*<button onClick={this.queryRides}>Search DB</button>*/}
+                <h3>Available Rides</h3>
+                <RideList rides={this.state.filteredRides} />
+
+>>>>>>> production
             </div>
         );
     }

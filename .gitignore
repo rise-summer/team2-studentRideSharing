@@ -11,6 +11,7 @@
 # production
 frontend/build
 frontend/src/semantic/dist
+frontend/.env
 
 # misc
 .DS_Store
@@ -34,6 +35,10 @@ Desktop.ini
 node_modules/
 src/semantic/dist
 semantic/dist/
+.env/
+
+#environment vars
+.env
 
 # npm
 node_modules

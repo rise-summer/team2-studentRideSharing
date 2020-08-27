@@ -36,7 +36,7 @@ function App() {
                         <LoginPage />
                     </Route>
                     <Route path="/profile">
-                        <Profile userId="5f29a088bc6acb9e9da9e65e" />
+                        <Profile userId="5f31c5e09320783304b40d4e" />
                     </Route>
                     <Route path="/theme">
                         <ThemingLayout />

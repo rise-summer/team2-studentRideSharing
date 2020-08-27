@@ -4,7 +4,6 @@ const logger = require('morgan');
 const cron = require('node-schedule');
 // const cors = require('cors');
 const client = require('./db');
-const apiKey = require('./apiKey');
 const app = express();
 const ridesRouter = require('./routes/rides');
 const usersRouter = require('./routes/users');
@@ -30,7 +29,7 @@ app.use('/api/requests', requestsRouter.router);
 //Connect to Mongo on start
 // const uri = "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true&w=majority";
 // const uri = "mongodb://localhost:27017"; //for local db
-client.connect(apiKey.mongouri, function(err) {
+client.connect(process.env.MONGODB_URI, function(err) {
     if(err) {
         console.log(err);
         process.exit(1);

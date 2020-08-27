@@ -54,7 +54,12 @@ class DriverListing extends React.Component {
             price,
             capacity,
         } = this.state;
+<<<<<<< HEAD:frontend/src/components/CreateRideComponents/DriverListing.js
         const url = `/api/rides/${this.props.userId}`;
+=======
+        const userId = '5f31c5e09320783304b40d4e';
+        const url = `/api/rides/${userId}`;
+>>>>>>> production:frontend/src/pages/DriverListing/DriverListing.js
         const bodyData = {
             origin: {
                 address: startLocation.address,
