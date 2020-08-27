@@ -1,0 +1,7 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+@fontFamily         : 'Open Sans';
+
+@subHeadingFontSize : 16px;
+@mediumFontSize     : 16px;

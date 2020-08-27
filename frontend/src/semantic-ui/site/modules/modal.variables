@@ -1,0 +1,31 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+
+/*******************************
+            Modal Basic
+*******************************/
+@borderRadius   : 15px;
+@border         : #C4C4C4;
+
+/*******************************
+            Content
+*******************************/
+
+/*--------------
+     Close
+---------------*/
+@closeTop       : 5px;
+@closeRight     : 5px;
+@closeColor     : @black;
+@closeSize      : 1.5em;    
+
+/*--------------
+     Actions
+---------------*/
+
+@actionAlign        : center;
+@actionBorder       : none;
+@actionBackground   : @white; 
+@buttonDistance     : 2.8em;
