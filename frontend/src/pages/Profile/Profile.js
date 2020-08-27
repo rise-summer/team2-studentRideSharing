@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { auth } from "../../firebase";
+
 import ProfileTabs from '../../components/UserProfiles/ProfileTabs';
 import { Grid, Header, Image, Message } from 'semantic-ui-react';
 
@@ -6,6 +8,7 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            userId: '',
             user: {
                 firstName: '',
                 lastName: '',
@@ -23,32 +26,39 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        const { userId } = this.props;
-        fetch(`/api/users/${userId}`)
-            .then((response) => response.json()) //TODO: error handling
-            .then((user) => {
-                this.setState({ user });
-            })
-            .catch((error) => console.log('error', error));
+        auth.onAuthStateChanged((data) => {
+            if (data) { //logged in
+                const userId = data.uid;
+                this.setState({userId});
+                fetch(`/api/users/${userId}`)
+                    .then((response) => response.json())//TODO: error handling
+                    .then(user => {
+                        this.setState({ user });
+                    })
+                    .catch((error) => console.log('error', error));
 
-        fetch(`/api/vehicles/${userId}`)
-            .then((response) => response.json())
-            .then((vehicles) =>
-                this.setState({
-                    vehicles: vehicles,
-                })
-            )
-            .catch((error) => console.log('error', error));
-
-        // Would it be better to fetch the rides when ProfileListing is rendered?
-        fetch(`/api/rides/${userId}`)
-            .then((response) => response.json())
-            .then((rides) =>
-                this.setState({
-                    rides: rides,
-                })
-            )
-            .catch((error) => console.log('error', error));
+                fetch(`/api/vehicles/${userId}`)
+                    .then((response) => response.json())
+                    .then((vehicles) =>
+                        this.setState({
+                            vehicles: vehicles,
+                        })
+                    )
+                    .catch((error) => console.log('error', error));
+                // Would it be better to fetch the rides when ProfileListing is rendered?
+                fetch(`/api/rides/${userId}`)
+                    .then((response) => response.json())
+                    .then((rides) =>
+                        this.setState({
+                            rides: rides,
+                        })
+                    )
+                    .catch((error) => console.log('error', error));
+            }
+            else {
+                this.setState({userId: ""});
+            }
+        });
     }
 
     handleError = (errorMessage) =>
@@ -68,6 +78,9 @@ class Profile extends Component {
             contact,
             email,
         } = user;
+        if (userId === "") {
+            return null;
+        }
         return (
             <div>
                 {errorMessage && (

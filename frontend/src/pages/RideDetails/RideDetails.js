@@ -9,6 +9,8 @@ class RideDetails extends Component {
     constructor (props) {
         super(props);
         this.state = {
+            rideID: "",
+            driverID: "",
             driver: {
                 paymentMethods: [],
                 contact: {}
@@ -26,8 +28,10 @@ class RideDetails extends Component {
     }
 
     componentDidMount() {
-        const rideID = this.props.match.params.rideID;
-        const driverID = this.props.match.params.driverID;
+        console.log(this.props);
+        const rideID = this.props.computedMatch.params.rideID;
+        const driverID = this.props.computedMatch.params.driverID;
+        this.setState({ rideID, driverID });
         const rideURL = "/api/rides/" + driverID + "/" + rideID;
         const userURL = "/api/users/" + driverID;
         var requestOptions = {
@@ -93,7 +97,7 @@ class RideDetails extends Component {
     }
 
     render() {
-        const {requests, ride, render, driver} = this.state;
+        const {rideID, requests, ride, render, driver} = this.state;
         var dateObject = new Date(ride.time);
         const dateString = dateObject.toLocaleDateString('en-US');
         const timeString = dateObject.toLocaleTimeString('en-US');
@@ -117,7 +121,7 @@ class RideDetails extends Component {
                 <div className="right-column">
                     <div className="price">Total: ${ride.price}</div>
                     {/*TODO: disable the button if ride not available for new request*/}
-                    <RequestRide ride={ride} driver={driver} rideID={this.props.match.params.rideID} dateString={dateString} timeString={timeString} disable={remainCapacity < 1 ? true: false} />
+                    <RequestRide ride={ride} driver={driver} rideID={rideID} dateString={dateString} timeString={timeString} disable={remainCapacity < 1 ? true: false} />
                 </div>
                 <div className="center-column">
                     <Link to='/search/'>

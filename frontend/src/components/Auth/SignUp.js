@@ -17,7 +17,6 @@ class SignUp extends React.Component {
             lastName: '',
             phoneNumber: '',
             confirmPassword: '',
-            newUserCreated: false,
         }
     }
 
@@ -54,7 +53,6 @@ class SignUp extends React.Component {
         // pass all info to mongoDB too
         const {email, password} = this.state;
         if (this.validate()) {
-            auth.createUserWithEmailAndPassword(email, password);
             this.setState({
                 firstName: '',
                 lastName: '',
@@ -74,32 +72,38 @@ class SignUp extends React.Component {
         }
 
         auth.createUserWithEmailAndPassword(email, password)
-            .then(() => {
+            .then((data) => {
                 console.log('New user created!')
-                this.setState({newUserCreate: true})
+                const newUserInfo = {
+                    uid: data.user.uid,
+                    email: this.state.email,
+                    password: this.state.password,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    contact: {phone: this.state.phoneNumber},
+                    paymentMethods: ['Venmo', 'Cash', 'Zelle'],
+                    school: 'School University'
+                };
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(newUserInfo)
+                };
+                const xurl = '/api/users/signup';
+                fetch(xurl, requestOptions)
+                    .then(response => {
+                        if (response.status === 201) {
+                            return response.json();
+                        } else {//TODO: error handling
+                            // throw new error("Failed to create new user in MongoDB" + response.text());
+                        }
+                    })
+                    .then(data => console.log(data));
             })
             .catch(function (error) {
                 alert(error.code + '\n' + error.message)
             });
 
-        const newUserInfo = {
-            email: this.state.email,
-            password: this.state.password,
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            contact: {phone: this.state.phoneNumber},
-            paymentMethods: ['Venmo', 'Cash', 'Zelle'],
-            school: 'School University'
-        };
-        const requestOptions = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newUserInfo)
-        };
-        const xurl = '/api/users/signup';
-        fetch(xurl, requestOptions)
-            .then(response => response.json())
-            .then(data => console.log(data));
     };
 
     render() {
