@@ -6,7 +6,7 @@ const collectionName = "Colleges";
 //Get college name autocomplete
 router.get('/:words', async function (req, res, next) {
     const words = decodeURI(req.params.words);
-    const collection = client.dbCollection(collectionName);
+    const collection = client.collegeCollection(collectionName);
     collection.aggregate([
         {
             $search: {
