@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const client = require('../db');
-// const apiKey = require('../apiKey');
 const querystring = require('querystring');
 const collectionName = "Requests";
 const sgMail = require('@sendgrid/mail');
@@ -48,7 +47,7 @@ router.post('/email/:rideID', async function(req, res, next){
     const {driverMail, driverFirstName, driverLastName, requesterFirstName, startLoc, endLoc} = req.body;
     // using Twilio SendGrid's v3 Node.js Library
     // https://github.com/sendgrid/sendgrid-nodejs
-    sgMail.setApiKey(process.env.SENDGRID_API || apiKey.SENDGRID_API_KEY);
+    sgMail.setApiKey(process.env.SENDGRID_API);
     rides.getRide(rideID, function(ride) {
       if(ride){
         const msg = {
