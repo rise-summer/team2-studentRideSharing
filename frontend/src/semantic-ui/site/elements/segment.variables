@@ -1,0 +1,12 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+@borderRadius   : 20px;
+@boxShadow      : 0px 4px 14px #D8D8F6;
+
+/*-------------------
+       Padded
+--------------------*/
+
+@paddedSegmentPadding       : 25px;
+@veryPaddedSegmentPadding   : 50px;

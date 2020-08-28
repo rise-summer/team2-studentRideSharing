@@ -14,7 +14,7 @@ class RequestRide extends Component {
         {
             "open": false,
             "openConfirmation": false,
-            "ownerID": "5f2f11554bbc5304bcefda01", //TODO: use actual user info
+            "ownerID": "", //TODO: use actual user info
             "origin": "",
             "dest": "",
             "originCoords": {
@@ -35,7 +35,7 @@ class RequestRide extends Component {
         else {
             this.state = initialState;
         }
-    };
+    }
 
     setOpen(isOpen) {
         this.setState({open: isOpen});

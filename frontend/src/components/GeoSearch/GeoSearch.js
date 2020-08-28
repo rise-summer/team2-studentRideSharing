@@ -74,6 +74,8 @@ class GeoSearch extends React.Component {
                 console.log(error);
             }
         }
+
+        // Creates geocoder object
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             placeholder: this.props.placeholder,
@@ -82,6 +84,8 @@ class GeoSearch extends React.Component {
             minLength: 3,
             proximity: coords,
         });
+
+        // When a result is selected, it will send it via handleChange
         geocoder.on('result', () =>
             this.props.handleChange(
                 this.processResponse(JSON.parse(geocoder.lastSelected)),
