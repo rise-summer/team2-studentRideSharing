@@ -5,7 +5,7 @@ import 'pikaday/css/pikaday.css';
 import moment from 'moment';
 import './Search.css';
 import { SEARCH_RIDES_SUCCESS } from '../../actions/SearchPageStates';
-import { getRidesError, getRidesSuccess } from '../../reducers/SearchRidesReducer';
+import { getRidesError, getRidesSuccess, ridesReducer } from '../../reducers/SearchRidesReducer';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
 import SortBy from '../../components/SortBy/SortBy';
@@ -178,6 +178,12 @@ class Search extends Component {
         } else {
             return "One Way";
         }
+    };
+
+    sort = (rides) => {
+        this.setState({
+            rides: rides,
+        })
     };
 
     render() {
