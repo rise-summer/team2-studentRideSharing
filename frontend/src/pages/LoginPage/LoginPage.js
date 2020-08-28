@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { withRouter } from "react-router";
-import { connect } from "react-redux";
-import { auth } from "../../firebase";
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { auth } from '../../firebase';
 import SignIn from '../../components/Auth/SignIn';
 import SignUp from '../../components/Auth/SignUp';
 import { Grid, Tab } from 'semantic-ui-react';

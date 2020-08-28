@@ -11,7 +11,7 @@ import Profile from './pages/Profile/Profile';
 import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/Navigation/PrivateRoute';
 import SearchLanding from './components/SearchComponents/SearchLanding';
-import { auth } from "./firebase";
+import { auth } from './firebase';
 import ThemingLayout from './pages/Theme/Theme';
 
 const history = createBrowserHistory();
@@ -34,7 +34,7 @@ class App extends Component {
                 this.props.dispatch({
                     type: 'UPDATE_AUTH_STATUS',
                     loggedIn: false,
-                    uid: "",
+                    uid: '',
                 })
             }
         });
