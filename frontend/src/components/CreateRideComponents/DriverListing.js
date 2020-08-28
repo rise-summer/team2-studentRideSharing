@@ -13,6 +13,7 @@ class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            uid: '',
             startLocation: {},
             endLocation: {},
             startDate: '',
@@ -32,6 +33,8 @@ class DriverListing extends React.Component {
             onSelect: this.editStartDate,
             minDate: new Date(),
         });
+
+        this.setState({ uid: this.props.uid });
     }
 
     editStartDate = (d) => {
@@ -47,6 +50,7 @@ class DriverListing extends React.Component {
 
     postData = async () => {
         const {
+            uid,
             startLocation,
             endLocation,
             startDate,
@@ -54,7 +58,7 @@ class DriverListing extends React.Component {
             price,
             capacity,
         } = this.state;
-        const url = `/api/rides/${this.props.userId}`;
+        const url = `/api/rides/${uid}`;
         const bodyData = {
             origin: {
                 address: startLocation.address,
@@ -138,7 +142,7 @@ class DriverListing extends React.Component {
         return (
             <div>
                 {!this.props.haveCarInfo ? (
-                    <DriverInfo userId={this.props.userId} />
+                    <DriverInfo userId={this.props.uid} />
                 ) : (
                         console.log('user have car info')
                     )}
