@@ -1,0 +1,83 @@
+/*******************************
+     User Global Variables
+*******************************/
+
+/*-----------
+    Fonts
+-------------*/
+@fontName      : 'PT Sans Caption';
+@fontSmoothing : 'antialiased';
+
+@headerFont    : 'Open Sans', 'PT Sans Caption', sans-serif;
+@pageFont      : 'Open Sans', 'PT Sans Caption', sans-serif;
+
+@googleFontSizes   : '400,700,400italic,700italic';
+@googleFontFamily  : '@{googleFontName}:@{googleFontSizes}';
+
+/*-------------------
+    Base Sizes
+--------------------*/
+
+@emSize      : 14px;
+@fontSize    : 15px;
+@h1          : 48px;
+@h2          : 36px;
+@h3          : 30px;
+@h4          : 25px;
+@h5          : 20px;
+@h6          : 16px;
+
+/*-------------------
+    Site Colors
+--------------------*/
+
+/*---  Colors  ---*/
+@orange: #EF724B;
+@black: #000000;
+@white: #FFFFFF;
+@purple: #686EFD;
+@violet: #7F82C7;
+@brown: #E58D71;
+
+/*---  Brand Colors  ---*/
+@primaryColor: @orange;
+@secondaryColor: @purple;
+
+/*-------------------
+      Page
+--------------------*/
+
+@pageBackground      :#F1F2F5;
+@pageOverflowX       : hidden;
+
+@fontSize            : 14px;
+@lineHeight          : 1.33;
+@textColor           : rgba(0, 0, 0, 0.8);
+
+@headerMargin        : 1em 0em 1rem;
+@paragraphMargin     : 0em 0em 1em;
+
+@linkColor           : #009FDA;
+@linkUnderline       : none;
+@linkHoverColor      : lighten( @linkColor, 5);
+
+@highlightBackground : rgba(255, 255, 160, 0.4);
+@highlightColor      : @textColor;
+
+/*-------------------
+    Borders
+--------------------*/
+
+@circularRadius                : 500rem;
+
+@borderColor                   : rgba(39, 41, 43, 0.15);
+@selectedBorderColor           : rgba(39, 41, 43, 0.3);
+
+@solidBorderColor              : #D4D4D5;
+@solidSelectedBorderColor      : #BEBEBF;
+
+@whiteBorderColor              : rgba(255, 255, 255, 0.2);
+@selectedWhiteBorderColor      : rgba(255, 255, 255, 0.8);
+
+@solidWhiteBorderColor         : #555555;
+@selectedSolidWhiteBorderColor : #999999;

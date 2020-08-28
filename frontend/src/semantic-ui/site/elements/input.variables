@@ -1,0 +1,7 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+@padding        : 10px;
+@borderRadius   : 12px;
+
+@relativeMedium : 16px;

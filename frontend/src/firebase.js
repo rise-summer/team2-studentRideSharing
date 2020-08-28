@@ -1,4 +1,7 @@
-import * as firebase from 'firebase'
+// import * as firebase from 'firebase'
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 const config = {
     apiKey: "AIzaSyBStZvVTJgu72YYfA4bo-cQiQwIbX5OpOw",
@@ -15,8 +18,54 @@ firebase.initializeApp(config);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
+const redirectUrl = '/profile';
 // Configure FirebaseUI.
 export const uiConfig = {
+    callbacks: {
+        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+            // User successfully signed in.
+            auth.onAuthStateChanged()
+            .then((data) => {
+                console.log(data);
+                const {uid, email, displayName} = data;
+                //check if the uid exist in MongoDB
+                fetch(`/api/users/${uid}`)
+                .then(response => {
+                    if(response.status === 404) { //if new user
+                        //register the new user to MongoDB
+                        const newUserInfo = {
+                            uid: uid,
+                            email: email,
+                            firstName: displayName,
+                            // lastName: this.state.lastName,
+                            // contact: {phone: this.state.phoneNumber},
+                            // paymentMethods: ['Venmo', 'Cash', 'Zelle'],
+                            // school: 'School University'
+                        };
+                        const requestOptions = {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(newUserInfo)
+                        };
+                        fetch('/api/users/signup', requestOptions)
+                            .then(response => {
+                                if (response.status === 201) {
+                                    return true;
+                                } else {//TODO: error handling e.g. 409 conflict
+                                    throw new Error("Failed to create new user in MongoDB" + response.text());
+                                }
+                            })
+                    }
+                    return false;
+                })
+                .catch(error => console.log('error', error));
+              }
+            );
+            // Return type determines whether we continue the redirect automatically
+            // or whether we leave that to developer to handle.
+            return false;
+        }
+    },
     // Popup signin flow rather than redirect flow.
     signInFlow: 'redirect',
     // Redirect to /search after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.

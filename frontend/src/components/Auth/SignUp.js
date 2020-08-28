@@ -101,7 +101,7 @@ class SignUp extends React.Component {
         // pass all info to mongoDB too
         const {email, password} = this.state;
         if (this.validate()) {
-            auth.createUserWithEmailAndPassword(email, password);
+            this.createUser();
         }
     };
 
@@ -113,42 +113,46 @@ class SignUp extends React.Component {
         }
 
         auth.createUserWithEmailAndPassword(email, password)
-            .then(() => {
+            .then((data) => {
                 console.log('New user created!')
-                this.setState({newUserCreate: true})
+                const newUserInfo = {
+                    email: email,
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName,
+                    phone: phoneNumber,
+                    contact: {
+                        email: personalEmail,
+                        phone: personalPhone,
+                        message: personalText,
+                        facebook
+                    },
+                    school: school,
+                };
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(newUserInfo)
+                };
+                const xurl = '/api/users/signup';
+                fetch(xurl, requestOptions)
+                    .then(response => {
+                        if (response.status === 201) {
+                            this.setState(initialState);//reset state
+                            return response.json();
+                        } else {//TODO: error handling
+                            // throw new error("Failed to create new user in MongoDB" + response.text());
+                        }
+                    })
+                    .then(data => {
+                        console.log(data);
+                        this.props.redirect();
+                    });
             })
             .catch(function (error) {
                 alert(error.code + '\n' + error.message)
             });
 
-        const newUserInfo = {
-            email: email,
-            password: password,
-            firstName: firstName,
-            lastName: lastName,
-            phone: phoneNumber,
-            contact: {
-                email: personalEmail,
-                phone: personalPhone,
-                message: personalText,
-                facebook
-            },
-            school: school,
-        };
-        const requestOptions = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newUserInfo)
-        };
-        const xurl = '/api/users/signup';
-        fetch(xurl, requestOptions)
-            .then(response => {
-                if (response.status === 201) {
-                    this.setState(initialState);//reset state
-                    return response.json();
-                }
-            })
-            .then(data => console.log(data));
     };
 
     render() {
@@ -291,7 +295,6 @@ class SignUp extends React.Component {
                         fluid
                         color="black"
                         content="Create an account"
-                        onClick={this.createUser}
                     />
                 </Form>
                 {/*<Divider horizontal>Or</Divider>*/}
