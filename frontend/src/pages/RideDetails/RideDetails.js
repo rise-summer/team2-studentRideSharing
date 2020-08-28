@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import './RideDetails.css';
 import { Icon, Button, List } from 'semantic-ui-react';
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
 import RequestRide from '../../components/Rides/RequestRide';
 import RequestItem from '../../components/Requests/RequestItem';
-
-/* makes info from redux store available as prop for this component
-*   - loggedIn: accessible via this.props.loggedIn
-*   - uid: accessible via this.props.uid
-* */
-const mapStateToProps = (state) => ({
-    loggedIn: state.loggedIn,
-    uid: state.uid,
-});
 
 class RideDetails extends Component {
     constructor (props) {
@@ -189,4 +179,4 @@ class RideDetails extends Component {
     }
 }
 
-export default connect(mapStateToProps)(withRouter(RideDetails));
+export default withRouter(RideDetails);

@@ -1,6 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-import { withRouter } from "react-router";
 import { Form, Divider, Button } from 'semantic-ui-react';
 import firebase, { auth } from "../../firebase";
 import { uiConfig } from "../../firebase";
@@ -24,6 +22,10 @@ class SignIn extends React.Component {
         const {email, password} = this.state;
         auth.signInWithEmailAndPassword(email, password)
             .then(() => {
+                this.setState({
+                    email: '',
+                    password: '',
+                });
                 this.props.redirect();
             })
             .catch(function (error) {
@@ -36,10 +38,6 @@ class SignIn extends React.Component {
                     alert(errorMessage);
                 }
             });
-        this.setState({
-            email: '',
-            password: '',
-        });
     };
 
     render() {
@@ -81,4 +79,4 @@ class SignIn extends React.Component {
     }
 }
 
-export default withRouter(SignIn);
+export default SignIn;

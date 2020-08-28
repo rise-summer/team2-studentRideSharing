@@ -1,14 +1,10 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
-import { auth } from "../../firebase";
 import { Loader } from 'semantic-ui-react';
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
 class PrivateRoute extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const {loggedIn, children, ...rest} = this.props;

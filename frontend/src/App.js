@@ -1,5 +1,6 @@
-import React, { Component, useState, useEffect } from 'react';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import React, { Component } from 'react';
+import './App.css';
+import { Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import CreateRide from './pages/CreateRide/CreateRide';
@@ -11,7 +12,6 @@ import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/Navigation/PrivateRoute';
 import SearchLanding from './components/SearchComponents/SearchLanding';
 import { auth } from "./firebase";
-import { store } from './index';
 import ThemingLayout from './pages/Theme/Theme';
 
 const history = createBrowserHistory();
@@ -45,7 +45,7 @@ class App extends Component {
     }
 
     render() {
-        const {loggedIn, uid} = this.props;
+        // const {loggedIn, uid} = this.props;
         return (
             <div className="App">
             {/* <Router initialEntries={['/']} initialIndex={0} history={history}> */}
@@ -78,7 +78,7 @@ class App extends Component {
             </div>
         );
     }
-    // TODO: Add private routing and specific routing for user, ride
+    // TODO: Add private routing and specific routing for user
     // e.g. /user/5f29astecr0s965e
 }
 

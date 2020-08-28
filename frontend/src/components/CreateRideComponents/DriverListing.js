@@ -6,7 +6,6 @@ import DriverInfo from './DriverInfo';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
-import { auth } from "../../firebase";
 
 // TODO: change so first ride is stored and everything is submitted at the end
 

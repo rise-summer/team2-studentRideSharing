@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { auth } from "../../firebase";
 import SignIn from '../../components/Auth/SignIn';
 import SignUp from '../../components/Auth/SignUp';
-
-import { Grid, Tab, Button } from 'semantic-ui-react';
+import { Grid, Tab } from 'semantic-ui-react';
 import './LoginPage.css';
 
 class LoginPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            uid: '',
-        };
     }
 
-    componentDidMount() {
+    componentWillUnmount() {
+        this.listener();
+    }
+
+    authAndRedirect = () => {
         this.listener = auth.onAuthStateChanged((data) => {
             if (data) { //logged in
                 this.props.dispatch({
@@ -25,7 +24,11 @@ class LoginPage extends Component {
                     loggedIn: true,
                     uid: data.uid,
                 });
-                this.redirect();
+                //Prepare for redirect after login
+                //reference: https://reactrouter.com/web/example/auth-workflow
+                const { history, location } = this.props;
+                let { from } = location.state || { from: { pathname: "/"} };
+                history.replace(from);
             }
             else {
                 this.props.dispatch({
@@ -37,25 +40,13 @@ class LoginPage extends Component {
         });
     }
 
-    componentWillUnmount() {
-        this.listener();
-    }
-
-    redirect = () => {
-        //Prepare for redirect after login
-        //reference: https://reactrouter.com/web/example/auth-workflow
-        const { history, location } = this.props;
-        let { from } = location.state || { from: { pathname: "/"} };
-        history.replace(from);
-    }
-
     render() {
         const panes = [
             {
                 menuItem: 'Log In',
                 render: () => (
                     <Tab.Pane attached={false} textAlign="left">
-                        <SignIn redirect={this.redirect}/>
+                        <SignIn redirect={this.authAndRedirect}/>
                     </Tab.Pane>
                 ),
             },
@@ -63,7 +54,7 @@ class LoginPage extends Component {
                 menuItem: 'Sign Up',
                 render: () => (
                     <Tab.Pane attached={false} textAlign="left">
-                        <SignUp redirect={this.redirect}/>
+                        <SignUp redirect={this.authAndRedirect}/>
                     </Tab.Pane>
                 ),
             },
