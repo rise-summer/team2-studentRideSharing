@@ -167,11 +167,11 @@ router.post('/email/:rideID', async function(req, res, next){
             const msg = {
                 // to: driverMail,
                 from: {
-                    "email": apiKey.teamEMAIL,
+                    "email": process.env.TEAM_EMAIL,
                     "name": "Student Ride Sharing Team"
                 },
                 reply_to: "no-reply@ridesharing.com",
-                template_id: apiKey.dynamicTemplateID.newRequest,
+                template_id: process.env.DYNAMIC_TEMPLATE_ID.newRequest,
                 personalizations:[{
                     "to": [
                         {
@@ -209,13 +209,13 @@ router.post('/email/:action/:requestID', async function(req, res, next){
     const {requesterMail, requesterFirstName, requesterLastName , dynamic_template_data} = req.body;
     // using Twilio SendGrid's v3 Node.js Library
     // https://github.com/sendgrid/sendgrid-nodejs
-    sgMail.setApiKey(apiKey.SENDGRID_API_KEY);
+    sgMail.setApiKey(process.env.SENDGRID_API);
     var template_id;
     if (action === "deny") {
-        template_id = apiKey.dynamicTemplateID.requestDenied;
+        template_id = process.env.DYNAMIC_TEMPLATE_ID.requestDenied;
     }
     else if (action === "confirm") {
-        template_id = apiKey.dynamicTemplateID.requestConfirmed;
+        template_id = process.env.DYNAMIC_TEMPLATE_ID.requestConfirmed;
     }
     else {
         res.status(400).send("Bad Request. Invalid action in URL.");
@@ -223,7 +223,7 @@ router.post('/email/:action/:requestID', async function(req, res, next){
     const msg = {
         // to: driverMail,
         from: {
-            "email": apiKey.teamEMAIL,
+            "email": process.env.TEAM_EMAIL,
             "name": "Student Ride Sharing Team"
         },
         reply_to: "no-reply@ridesharing.com",
