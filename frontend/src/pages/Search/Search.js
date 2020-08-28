@@ -11,7 +11,7 @@ import SearchBox from '../../components/SearchComponents/SearchBox';
 import SortBy from '../../components/SortBy/SortBy';
 
 const querystring = require('querystring');
-const DEBUG = true;
+const DEBUG = false;
 
 class Search extends Component {
     constructor(props) {

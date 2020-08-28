@@ -4,6 +4,7 @@ import mbxGeocode from '@mapbox/mapbox-sdk/services/geocoding';
 import { Search } from 'semantic-ui-react';
 import _ from 'lodash';
 
+// CURRENTLY UNUSED: just for testing purposes
 class GeoSearch2 extends Component {
     constructor() {
         super();
