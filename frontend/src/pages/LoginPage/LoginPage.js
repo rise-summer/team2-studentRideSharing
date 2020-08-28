@@ -27,14 +27,14 @@ class LoginPage extends Component {
                 //Prepare for redirect after login
                 //reference: https://reactrouter.com/web/example/auth-workflow
                 const { history, location } = this.props;
-                let { from } = location.state || { from: { pathname: "/"} };
+                let { from } = location.state || { from: { pathname: '/'} };
                 history.replace(from);
             }
             else {
                 this.props.dispatch({
                     type: 'UPDATE_AUTH_STATUS',
                     loggedIn: false,
-                    uid: "",
+                    uid: '',
                 })
             }
         });

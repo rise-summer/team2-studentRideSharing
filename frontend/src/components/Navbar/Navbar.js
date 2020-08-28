@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Segment, Menu, Icon, Button } from 'semantic-ui-react';
 import { Link, useLocation } from 'react-router-dom';
-import { auth } from "../../firebase";
+import { auth } from '../../firebase';
 /* makes info from redux store available as prop for this component
 *   - loggedIn: accessible via this.props.loggedIn
 *   - uid: accessible via this.props.uid
@@ -53,7 +53,7 @@ const Navbar = (props) => {
                             Profile <Icon name="user circle outline" />
                         </Menu.Item>
                     </Link>
-                    <Menu.Menu position='right'>
+                    <Menu.Menu position="right">
                         <Menu.Item>
                             <Button onClick={signOut}>Log Out</Button>
                         </Menu.Item>

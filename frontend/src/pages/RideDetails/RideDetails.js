@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './RideDetails.css';
 import { Icon, Button, List } from 'semantic-ui-react';
-import { Link } from "react-router-dom";
-import { withRouter } from "react-router";
+import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import RequestRide from '../../components/Rides/RequestRide';
 import RequestItem from '../../components/Requests/RequestItem';
 
@@ -10,8 +10,8 @@ class RideDetails extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            rideID: "",
-            driverID: "",
+            rideID: '',
+            driverID: '',
             driver: {
                 paymentMethods: [],
                 contact: {}

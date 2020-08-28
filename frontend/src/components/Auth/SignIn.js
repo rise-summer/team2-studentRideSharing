@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Divider, Button } from 'semantic-ui-react';
-import firebase, { auth } from "../../firebase";
-import { uiConfig } from "../../firebase";
+import firebase, { auth } from '../../firebase';
+import { uiConfig } from '../../firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 class SignIn extends React.Component {

@@ -13,7 +13,7 @@ class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            uid: "",
+            uid: '',
             startLocation: {},
             endLocation: {},
             startDate: '',
@@ -34,7 +34,7 @@ class DriverListing extends React.Component {
             minDate: new Date(),
         });
 
-        this.setState({ uid: this.props.uid});
+        this.setState({ uid: this.props.uid });
     }
 
     editStartDate = (d) => {
