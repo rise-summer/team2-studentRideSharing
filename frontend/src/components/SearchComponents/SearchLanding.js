@@ -8,9 +8,9 @@ class SearchLanding extends Component {
         return (
             <div className="landing">
                 <div className="landing-title">Student Rideshare Search</div>
-                <SearchBox query={this.props.query}
-                           functions={this.props.functions}
-                           refs={this.props.refs}
+                <SearchBox
+                    functions={this.props.functions}
+                    refs={this.props.refs}
                 />
             </div>
         );

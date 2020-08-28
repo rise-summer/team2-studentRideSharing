@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import './SearchBox.css';
-import SearchBar from '../SearchBar/SearchBar';
-import Pikaday from 'pikaday';
-import moment from 'moment';
+import { connect } from 'react-redux'
 import { Dropdown } from 'semantic-ui-react';
 import DatePicker from './DatePicker';
 import GeoSearch from '../../components/GeoSearch/GeoSearch';
-
-const querystring = require('querystring');
-const DEBUG = true;
 
 const rideOptions = [
     {
@@ -70,27 +65,15 @@ class SearchBox extends Component {
                 <div className="search-box">
                     <div className="search-field">
                         <div className="field-desc">Start Location</div>
-                        {/*<SearchBar*/}
-                        {/*    className="input"*/}
-                        {/*    text={this.props.query.start}*/}
-                        {/*    editfn={this.props.functions.editStart}*/}
-                        {/*    placeholder="Choose Start Location..."*/}
-                        {/*/>*/}
                         <GeoSearch
                             handleChange={this.props.functions.handleGeoChange}
                             placeholder="Choose Start location..."
-                            name="endDest"
+                            name="start"
                             types="region,postcode,district,place,locality,neighborhood,address,poi"
                         />
                     </div>
                     <div className="search-field">
                         <div className="field-desc">Destination</div>
-                        {/*<SearchBar*/}
-                        {/*    className="input"*/}
-                        {/*    text={this.props.query.endDest}*/}
-                        {/*    editfn={this.props.functions.editEndDest}*/}
-                        {/*    placeholder="Choose Destination..."*/}
-                        {/*/>*/}
                         <GeoSearch
                             className="input"
                             handleChange={this.props.functions.handleGeoChange}
@@ -104,7 +87,8 @@ class SearchBox extends Component {
                         <DatePicker
                             onChange={this.props.functions.editBeginDate}
                             className="date-picker-box input"
-                            value={this.props.query.beginDate} />
+                            // value={this.props.query.beginDate}
+                        />
                     </div>
                     {renderReturnDate()}
                     <div onClick={this.props.functions.query} className="search-button">Search Rides</div>
@@ -114,4 +98,8 @@ class SearchBox extends Component {
     }
 }
 
-export default SearchBox;
+const mapStateToProps = state => ({
+    query: state.query
+});
+
+export default connect(mapStateToProps)(SearchBox);
