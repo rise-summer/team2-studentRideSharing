@@ -8,6 +8,7 @@ const ridesRouter = require('./routes/rides');
 const usersRouter = require('./routes/users');
 const vehiclesRouter = require('./routes/vehicles');
 const requestsRouter = require('./routes/requests');
+require('dotenv').config();
 
 // configure app
 app.use(logger('dev'));

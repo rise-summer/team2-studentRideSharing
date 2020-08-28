@@ -53,11 +53,11 @@ router.post('/email/:rideID', async function(req, res, next){
         const msg = {
           // to: driverMail,
           from: {
-            "email": process.env.TEAM_EMAIL || apiKey.teamEMAIL,
+            "email": process.env.TEAM_EMAIL,
             "name": "Student Ride Sharing Team"
           },
           reply_to: "no-reply@ridesharing.com",
-          template_id: process.env.DYNAMIC_TEMPLATE_ID || apiKey.dynamicTemplateID,
+          template_id: process.env.DYNAMIC_TEMPLATE_ID,
           personalizations:[{
               "to": [
                 {
