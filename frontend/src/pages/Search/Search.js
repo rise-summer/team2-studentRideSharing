@@ -8,7 +8,7 @@ import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
 
 const querystring = require('querystring');
-const DEBUG = true;
+const DEBUG = false;
 
 class Search extends Component {
     constructor(props) {

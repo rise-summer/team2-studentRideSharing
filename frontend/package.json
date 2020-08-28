@@ -11,6 +11,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "autoprefixer": "^9.8.5",
+    "dotenv": "^8.2.0",
     "firebase": "^7.17.1",
     "firebaseui": "^4.6.1",
     "fs": "^0.0.1-security",
@@ -27,10 +28,11 @@
     "semantic-ui-react": "^1.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
+    "prod" : "react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,8 +50,11 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^5.6.4",
+    "@semantic-ui-react/craco-less": "^1.2.1",
     "react-firebaseui": "^4.1.0",
     "react-router-dom": "^5.2.0",
-    "redux-devtools": "^3.5.0"
+    "redux-devtools": "^3.5.0",
+    "semantic-ui-less": "^2.4.1"
   }
 }

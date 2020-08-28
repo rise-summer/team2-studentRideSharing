@@ -11,8 +11,8 @@ import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/Navigation/PrivateRoute';
 import SearchLanding from './components/SearchComponents/SearchLanding';
 import { auth } from "./firebase";
-import './App.css';
 import { store } from './index';
+import ThemingLayout from './pages/Theme/Theme';
 
 const history = createBrowserHistory();
 
@@ -67,6 +67,9 @@ class App extends Component {
                         <PrivateRoute path="/newride">
                             <CreateRide />
                         </PrivateRoute>
+                        <Route path="/theme">
+                            <ThemingLayout />
+                        </Route>
                         <Route path="/">
                             <Search /> {/* should be search landing page */}
                         </Route>
