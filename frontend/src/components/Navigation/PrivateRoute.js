@@ -1,61 +1,31 @@
 import React, { Component, useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import { auth } from "../../firebase";
-// import Auth from '../../components/Auth/Auth';
-
+import { Loader } from 'semantic-ui-react';
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
-// function PrivateRoute({ children, isAuthenticated, ...rest }) {
 class PrivateRoute extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isAuthenticated: false,
-            uid: ""
-        }
     }
 
-    // componentWillMount() {
-    //     this.listener = auth.onAuthStateChanged((data) => {
-    //         if (data) { //logged in
-    //             this.setState({
-    //                 uid: data.uid,
-    //                 isAuthenticated: true
-    //             })
-    //             console.log("true: " + this.state.isAuthenticated);
-    //         }
-    //         else {
-    //             this.setState({
-    //                 uid: "",
-    //                 isAuthenticated: false
-    //             })
-    //             console.log("false: " + this.state.isAuthenticated);
-    //         }
-    //     });
-    // }
-    //
-    // componentWillUnmount() {
-    //     this.listener();
-    // }
-    //
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     return this.props.value != nextProps.value;
-    // }
-
     render() {
-        const {isAuthenticated, children, ...rest} = this.props;
-        // const {isAuthenticated} = this.state;
+        const {loggedIn, children, ...rest} = this.props;
+        if (loggedIn === null) {//display a loader while the auth status is not determined
+            return <Loader active/>;
+        }
         return (
             <Route
                 {...rest}
-                render={({ location }) =>
-                    isAuthenticated ? (
+                render={(props) =>
+                    loggedIn ? (
                         children
                     ) : (
                         <Redirect
                         to={{
                             pathname: "/login",
-                            state: { from: location }
+                            state: { from: props.location }
                         }}
                         />
                     )
@@ -65,4 +35,13 @@ class PrivateRoute extends Component {
     }
 }
 
-export default PrivateRoute;
+/* makes info from redux store available as prop for this component
+*   - loggedIn: accessible via this.props.loggedIn
+*   - uid: accessible via this.props.uid
+* */
+const mapStateToProps = (state) => ({
+    loggedIn: state.loggedIn,
+    // uid: state.uid,
+});
+
+export default connect(mapStateToProps)(PrivateRoute);

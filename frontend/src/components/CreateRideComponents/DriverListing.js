@@ -35,13 +35,7 @@ class DriverListing extends React.Component {
             minDate: new Date(),
         });
 
-        auth.onAuthStateChanged((data) => {
-            if (data) { //logged in
-                this.setState({uid: data.uid});
-            } else {
-                this.setState({uid: ""});
-            }
-        });
+        this.setState({ uid: this.props.uid});
     }
 
     editStartDate = (d) => {
@@ -149,7 +143,7 @@ class DriverListing extends React.Component {
         return (
             <div>
                 {!this.props.haveCarInfo ? (
-                    <DriverInfo userId={this.props.userId} />
+                    <DriverInfo userId={this.props.uid} />
                 ) : (
                         console.log('user have car info')
                     )}

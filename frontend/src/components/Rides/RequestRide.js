@@ -99,7 +99,7 @@ class RequestRide extends Component {
         //validate form input
         //post the request to database
         var raw = {
-            "ownerID": this.state.ownerID,
+            "ownerID": this.props.uid,
             "driverID": this.props.driver._id,
             "origin": this.state.origin,
             "destination": this.state.dest,

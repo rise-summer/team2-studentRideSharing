@@ -3,42 +3,40 @@ import { connect } from 'react-redux';
 import { Segment, Menu, Icon, Button } from 'semantic-ui-react';
 import { Link, useLocation } from 'react-router-dom';
 import { auth } from "../../firebase";
-import Auth from '../../components/Auth/Auth';
+/* makes info from redux store available as prop for this component
+*   - loggedIn: accessible via this.props.loggedIn
+*   - uid: accessible via this.props.uid
+* */
+const mapStateToProps = (state) => ({
+    loggedIn: state.loggedIn,
+    // uid: state.uid,
+});
 
-const Navbar = ({isAuthenticated, signOut, login}) => {
+const Navbar = (props) => {
     //TODO: add mobile layout
     /* TODO: Fix routing https://stackoverflow.com/questions/55105402/react-router-click-same-link-more-than-one-times-and-browser-back-button*/
 
     const { pathname } = useLocation();
-    // const [isAuthenticated, setAuthStatus] = useState(false);
-    //
-    // useEffect(() => {
-    //     auth.onAuthStateChanged((data) => {
-    //         if (data) { //logged in
-    //             setAuthStatus(true);
-    //             Auth.authenticate(data.uid);
-    //         } else {
-    //             setAuthStatus(false);
-    //             Auth.signOut();
-    //         }
-    //     });
-    // });
 
-    // const signOut = () => {
-    //     auth.signOut().then(function() {
-    //         // Sign-out successful.
-    //         setAuthStatus(false);
-    //         Auth.signOut();
-    //     }).catch(function(error) {
-    //         // An error happened
-    //         console.log("error occurred when signing out");
-    //         console.log(error);
-    //     });
-    // };
+    const signOut = () => {
+        auth.signOut().then(function() {
+            // Sign-out successful.
+            console.log("Sign-out successful.");
+            props.dispatch({
+                type: 'UPDATE_AUTH_STATUS',
+                loggedIn: false,
+                uid: "",
+            });
+        }).catch(function(error) {
+          // An error happened
+          console.log("error occurred when signing out");
+          console.log(error);
+        });
+    };
 
     return (
         <Segment vertical inverted>
-            {isAuthenticated ? (
+            {props.loggedIn ? (
                 <Menu inverted secondary pointing size="large">
                     <Link to="/search">
                         <Menu.Item active={pathname === '/search'}>
@@ -74,10 +72,6 @@ const Navbar = ({isAuthenticated, signOut, login}) => {
                                 Login / Sign Up
                             </Menu.Item>
                         </Link>
-                                                <Menu.Item>
-                                                    <Button onClick={login}>login</Button>
-                                                </Menu.Item>
-
                     </Menu.Menu>
                 </Menu>
             )}
@@ -85,4 +79,4 @@ const Navbar = ({isAuthenticated, signOut, login}) => {
     );
 };
 
-export default Navbar;
+export default connect(mapStateToProps)(Navbar);

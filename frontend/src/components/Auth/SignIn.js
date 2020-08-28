@@ -12,17 +12,7 @@ class SignIn extends React.Component {
         this.state = {
             email: '',
             password: '',
-            loggedIn: false,
-            uid: '',
         };
-    }
-
-    componentDidMount() {
-        // auth.onAuthStateChanged((data) => {
-        //     if (data) {
-        //         this.setState({uid: data.uid});
-        //     }
-        // });
     }
 
     handleChange = (event, {name, value}) => {
@@ -34,9 +24,7 @@ class SignIn extends React.Component {
         const {email, password} = this.state;
         auth.signInWithEmailAndPassword(email, password)
             .then(() => {
-                this.props.login();
-                console.log(this.props.history);
-                // console.log(from);
+                this.props.redirect();
             })
             .catch(function (error) {
                 // Handle Errors here.
@@ -47,7 +35,6 @@ class SignIn extends React.Component {
                 } else {
                     alert(errorMessage);
                 }
-                console.log(error);
             });
         this.setState({
             email: '',
@@ -56,44 +43,41 @@ class SignIn extends React.Component {
     };
 
     render() {
-        if (false) {
-        // if (this.state.uid !== '') {
-            return <Redirect to="/searchlanding" />;
-        } else {
-            return (
-                <div>
-                    <Form onSubmit={this.handleSubmit}>
-                        <Form.Input
-                            id="email"
-                            name="email"
-                            label="Email"
-                            value={this.state.email}
-                            onChange={this.handleChange}
-                            required
-                        />
-                        <Form.Input
-                            id="password"
-                            name="password"
-                            label="Password"
-                            type="password"
-                            value={this.state.password}
-                            onChange={this.handleChange}
-                            required
-                        />
-                        <Form.Button
-                            id="submit"
-                            control={Button}
-                            fluid
-                            color="black"
-                            content="Log In"
-                        />
-                    </Form>
-                    <Divider horizontal>Or</Divider>
-                    {/* Alternative login methods */}
-                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-                </div>
-            );
-        }
+        return (
+            <div>
+                <Form onSubmit={this.handleSubmit}>
+                    <Form.Input
+                        id="email"
+                        name="email"
+                        label="Email"
+                        value={this.state.email}
+                        onChange={this.handleChange}
+                        required
+                    />
+                    <Form.Input
+                        id="password"
+                        name="password"
+                        label="Password"
+                        type="password"
+                        value={this.state.password}
+                        onChange={this.handleChange}
+                        required
+                    />
+                    <Form.Button
+                        id="submit"
+                        control={Button}
+                        fluid
+                        color="black"
+                        content="Log In"
+                    />
+                </Form>
+                {/*
+                    {/* Alternative login methods /}
+                <Divider horizontal>Or</Divider>
+                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+                */}
+            </div>
+        );
     }
 }
 

@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { withRouter } from "react-router";
-
 import { connect } from "react-redux";
 import { auth } from "../../firebase";
 import SignIn from '../../components/Auth/SignIn';
 import SignUp from '../../components/Auth/SignUp';
-import Auth from '../../components/Auth/Auth';
 
 import { Grid, Tab, Button } from 'semantic-ui-react';
 import './LoginPage.css';
@@ -20,24 +18,35 @@ class LoginPage extends Component {
     }
 
     componentDidMount() {
-        // auth.onAuthStateChanged((data) => {
-        //     if (data) { //logged in
-        //         Auth.authenticate(data.uid);
-        //         this.setState({uid: data.uid});
-        //     }
-        // });
+        this.listener = auth.onAuthStateChanged((data) => {
+            if (data) { //logged in
+                this.props.dispatch({
+                    type: 'UPDATE_AUTH_STATUS',
+                    loggedIn: true,
+                    uid: data.uid,
+                });
+                this.redirect();
+            }
+            else {
+                this.props.dispatch({
+                    type: 'UPDATE_AUTH_STATUS',
+                    loggedIn: false,
+                    uid: "",
+                })
+            }
+        });
     }
 
-    login = () => {
+    componentWillUnmount() {
+        this.listener();
+    }
+
+    redirect = () => {
         //Prepare for redirect after login
         //reference: https://reactrouter.com/web/example/auth-workflow
         const { history, location } = this.props;
         let { from } = location.state || { from: { pathname: "/"} };
-        console.log("from:");
-        console.log(from);
-        this.props.login();
         history.replace(from);
-        console.log("here");
     }
 
     render() {
@@ -46,7 +55,7 @@ class LoginPage extends Component {
                 menuItem: 'Log In',
                 render: () => (
                     <Tab.Pane attached={false} textAlign="left">
-                        <SignIn login={this.login}/>
+                        <SignIn redirect={this.redirect}/>
                     </Tab.Pane>
                 ),
             },
@@ -54,34 +63,27 @@ class LoginPage extends Component {
                 menuItem: 'Sign Up',
                 render: () => (
                     <Tab.Pane attached={false} textAlign="left">
-                        <SignUp login={this.login}/>
+                        <SignUp redirect={this.redirect}/>
                     </Tab.Pane>
                 ),
             },
         ];
-        if(true) {
-        // if(this.state.uid === '') {
-            return (
-                <Grid
-                    textAlign="center"
-                    style={{height: '100%'}}
-                    verticalAlign="middle"
-                >
-                    <Grid.Column style={{maxWidth: 450}}>
-                        <Tab
-                            menu={{secondary: true, pointing: true}}
-                            panes={panes}
-                            defaultActiveIndex={0}
-                        />
-                    </Grid.Column>
-                </Grid>
-            )
-        }
-        // return null;
-        // else {
-        //     return <Redirect to="/profile" />
-        // }
+        return (
+            <Grid
+                textAlign="center"
+                style={{height: '100%'}}
+                verticalAlign="middle"
+            >
+                <Grid.Column style={{maxWidth: 450}}>
+                    <Tab
+                        menu={{secondary: true, pointing: true}}
+                        panes={panes}
+                        defaultActiveIndex={0}
+                    />
+                </Grid.Column>
+            </Grid>
+        )
     }
 }
 
-export default withRouter(LoginPage);
+export default connect()(withRouter(LoginPage));
