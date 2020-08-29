@@ -34,6 +34,7 @@ class Search extends Component {
                 distance: '',
             },
             numberTime: 1,
+            sortType: '',
         };
         this.state.filteredRides = this.state.rides;
     }
@@ -206,10 +207,37 @@ class Search extends Component {
         }
     };
 
-    sort = (rides) => {
-        this.setState({
-            rides: rides,
-        })
+    sort = (sortType) => {
+        let sortOutbound;
+        let sortReturn;
+        if (sortType === '-1') {
+            sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
+                return Date.parse(b.time) - Date.parse(a.time);
+            })
+            sortReturn = this.state.rides.returnRides.sort((a, b) => {
+                return Date.parse(b.time) - Date.parse(a.time);
+            })
+            this.setState({
+                rides: {
+                    outboundRides: sortOutbound,
+                    returnRides: sortReturn,
+                }
+            })
+        }
+        else if (sortType === '1') {
+            sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
+                return Date.parse(a.time) - Date.parse(b.time);
+            })
+            sortReturn = this.state.rides.returnRides.sort((a, b) => {
+                return Date.parse(a.time) - Date.parse(b.time);
+            })
+            this.setState({
+                rides: {
+                    outboundRides: sortOutbound,
+                    returnRides: sortReturn,
+                }
+            })
+        }
     };
 
     render() {
@@ -241,7 +269,7 @@ class Search extends Component {
                     refs={refs}
                 />;
             sortBy = 
-                <SortBy />
+                <SortBy sort={this.sort}/>
             rideResults =
                 <div>
                     <br />
