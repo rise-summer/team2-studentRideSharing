@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 // The database to use
-const dbName = "test-hl";
-const collegesDBName = "Colleges"
+const dbName = "test";
+const collegesDBName = "Colleges";
 var client;
 
 // create a connection to url and call callback()

@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import GeoSearch from '../GeoSearch/GeoSearch';
 import './RequestRide.css';
 import { Modal, Button, Icon, Form } from 'semantic-ui-react';
+
+/* makes info from redux store available as prop for this component
+*   - loggedIn: accessible via this.props.loggedIn
+*   - uid: accessible via this.props.uid
+* */
+const mapStateToProps = (state) => ({
+    uid: state.uid,//current user info
+});
 
 class RequestRide extends Component {
     constructor(props) {
@@ -14,7 +23,6 @@ class RequestRide extends Component {
         {
             "open": false,
             "openConfirmation": false,
-            "ownerID": "", //TODO: use actual user info
             "origin": "",
             "dest": "",
             "originCoords": {
@@ -47,7 +55,6 @@ class RequestRide extends Component {
 
     requestRide() {
         const {rideID, ride, driver, dateString, timeString} = this.props;
-        console.log(window.location);
         const dynamic_template_data = {
             "startLoc": ride.startLoc.displayName,
             "endLoc": ride.endLoc.displayName,
@@ -232,4 +239,4 @@ class RequestRide extends Component {
     }
 }
 
-export default RequestRide;
+export default connect(mapStateToProps)(RequestRide);

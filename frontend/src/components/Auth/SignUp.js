@@ -1,11 +1,12 @@
 import React from 'react';
 import { Form, Divider, Button, Dropdown, Input, Image } from 'semantic-ui-react';
-import firebase, { auth, uiConfig } from '../../firebase';
+import firebase, { auth, uiConfig, storageRef } from '../../firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 const querystring = require('querystring');
 
 const initialState = {
+    uid: '',
     email: '',
     password: '',
     firstName: '',
@@ -51,7 +52,7 @@ class SignUp extends React.Component {
     handleSchoolAutoComplete = (e, { searchQuery }) => {
         this.setState({ searchQuery });
         const encodedSearchWords = encodeURI(searchQuery);
-        fetch(`/api/colleges/${encodedSearchWords}`)
+        fetch(`/api/colleges/${encodedSearchWords}`)//TODO: try fetch the whole list all at oncce
             .then((response) => response.json()) //TODO: error handling
             .then((colleges) => {
                 this.setState({ schoolOptions: colleges });
@@ -104,55 +105,116 @@ class SignUp extends React.Component {
             this.createUser();
         }
     };
+    //Register the user in MongoDB
+    createUserInMongoDB = () => {
+        const {
+            uid,
+            email, 
+            password, 
+            firstName, lastName, 
+            phoneNumber, 
+            school, 
+            personalEmail, personalText, personalPhone, facebook,
+            photoURL
+        } = this.state;
+        const newUserInfo = {
+            uid,
+            photoURL,
+            email: email,
+            password: password,
+            firstName: firstName,
+            lastName: lastName,
+            phone: phoneNumber,
+            contact: {
+                email: personalEmail,
+                phone: personalPhone,
+                message: personalText,
+                facebook
+            },
+            school: school,
+        };
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newUserInfo)
+        };
+        const xurl = '/api/users/signup';
+        fetch(xurl, requestOptions)
+            .then(response => {
+                if (response.status === 201) {
+                    this.setState(initialState);//reset state
+                    return response.json();
+                } else {//TODO: error handling
+                    // throw new error("Failed to create new user in MongoDB" + response.text());
+                }
+            })
+            .then(data => {
+                console.log(data); //TODO: NEED CLEAN UP => Printing inserted user document
+                this.props.redirect();
+            });        
+
+    };
 
     createUser = () => {
-        const {email, password, confirmPassword, firstName, lastName, phoneNumber, school, personalEmail, personalText, personalPhone, facebook } = this.state;
+        const {
+            email, 
+            password, 
+            confirmPassword, 
+            photo
+        } = this.state;
+
         if (password !== confirmPassword) {
             alert('Passwords do not match.');
             return;
         }
-
+        //Register the user in Firebase
         auth.createUserWithEmailAndPassword(email, password)
-            .then((data) => {
-                console.log('New user created!')
-                const newUserInfo = {
-                    email: email,
-                    password: password,
-                    firstName: firstName,
-                    lastName: lastName,
-                    phone: phoneNumber,
-                    contact: {
-                        email: personalEmail,
-                        phone: personalPhone,
-                        message: personalText,
-                        facebook
-                    },
-                    school: school,
-                };
-                const requestOptions = {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(newUserInfo)
-                };
-                const xurl = '/api/users/signup';
-                fetch(xurl, requestOptions)
-                    .then(response => {
-                        if (response.status === 201) {
-                            this.setState(initialState);//reset state
-                            return response.json();
-                        } else {//TODO: error handling
-                            // throw new error("Failed to create new user in MongoDB" + response.text());
-                        }
-                    })
-                    .then(data => {
-                        console.log(data);
-                        this.props.redirect();
+            .then((data) => {     
+                //Register the user in MongoDB based on the uid and photo           
+                if (photo === null) { //User didn't provide photo
+                    this.setState({ 
+                        uid: data.user.uid,
+                        photoURL: null
+                    }, () => {
+                        this.createUserInMongoDB();
                     });
+                }
+                else { //User provides a profile picture
+                    var metadata = {//Create file metadata including the content type
+                        contentType: 'image/jpeg',
+                    };
+                    var pathName = `profilePic/${data.user.uid}.jpg`;
+                    //Upload the photo to Firebase
+                    storageRef.child(pathName).put(photo, metadata).then((snapshot) => {
+                        storageRef.child(pathName).getDownloadURL().then((url) => {
+                            // `url` is the download URL for user profile picture
+                            // This can be downloaded directly
+                            var user = auth.currentUser;
+                            // Update user profile in firebase
+                            user.updateProfile({
+                                photoURL: url
+                            }).then(function() {
+                                // Update successful.
+                            }).catch(function(error) {
+                            // An error happened.
+                            });
+                            // Register the user in MongoDB
+                            this.setState({ 
+                                uid: user.uid,
+                                photoURL: url
+                            }, () => {
+                                this.createUserInMongoDB();
+                            }); 
+                        }).catch(function(error) {
+                            console.log(error);
+                        });
+                    });
+                }
             })
             .catch(function (error) {
+                console.log(error);
                 alert(error.code + '\n' + error.message)
             });
-
     };
 
     render() {
