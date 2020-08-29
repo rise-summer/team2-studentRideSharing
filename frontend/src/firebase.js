@@ -2,6 +2,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
 
 const config = {
     apiKey: "AIzaSyBStZvVTJgu72YYfA4bo-cQiQwIbX5OpOw",
@@ -17,6 +18,7 @@ const config = {
 firebase.initializeApp(config);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
+export const storageRef = firebase.storage().ref();
 
 const redirectUrl = '/profile';
 // Configure FirebaseUI.

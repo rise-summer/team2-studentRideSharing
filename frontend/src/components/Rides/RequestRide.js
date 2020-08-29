@@ -1,40 +1,42 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import GeoSearch from '../GeoSearch/GeoSearch';
 import './RequestRide.css';
 import { Modal, Button, Icon, Form } from 'semantic-ui-react';
 
+/* makes info from redux store available as prop for this component
+*   - loggedIn: accessible via this.props.loggedIn
+*   - uid: accessible via this.props.uid
+* */
+const mapStateToProps = (state) => ({
+    uid: state.uid,//current user info
+});
+
+const initialState = {
+    "open": false,
+    "openConfirmation": false,
+    "origin": "",
+    "dest": "",
+    "originCoords": {
+        "type": "Point",
+        "coordinates": []
+    },
+    "destCoords": {
+        "type": "Point",
+        "coordinates": []
+    },//<longitude>, <latitude>
+    "comment": ""
+};
+
 class RequestRide extends Component {
     constructor(props) {
         super(props);
-        this.initialize();
+        this.state = initialState;
     }
 
-    initialize() {
-        const initialState =
-        {
-            "open": false,
-            "openConfirmation": false,
-            "ownerID": "", //TODO: use actual user info
-            "origin": "",
-            "dest": "",
-            "originCoords": {
-                "type": "Point",
-                "coordinates": []
-            },
-            "destCoords": {
-                "type": "Point",
-                "coordinates": []
-            },//<longitude>, <latitude>
-            "comment": ""
-        };
-
-        if (this.state !== undefined) {
-            this.setState(initialState);
-            this.setState({openConfirmation: true});
-        }
-        else {
-            this.state = initialState;
-        }
+    clearFormAndConfirm() {
+        this.setState(initialState);
+        this.setState({openConfirmation: true});
     }
 
     setOpen(isOpen) {
@@ -47,7 +49,6 @@ class RequestRide extends Component {
 
     requestRide() {
         const {rideID, ride, driver, dateString, timeString} = this.props;
-        console.log(window.location);
         const dynamic_template_data = {
             "startLoc": ride.startLoc.displayName,
             "endLoc": ride.endLoc.displayName,
@@ -125,7 +126,7 @@ class RequestRide extends Component {
         fetch(postRequestUrl, requestOptions)
             .then(response => {
                 if(response.status === 201) {
-                    this.initialize();
+                    this.clearFormAndConfirm();
                     console.log(this.state);
                     // send email notification
                     this.requestRide();
@@ -232,4 +233,4 @@ class RequestRide extends Component {
     }
 }
 
-export default RequestRide;
+export default connect(mapStateToProps)(RequestRide);

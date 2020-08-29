@@ -75,6 +75,7 @@ class Profile extends Component {
             school,
             contact,
             email,
+            photoURL,
         } = user;
 
         return (
@@ -98,8 +99,9 @@ class Profile extends Component {
                     }}
                     verticalAlign="middle"
                 >
-                    <Grid.Column style={{ width: '80%' }}>
+                    <Grid.Column style={{ width: '80%' }}>                
                         <Header as="h1" style={{ textAlign: 'center' }}>
+                            <Image src={photoURL} avatar/>
                             {firstName + ' ' + lastName}
                             <Header.Subheader>{school}</Header.Subheader>
                         </Header>

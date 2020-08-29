@@ -45,7 +45,7 @@ class App extends Component {
     }
 
     render() {
-        // const {loggedIn, uid} = this.props;
+        const { uid } = this.props;
         return (
             <div className="App">
             {/* <Router initialEntries={['/']} initialIndex={0} history={history}> */}
@@ -59,7 +59,7 @@ class App extends Component {
                             <LoginPage />
                         </Route>
                         <PrivateRoute path="/ride/:driverID/:rideID">
-                            <RideDetails />
+                            <RideDetails uid={uid} />
                         </PrivateRoute>
                         <PrivateRoute path="/profile">
                             <Profile />
