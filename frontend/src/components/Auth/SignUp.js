@@ -75,10 +75,13 @@ class SignUp extends React.Component {
 
     validate = () => {
         let errorMsg = '';
-        const {email, password} = this.state;
+        const {email, password, school} = this.state;
         const reEmail = RegExp('([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.([a-zA-Z]{2,5})$');
         const reEdu = RegExp('([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.edu$');
         const validEmail = reEmail.test(email) && reEdu.test(email);
+        if(school === '') {
+            errorMsg += 'The field "school" is required.\n';
+        }
         if (!reEmail) {
             errorMsg += 'Invalid e-mail\n';
         }
@@ -219,7 +222,6 @@ class SignUp extends React.Component {
 
     render() {
         const {
-            contactMethod,
             firstName,
             lastName,
             email,
