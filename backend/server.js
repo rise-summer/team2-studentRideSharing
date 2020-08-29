@@ -9,6 +9,7 @@ const ridesRouter = require('./routes/rides');
 const usersRouter = require('./routes/users');
 const vehiclesRouter = require('./routes/vehicles');
 const requestsRouter = require('./routes/requests');
+const collegessRouter = require('./routes/colleges');
 require('dotenv').config();
 
 // configure app
@@ -26,6 +27,7 @@ app.use('/api/rides', ridesRouter.router);
 app.use('/api/users', usersRouter);
 app.use('/api/vehicles', vehiclesRouter);
 app.use('/api/requests', requestsRouter.router);
+app.use('/api/colleges', collegessRouter);
 
 //Connect to Mongo on start
 // const uri = "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true&w=majority";

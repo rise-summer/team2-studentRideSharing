@@ -1,6 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 // The database to use
 const dbName = "test";
+const collegesDBName = "Colleges";
 var client;
 
 // create a connection to url and call callback()
@@ -39,6 +40,10 @@ module.exports.connect = function (url, callback) {
 
 module.exports.dbCollection = function (collectionName) {
   return client.db(dbName).collection(collectionName);
+}
+
+module.exports.collegeCollection = function (collectionName) {
+  return client.db(collegesDBName).collection(collectionName);
 }
 
 module.exports.emptyCollection = function (collectionName) {
