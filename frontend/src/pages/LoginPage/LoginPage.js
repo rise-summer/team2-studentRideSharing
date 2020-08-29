@@ -13,7 +13,9 @@ class LoginPage extends Component {
     }
 
     componentWillUnmount() {
-        this.listener();
+        if(typeof this.listener === "function"){
+            this.listener();
+        }
     }
 
     authAndRedirect = () => {

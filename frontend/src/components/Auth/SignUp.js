@@ -22,7 +22,7 @@ const initialState = {
     facebook: '',
     searchQuery: '',
     photo: null,
-    photoURL: 'https://react.semantic-ui.com/images/wireframe/square-image.png'
+    photoURL: 'https://firebasestorage.googleapis.com/v0/b/studentridesharing-a50e3.appspot.com/o/default-avatar.png?alt=media&token=38291e03-8906-4cf2-920b-02926aced6e8'
 }
 
 class SignUp extends React.Component {
@@ -52,7 +52,7 @@ class SignUp extends React.Component {
     handleSchoolAutoComplete = (e, { searchQuery }) => {
         this.setState({ searchQuery });
         const encodedSearchWords = encodeURI(searchQuery);
-        fetch(`/api/colleges/${encodedSearchWords}`)//TODO: try fetch the whole list all at oncce
+        fetch(`/api/colleges/${encodedSearchWords}`)
             .then((response) => response.json()) //TODO: error handling
             .then((colleges) => {
                 this.setState({ schoolOptions: colleges });
@@ -177,7 +177,7 @@ class SignUp extends React.Component {
                 if (photo === null) { //User didn't provide photo
                     this.setState({ 
                         uid: data.user.uid,
-                        photoURL: null
+                        // photoURL: null
                     }, () => {
                         this.createUserInMongoDB();
                     });
@@ -242,8 +242,8 @@ class SignUp extends React.Component {
                 {/* TODO: setup redirect after new user created */}
                 <Form onSubmit={this.handleSubmit}>
                     <center>
-                    <Button as="label" htmlFor="file" type="button" size='tiny' circular>
-                        <Image src={photoURL} size='tiny' circular />
+                    <Button as="label" htmlFor="file" type="button" size="tiny" circular>
+                        <Image src={photoURL} size="tiny" circular />
                     </Button>
                     <input
                         type="file"
@@ -280,7 +280,7 @@ class SignUp extends React.Component {
                     <Form.Dropdown
                         label="College Name"
                         options={schoolOptions}
-                        placeholder='Select School'
+                        placeholder="Select School"
                         search
                         searchQuery={searchQuery}
                         selection

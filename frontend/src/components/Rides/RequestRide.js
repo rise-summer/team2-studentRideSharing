@@ -12,37 +12,31 @@ const mapStateToProps = (state) => ({
     uid: state.uid,//current user info
 });
 
+const initialState = {
+    "open": false,
+    "openConfirmation": false,
+    "origin": "",
+    "dest": "",
+    "originCoords": {
+        "type": "Point",
+        "coordinates": []
+    },
+    "destCoords": {
+        "type": "Point",
+        "coordinates": []
+    },//<longitude>, <latitude>
+    "comment": ""
+};
+
 class RequestRide extends Component {
     constructor(props) {
         super(props);
-        this.initialize();
+        this.state = initialState;
     }
 
-    initialize() {
-        const initialState =
-        {
-            "open": false,
-            "openConfirmation": false,
-            "origin": "",
-            "dest": "",
-            "originCoords": {
-                "type": "Point",
-                "coordinates": []
-            },
-            "destCoords": {
-                "type": "Point",
-                "coordinates": []
-            },//<longitude>, <latitude>
-            "comment": ""
-        };
-
-        if (this.state !== undefined) {
-            this.setState(initialState);
-            this.setState({openConfirmation: true});
-        }
-        else {
-            this.state = initialState;
-        }
+    clearFormAndConfirm() {
+        this.setState(initialState);
+        this.setState({openConfirmation: true});
     }
 
     setOpen(isOpen) {
@@ -132,7 +126,7 @@ class RequestRide extends Component {
         fetch(postRequestUrl, requestOptions)
             .then(response => {
                 if(response.status === 201) {
-                    this.initialize();
+                    this.clearFormAndConfirm();
                     console.log(this.state);
                     // send email notification
                     this.requestRide();
