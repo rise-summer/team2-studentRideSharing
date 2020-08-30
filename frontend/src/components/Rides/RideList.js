@@ -5,8 +5,6 @@ import { Tab } from 'semantic-ui-react';
 
 class RideList extends Component {
     render() {
-        const roundtrip = this.props.roundtrip;
-
         const departRides = <div className="ridelist">
             {this.props.rides.outboundRides.map((ride, i) =>
                 <Ride

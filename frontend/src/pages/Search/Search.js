@@ -19,7 +19,6 @@ class Search extends Component {
                 outboundRides: [],
                 returnRides: []
             },
-            filteredRides: [],
             roundtrip: false,
             searched: false,
             query: {
@@ -33,7 +32,6 @@ class Search extends Component {
                 distance: '',
             },
         };
-        this.state.filteredRides = this.state.rides;
     }
 
     /* coords are the only thing needed for the API call */

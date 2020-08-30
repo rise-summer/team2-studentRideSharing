@@ -10,7 +10,7 @@ import Profile from './pages/Profile/Profile';
 import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/Navigation/PrivateRoute';
 import SearchLanding from './components/SearchComponents/SearchLanding';
-import { auth } from "./firebase";
+import { auth } from './firebase';
 import './App.css';
 import ThemingLayout from './pages/Theme/Theme';
 
@@ -90,13 +90,13 @@ class App extends Component {
           console.log("error occurred when signing out");
           console.log(error);
         });
-    }
+    };
 
     login = () => {
         this.setState({
             isAuthenticated: true
         })
-    }
+    };
 
     render() {
         const {isAuthenticated, uid} = this.state;

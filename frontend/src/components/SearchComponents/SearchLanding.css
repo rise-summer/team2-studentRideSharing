@@ -1,8 +1,11 @@
 .landing {
     padding: 30px;
-    border: 2px solid black;
     text-align: center;
     margin: 20px 40px;
+    background-color: #FDFDFD;
+    border-radius: 15px;
+    border: 2px solid #D8D8F6;
+    box-shadow: 2px 2px #adadc5;
 }
 
 .landing-title {
