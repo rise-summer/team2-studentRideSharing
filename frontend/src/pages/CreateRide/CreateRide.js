@@ -19,6 +19,7 @@ class CreateRide extends React.Component {
         };
     }
 
+    //TODO: Check response instead of response status
     //Check to see if Driver have vehicle infomation
     async componentDidMount() {
         await fetch(`/api/vehicles/${this.props.uid}`, {

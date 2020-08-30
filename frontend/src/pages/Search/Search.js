@@ -6,6 +6,7 @@ import moment from 'moment';
 import './Search.css';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
+import SortBy from '../../components/SortBy/SortBy';
 
 const querystring = require('querystring');
 const DEBUG = false;
@@ -32,6 +33,8 @@ class Search extends Component {
                 time: '',
                 distance: '',
             },
+            numberTime: 1,
+            sortType: '',
         };
         this.state.filteredRides = this.state.rides;
     }
@@ -204,6 +207,40 @@ class Search extends Component {
         }
     };
 
+    //TODO: implement redux and move sort function to SortBy.js
+    sort = (sortType) => {
+        let sortOutbound;
+        let sortReturn;
+        if (sortType === '-1') {
+            sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
+                return Date.parse(b.time) - Date.parse(a.time);
+            })
+            sortReturn = this.state.rides.returnRides.sort((a, b) => {
+                return Date.parse(b.time) - Date.parse(a.time);
+            })
+            this.setState({
+                rides: {
+                    outboundRides: sortOutbound,
+                    returnRides: sortReturn,
+                }
+            })
+        }
+        else if (sortType === '1') {
+            sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
+                return Date.parse(a.time) - Date.parse(b.time);
+            })
+            sortReturn = this.state.rides.returnRides.sort((a, b) => {
+                return Date.parse(a.time) - Date.parse(b.time);
+            })
+            this.setState({
+                rides: {
+                    outboundRides: sortOutbound,
+                    returnRides: sortReturn,
+                }
+            })
+        }
+    };
+
     render() {
         const functions = {
             editBeginDate: this.editBeginDate,
@@ -222,6 +259,7 @@ class Search extends Component {
 
         let searchPage;
         let rideResults;
+        let sortBy;
         if (!this.state.searched) {
             searchPage = <SearchLanding functions={functions} refs={refs} />
         } else {
@@ -231,6 +269,8 @@ class Search extends Component {
                     functions={functions}
                     refs={refs}
                 />;
+            sortBy = 
+                <SortBy sort={this.sort}/>
             rideResults =
                 <div>
                     <br />
@@ -242,6 +282,7 @@ class Search extends Component {
         return (
             <div className="search-wrapper">
                 {searchPage}
+                {sortBy}
                 {rideResults}
             </div>
         );
