@@ -1,7 +1,8 @@
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+// import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import './GeoSearch.css';
 
 mapboxgl.accessToken =
     'pk.eyJ1IjoicmlzZXRlYW0yIiwiYSI6ImNrZDIzdDJkbjBzcnEyc3E5YnViazdoYWEifQ.6O1AdDa4j5XR9qSRWMkcWQ';
@@ -52,7 +53,7 @@ class GeoSearch extends React.Component {
             state: state ? state.text : '',
             zip: zip ? zip.text : '',
             displayName: displayName || '',
-        }
+        };
     };
 
     async componentDidMount() {
@@ -95,7 +96,12 @@ class GeoSearch extends React.Component {
         geocoder.addTo(this.searchRef.current);
     }
     render() {
-        return <div className={this.props.className} ref={this.searchRef}></div>;
+        return (
+            <div
+                className={this.props.className}
+                ref={this.searchRef}
+            ></div>
+        );
     }
 }
 

@@ -11,6 +11,7 @@ const ProfileTabs = ({ userID, vehicles, contact, email, rides, handleError }) =
                 <Menu.Item key="listings">
                     My Listings
                     <Label circular size="mini" color="black">
+                        {/* TODO: Number of requests, not number of rides */}
                         {rides.filter((ride) => !ride.status || ride.status === 0).length}
                     </Label>
                 </Menu.Item>

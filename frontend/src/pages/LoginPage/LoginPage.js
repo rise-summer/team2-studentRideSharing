@@ -41,7 +41,8 @@ const LoginPage = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    justifyContent: 'top',
+                    paddingTop: '10em',
                 }}
             >
                 <Tab
@@ -51,6 +52,7 @@ const LoginPage = () => {
                         secondary: true,
                         pointing: true,
                     }}
+                    style={{width: '50%'}}
                     panes={panes}
                     defaultActiveIndex={0}
                 />

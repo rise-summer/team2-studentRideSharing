@@ -3,13 +3,7 @@ import GeoSearch from '../GeoSearch/GeoSearch';
 import DriverInfo from './DriverInfo';
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import createRideSplash from './createRideSplash.png';
-import {
-    Grid,
-    Segment,
-    Header,
-    Form,
-    Dropdown,
-} from 'semantic-ui-react';
+import { Grid, Segment, Header, Form, Dropdown } from 'semantic-ui-react';
 
 // TODO: change so first ride is stored and everything is submitted at the end
 
@@ -69,12 +63,6 @@ class DriverListing extends React.Component {
             time: startDate, //year, month (0 to 11), date, hours, minutes
             price: price,
             capacity: capacity,
-            car: {
-                model: 'Toyota',
-                make: 'Camry',
-                color: 'White',
-                plate: '7AVF369',
-            },
         };
         try {
             const response = await fetch(url, {
@@ -141,7 +129,7 @@ class DriverListing extends React.Component {
                 style={{
                     background: `url(${createRideSplash})`,
                     backgroundSize: 'cover',
-                    height: '100vh', //TEMPORARY
+                    height: '102vh', //TEMPORARY
                 }}
             >
                 <Grid.Column
@@ -163,6 +151,7 @@ class DriverListing extends React.Component {
                         >
                             <Header as="h3">Create a Ride</Header>
                             <Dropdown
+                                style={{marginBottom: '1em'}}
                                 options={[
                                     { key: 0, text: 'One Way', value: false },
                                     { key: 1, text: 'Roundtrip', value: true },
@@ -171,19 +160,23 @@ class DriverListing extends React.Component {
                                 name="isRoundtrip"
                                 onChange={this.handleChange}
                             />
-                            <Form.Group>
-                                <GeoSearch
-                                    handleChange={this.handleGeoChange}
-                                    placeholder="Specific Address"
-                                    name="startLocation"
-                                    types="postcode,district,locality,neighborhood,address,poi"
-                                />
-                                <GeoSearch
-                                    handleChange={this.handleGeoChange}
-                                    placeholder="Specific Address"
-                                    name="endLocation"
-                                    types="postcode,district,locality,neighborhood,address,poi"
-                                />
+                            <Form.Group widths="equal">
+                                <Form.Input fluid>
+                                    <GeoSearch
+                                        handleChange={this.handleGeoChange}
+                                        placeholder="Specific Address"
+                                        name="startLocation"
+                                        types="postcode,district,locality,neighborhood,address,poi"
+                                    />
+                                </Form.Input>
+                                <Form.Input fluid>
+                                    <GeoSearch
+                                        handleChange={this.handleGeoChange}
+                                        placeholder="Specific Address"
+                                        name="endLocation"
+                                        types="postcode,district,locality,neighborhood,address,poi"
+                                    />
+                                </Form.Input>
                                 {/* <Form.Input
                                     label="Starting Destination"
                                     placeholder="Specific Address"
@@ -203,6 +196,7 @@ class DriverListing extends React.Component {
                                     minDate={today}
                                     icon="calendar outline"
                                     iconPosition="left"
+                                    pointing="top left"
                                     required
                                 />
                                 <Form.Input
@@ -254,26 +248,22 @@ class DriverListing extends React.Component {
                             <Segment style={{ padding: '20px 50px' }}>
                                 <Header as="h3">Create a Return Ride</Header>
                                 <Form.Group widths="equal">
-                                    <GeoSearch
-                                        handleChange={this.handleGeoChange}
-                                        placeholder="Specific Address"
-                                        name="returnStartLocation"
-                                        types="postcode,district,locality,neighborhood,address,poi"
-                                    />
-                                    <GeoSearch
-                                        handleChange={this.handleGeoChange}
-                                        placeholder="Specific Address"
-                                        name="returnEndLocation"
-                                        types="postcode,district,locality,neighborhood,address,poi"
-                                    />
-                                    {/* <Form.Input
-                                    label="Starting Destination"
-                                    placeholder="Specific Address"
-                                />
-                                <Form.Input
-                                    label="Ending Destination"
-                                    placeholder="Specific Address"
-                                /> */}
+                                    <Form.Input fluid>
+                                        <GeoSearch
+                                            handleChange={this.handleGeoChange}
+                                            placeholder="Specific Address"
+                                            name="returnStartLocation"
+                                            types="postcode,district,locality,neighborhood,address,poi"
+                                        />
+                                    </Form.Input>
+                                    <Form.Input fluid>
+                                        <GeoSearch
+                                            handleChange={this.handleGeoChange}
+                                            placeholder="Specific Address"
+                                            name="returnEndLocation"
+                                            types="postcode,district,locality,neighborhood,address,poi"
+                                        />
+                                    </Form.Input>
                                 </Form.Group>
                                 <Form.Group>
                                     <SemanticDatepicker
@@ -285,6 +275,7 @@ class DriverListing extends React.Component {
                                         minDate={today}
                                         icon="calendar outline"
                                         iconPosition="left"
+                                        pointing="top left"
                                         required
                                     />
                                     <Form.Input
