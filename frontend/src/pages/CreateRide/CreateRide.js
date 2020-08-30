@@ -1,5 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import DriverListing from '../../components/CreateRideComponents/DriverListing';
+
+/* makes info from redux store available as prop for this component
+*   - loggedIn: accessible via this.props.loggedIn
+*   - uid: accessible via this.props.uid
+* */
+const mapStateToProps = (state) => ({
+    loggedIn: state.loggedIn,
+    uid: state.uid,
+});
 
 class CreateRide extends React.Component {
     constructor(props) {
@@ -9,9 +19,10 @@ class CreateRide extends React.Component {
         };
     }
 
+    //TODO: Check response instead of response status
     //Check to see if Driver have vehicle infomation
     async componentDidMount() {
-        await fetch(`/api/vehicles/${this.props.userId}`, {
+        await fetch(`/api/vehicles/${this.props.uid}`, {
             method: 'GET'
         }).then(response => {
             if (response.status === 200) {
@@ -23,8 +34,8 @@ class CreateRide extends React.Component {
     render() {
         const { haveInfo } = this.state;
         //sent check to DriverListing component as props
-        return < DriverListing userId={this.props.userId} haveCarInfo={haveInfo} />;
+        return < DriverListing uid={this.props.uid} haveCarInfo={haveInfo} />;
     }
 }
 
-export default CreateRide;
+export default connect(mapStateToProps)(CreateRide);

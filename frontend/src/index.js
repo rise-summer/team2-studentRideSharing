@@ -26,7 +26,7 @@ const initialState = {
         time: '',
         distance: '',
     },
-    loggedIn: false,
+    loggedIn: null,
     uid: ''
 };
 

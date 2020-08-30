@@ -55,7 +55,7 @@ class SearchBox extends Component {
                     <Dropdown
                         // className="ride-type-selector"
                         text={this.props.functions.getRideType()}
-                        value={this.props.functions.getRideType}
+                        value={this.props.functions.getRideType()}
                         selection
                         compact
                         onChange={this.props.functions.changeRideType}
@@ -86,7 +86,7 @@ class SearchBox extends Component {
                         <div className="field-desc">Depart Date</div>
                         <DatePicker
                             onChange={this.props.functions.editBeginDate}
-                            // value={this.props.query.beginDate}
+                            value={this.props.query.beginDate}
                         />
                     </div>
                     {renderReturnDate()}

@@ -11,6 +11,8 @@ class RideList extends Component {
                     start={ride.startLoc.city + ', ' + ride.startLoc.state}
                     dest={ride.endLoc.city + ', ' + ride.endLoc.state}
                     time={ride.time}
+                    driverID={ride.driverID}
+                    rideID={ride.rideID}
                     key={i}
                 />)}
         </div>;
@@ -21,6 +23,8 @@ class RideList extends Component {
                     start={ride.startLoc.city}
                     dest={ride.endLoc.city}
                     time={ride.time}
+                    driverID={ride.driverID}
+                    rideID={ride.rideID}
                     key={i}
                 />)}
         </div>;

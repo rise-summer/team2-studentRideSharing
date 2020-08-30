@@ -1,5 +1,6 @@
-import React, { Component, useState, useEffect } from 'react';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import React, { Component } from 'react';
+import './App.css';
+import { Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import CreateRide from './pages/CreateRide/CreateRide';
@@ -19,38 +20,23 @@ const history = createBrowserHistory();
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isAuthenticated: false,
-            uid: ""
-        }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.listener = auth.onAuthStateChanged((data) => {
             if (data) { //logged in
-                this.setState({
-                    uid: data.uid,
-                    isAuthenticated: true
-                });
                 this.props.dispatch({
                     type: 'UPDATE_AUTH_STATUS',
                     loggedIn: true,
                     uid: data.uid,
                 })
-
-                // console.log("true: " + this.state.isAuthenticated);
             }
             else {
-                this.setState({
-                    uid: "",
-                    isAuthenticated: false
-                });
                 this.props.dispatch({
                     type: 'UPDATE_AUTH_STATUS',
-                    loggedIn: true,
-                    uid: "",
+                    loggedIn: false,
+                    uid: '',
                 })
-                // console.log("false: " + this.state.isAuthenticated);
             }
         });
     }
@@ -99,29 +85,31 @@ class App extends Component {
     };
 
     render() {
-        const {isAuthenticated, uid} = this.state;
-        console.log("before" + isAuthenticated);
+        const { uid } = this.props;
         return (
             <div className="App">
             {/* <Router initialEntries={['/']} initialIndex={0} history={history}> */}
                 <Router initialEntries={[]} initialIndex={0} history={history}>
-                    <Navbar isAuthenticated={isAuthenticated} signOut={this.signOut} login={this.login}/>
+                    <Navbar />
                     <Switch>
                         <Route path="/search">
                             <Search />
                         </Route>
                         <Route path="/login">
-                            <LoginPage login={this.login} />
+                            <LoginPage />
                         </Route>
-                        <PrivateRoute path="/ride/:driverID/:rideID" component={RideDetails} isAuthenticated={isAuthenticated}>
+                        <PrivateRoute path="/ride/:driverID/:rideID">
+                            <RideDetails uid={uid} />
                         </PrivateRoute>
-                        <PrivateRoute path="/profile"
-                        isAuthenticated={isAuthenticated}>
+                        <PrivateRoute path="/profile">
                             <Profile />
                         </PrivateRoute>
-                        <PrivateRoute path="/newride" isAuthenticated={isAuthenticated}>
-                            <CreateRide userId="5f29a088bc6acb9e9da9e65e" />
+                        <PrivateRoute path="/newride">
+                            <CreateRide />
                         </PrivateRoute>
+                        <Route path="/theme">
+                            <ThemingLayout />
+                        </Route>
                         <Route path="/">
                             <Search /> {/* should be search landing page */}
                         </Route>
@@ -133,7 +121,7 @@ class App extends Component {
             </div>
         );
     }
-    // TODO: Add private routing and specific routing for user, ride
+    // TODO: Add private routing and specific routing for user
     // e.g. /user/5f29astecr0s965e
 }
 

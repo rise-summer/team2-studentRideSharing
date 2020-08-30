@@ -6,6 +6,7 @@ import moment from 'moment';
 import './Search.css';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
+import SortBy from '../../components/SortBy/SortBy';
 
 const querystring = require('querystring');
 const DEBUG = false;
@@ -31,6 +32,8 @@ class Search extends Component {
                 time: '',
                 distance: '',
             },
+            numberTime: 1,
+            sortType: '',
         };
     }
 
@@ -55,15 +58,13 @@ class Search extends Component {
             type: 'UPDATE_GEO',
             value: newQuery
         });
-        console.log(this.props);
+        // console.log(this.props);
     };
 
-    editBeginDate = (d) => {
-        let date = moment(d).format('MM/DD/YYYY') + ' ';
-        // let newQuery = this.state.query;
+    editBeginDate = (event, d) => {
+        let date = moment(d.value).toDate();
         let newQuery = this.props.query;
         newQuery.beginDate = date;
-        // this.setState({ query: newQuery });
         this.props.dispatch({
             type: 'EDIT_BEGIN_DATE',
             value: newQuery,
@@ -71,18 +72,15 @@ class Search extends Component {
         // console.log(this.props);
     };
 
-    editEndDate = (d) => {
-        let date = moment(d).format('MM/DD/YYYY') + ' ';
-        // let newQuery = this.state.query;
+    editEndDate = (event, d) => {
+        let date = moment(d.value).toDate();
         let newQuery = this.props.query;
         newQuery.endDate = date;
-        // this.setState({ query: newQuery })
         this.props.dispatch({
             type: 'EDIT_BEGIN_DATE',
             value: newQuery,
         });
-        console.log(this.props);
-
+        // console.log(this.props);
     };
 
     queryRides = () => {
@@ -118,6 +116,7 @@ class Search extends Component {
             distance: dist,
         };
         this.queryReturn(returnQuery);
+        console.log(this.props);
     };
 
     queryOutbound = (query) => {
@@ -202,6 +201,40 @@ class Search extends Component {
         }
     };
 
+    //TODO: implement redux and move sort function to SortBy.js
+    sort = (sortType) => {
+        let sortOutbound;
+        let sortReturn;
+        if (sortType === '-1') {
+            sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
+                return Date.parse(b.time) - Date.parse(a.time);
+            })
+            sortReturn = this.state.rides.returnRides.sort((a, b) => {
+                return Date.parse(b.time) - Date.parse(a.time);
+            })
+            this.setState({
+                rides: {
+                    outboundRides: sortOutbound,
+                    returnRides: sortReturn,
+                }
+            })
+        }
+        else if (sortType === '1') {
+            sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
+                return Date.parse(a.time) - Date.parse(b.time);
+            })
+            sortReturn = this.state.rides.returnRides.sort((a, b) => {
+                return Date.parse(a.time) - Date.parse(b.time);
+            })
+            this.setState({
+                rides: {
+                    outboundRides: sortOutbound,
+                    returnRides: sortReturn,
+                }
+            })
+        }
+    };
+
     render() {
         const functions = {
             editBeginDate: this.editBeginDate,
@@ -220,15 +253,17 @@ class Search extends Component {
 
         let searchPage;
         let rideResults;
+        let sortBy;
         if (!this.state.searched) {
             searchPage = <SearchLanding functions={functions} refs={refs} />
         } else {
             searchPage =
                 <SearchBox
-                    query={this.state.query}
                     functions={functions}
                     refs={refs}
                 />;
+            sortBy =
+                <SortBy sort={this.sort}/>
             rideResults =
                 <div>
                     <br />
@@ -240,6 +275,7 @@ class Search extends Component {
         return (
             <div className="search-wrapper">
                 {searchPage}
+                {sortBy}
                 {rideResults}
             </div>
         );

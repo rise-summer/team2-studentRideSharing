@@ -6,7 +6,6 @@ import DriverInfo from './DriverInfo';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
-import { auth } from "../../firebase";
 
 // TODO: change so first ride is stored and everything is submitted at the end
 
@@ -14,7 +13,7 @@ class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            uid: "",
+            uid: '',
             startLocation: {},
             endLocation: {},
             startDate: '',
@@ -35,13 +34,7 @@ class DriverListing extends React.Component {
             minDate: new Date(),
         });
 
-        auth.onAuthStateChanged((data) => {
-            if (data) { //logged in
-                this.setState({uid: data.uid});
-            } else {
-                this.setState({uid: ""});
-            }
-        });
+        this.setState({ uid: this.props.uid });
     }
 
     editStartDate = (d) => {
@@ -149,7 +142,7 @@ class DriverListing extends React.Component {
         return (
             <div>
                 {!this.props.haveCarInfo ? (
-                    <DriverInfo userId={this.props.userId} />
+                    <DriverInfo userId={this.props.uid} />
                 ) : (
                         console.log('user have car info')
                     )}
