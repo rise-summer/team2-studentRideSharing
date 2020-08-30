@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Dropdown } from 'semantic-ui-react';
 
 const sortByOptions = [
@@ -15,6 +14,18 @@ const sortByOptions = [
         value: '-1',
         content: 'Time Desc',
     },
+    // {
+    //     key: 'Price Desc',
+    //     text: 'Price Desc',
+    //     value: 'Price Desc',
+    //     content: 'Price Desc',
+    // },
+    // {
+    //     key: 'Price Asc',
+    //     text: 'Price Asc',
+    //     value: 'Price Asc',
+    //     content: 'Price Asc',
+    // },
 ];
 
 class SortBy extends React.Component {
@@ -49,10 +60,6 @@ class SortBy extends React.Component {
         );
     }
 }
-
-// const mapStateToProps = (state) => ({
-//     rides: state.rides,
-// });
 
 export default SortBy;
 

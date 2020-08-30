@@ -207,6 +207,7 @@ class Search extends Component {
         }
     };
 
+    //TODO: implement redux and move sort function to SortBy.js
     sort = (sortType) => {
         let sortOutbound;
         let sortReturn;
