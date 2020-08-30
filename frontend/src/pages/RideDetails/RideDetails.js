@@ -123,9 +123,11 @@ class RideDetails extends Component {
                     <RequestRide ride={ride} uid={this.props.uid} driver={driver} rideID={rideID} dateString={dateString} timeString={timeString} disable={remainCapacity < 1 ? true: false} />
                 </div>
                 <div className="center-column">
+                    {/*TODO: implement redirect back
                     <Link to='/search/'>
                         <button className="view-button">Back</button>
                     </Link>
+                    */}
                     <div className="name padding">{driver.firstName} {driver.lastName}</div>
                     <div className="subtitle padding">{driver.school} </div>
                     <div className="itinerary">
