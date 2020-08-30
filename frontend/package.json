@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/mapbox-gl-directions": "^4.1.0",
     "@mapbox/mapbox-gl-geocoder": "^4.6.0",
+    "@mapbox/mapbox-sdk": "^0.11.0",
     "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -12,6 +14,7 @@
     "dotenv": "^8.2.0",
     "firebase": "^7.17.1",
     "firebaseui": "^4.6.1",
+    "fs": "^0.0.1-security",
     "http-proxy-middleware": "^1.0.5",
     "mapbox-gl": "^1.11.1",
     "moment": "^2.27.0",
@@ -25,10 +28,11 @@
     "semantic-ui-react": "^1.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
+    "prod" : "react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -46,8 +50,11 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^5.6.4",
+    "@semantic-ui-react/craco-less": "^1.2.1",
     "react-firebaseui": "^4.1.0",
     "react-router-dom": "^5.2.0",
-    "redux-devtools": "^3.5.0"
+    "redux-devtools": "^3.5.0",
+    "semantic-ui-less": "^2.4.1"
   }
 }

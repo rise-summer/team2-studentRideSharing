@@ -1,159 +1,181 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import SearchBar from '../../components/SearchBar/SearchBar';
 import RideList from '../../components/Rides/RideList';
-import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
-import './Search.css'
-import { Dropdown } from 'semantic-ui-react';
-import GeoSearch from '../../components/GeoSearch/GeoSearch';
-import { Link } from 'react-router-dom';
-import { SEARCH_RIDES_SUCCESS } from "../../actions/SearchPageStates";
-import { getRidesError, getRidesSuccess } from "../../reducers/SearchRidesReducer";
+import './Search.css';
+import SearchLanding from '../../components/SearchComponents/SearchLanding';
+import SearchBox from '../../components/SearchComponents/SearchBox';
 
 const querystring = require('querystring');
 const DEBUG = false;
-
-const sample_rides = [
-    ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
-    ['UCLA', 'UCSD', new Date(2020, 6, 24, 12, 15)],
-    ['USC', 'Stanford', new Date(2020, 6, 27, 14, 30)],
-];
-
-const rideOptions = [
-    {
-        key: 'One Way',
-        text: 'One Way',
-        value: 'One Way',
-    },
-    {
-        key: 'Roundtrip',
-        text: 'Roundtrip',
-        value: 'Roundtrip',
-    },
-];
 
 class Search extends Component {
     constructor(props) {
         // new Date(year, month, date, hours, minutes, seconds, ms)
         super(props);
         this.state = {
-            start: '',
-            endDest: '',
-            beginDate: '',
-            endDate: '',
-            originCoords: '',
-            destCoords: '',
-            distance: 5,
-            // rides: sample_rides,
-            rides: [],
+            rides: {
+                outboundRides: [],
+                returnRides: []
+            },
             filteredRides: [],
             roundtrip: false,
-            /* Use this.state.query.* when passing to redux */
+            searched: false,
             query: {
-                start: '',
-                endDest: '',
-                time: '',
+                start: null,
+                endDest: null,
+                beginDate: '',
+                endDate: '',
                 originCoords: '',
                 destCoords: '',
+                time: '',
                 distance: '',
             },
         };
         this.state.filteredRides = this.state.rides;
-        this.beginDateRef = React.createRef();
-        this.endDateRef = React.createRef();
     }
 
-    componentDidMount() {
-        new Pikaday({
-            field: this.beginDateRef.current,
-            onSelect: this.editBeginDate,
+    /* coords are the only thing needed for the API call */
+    handleGeoChange = (resp, fieldName) => {
+        this.setState({
+            [fieldName]: resp,
         });
+        let newQuery = this.props.query;
+        switch (fieldName) {
+            case 'start':
+                newQuery.start = resp;
+                break;
+            case 'endDest':
+                newQuery.endDest = resp;
+                break;
+            default:
+                break;
+        }
 
-        new Pikaday({
-            field: this.endDateRef.current,
-            onSelect: this.editEndDate,
+        this.props.dispatch({
+            type: 'UPDATE_GEO',
+            value: newQuery
         });
-    }
-
-    editStart = (sd) => {
-        this.setState({ start: sd.target.value })
-    };
-
-    editEndDest = (ed) => {
-        this.setState({ endDest: ed.target.value })
+        console.log(this.props);
     };
 
     editBeginDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({ beginDate: date });
+        // let newQuery = this.state.query;
+        let newQuery = this.props.query;
+        newQuery.beginDate = date;
+        // this.setState({ query: newQuery });
+        this.props.dispatch({
+            type: 'EDIT_BEGIN_DATE',
+            value: newQuery,
+        });
+        // console.log(this.props);
     };
 
     editEndDate = (d) => {
         let date = moment(d).format('MM/DD/YYYY') + ' ';
-        this.setState({ endDate: date })
-    };
+        // let newQuery = this.state.query;
+        let newQuery = this.props.query;
+        newQuery.endDate = date;
+        // this.setState({ query: newQuery })
+        this.props.dispatch({
+            type: 'EDIT_BEGIN_DATE',
+            value: newQuery,
+        });
+        console.log(this.props);
 
-    /* filter upon button click */
-    filterRides = () => {
-        // split searched departure date into array
-        var dateArray = this.state.beginDate.split('/');
-        // create Date object from array information
-        // new Date(YYYY, MM, DD), month is 0-indexed
-        var date = new Date(dateArray[2], dateArray[0] - 1, dateArray[1]);
-
-        this.setState({
-            filteredRides: this.state.rides.filter(dest => this.checkMatch(dest, dateArray, date))
-        })
     };
 
     queryRides = () => {
-        // this.props.dispatch({type: SEARCH_RIDES_SUCCESS});
-        /* dates are store as strings in this.state, must convert to Date object */
-        const date = new Date(this.state.beginDate);
+        /* dates are stored as strings in this.state, must convert to Date object */
+        this.setState({ searched: true });
+        // const date = new Date(this.state.query.beginDate);
+        const date = new Date(this.props.query.beginDate);
         const dateEnd = new Date(date);
         dateEnd.setHours(23, 59, 59);
-        const query = {
-            originCoords: this.state.originCoords,
-            destCoords: this.state.destCoords,
+        const { start, endDest, distance } = this.props.query;
+        /* If no distance specified, default to 5 */
+        const dist = (distance) ? distance : 5;
+        const origin = (start) ? [start.lng, start.lat] : '';
+        const dest = (endDest) ? [endDest.lng, endDest.lat] : '';
+        const outboundQuery = {
+            originCoords: origin,
+            destCoords: dest,
             beginDate: date,
             endDate: dateEnd,
-            distance: this.state.distance,
+            distance: dist,
         };
-        const xurl = '/api/rides?' + querystring.stringify({ 'query': JSON.stringify(query) });
-        fetch(xurl)
-            .then(res => res.json())
-            .then(res => {
-                if (DEBUG) { console.log(res); }
-                const queried_rides = [];
-                for (let ride in res) {
-                    queried_rides.push(
-                        [
-                            res[ride].startLoc.city + ', ' + res[ride].startLoc.state,
-                            res[ride].endLoc.city + ', ' + res[ride].endLoc.state,
-                            new Date(res[ride].time),
-                        ]
-                    )
-                }
-                this.setState({
-                    filteredRides: queried_rides
-                });
-            })
-            .catch(error => {
-                console.log(error);
-            })
+        this.queryOutbound(outboundQuery);
+
+        // if roundtrip selected
+        const returnDate = new Date(this.props.query.endDate);
+        const returnDateEnd = new Date(returnDate);
+        returnDateEnd.setHours(23, 59, 59);
+        const returnQuery = {
+            originCoords: dest,
+            destCoords: origin,
+            beginDate: returnDate,
+            endDate: returnDateEnd,
+            distance: dist,
+        };
+        this.queryReturn(returnQuery);
     };
 
-    // helper function for filterRides()
-    checkMatch = (dest, dateArray, date) => {
-        var startMatch = dest[0].toLowerCase().includes(this.state.start.toLowerCase());
-        var destMatch = dest[1].toLowerCase().includes(this.state.endDest.toLowerCase());
-        var dateMatch = dateArray.length === 1 ||
-            (date.getFullYear() === dest[2].getFullYear() &&
-                date.getMonth() === dest[2].getMonth() &&
-                date.getDate() === dest[2].getDate());
-        return startMatch && destMatch && dateMatch;
+    queryOutbound = (query) => {
+        const xurl =
+            '/api/rides?' +
+            querystring.stringify({ query: JSON.stringify(query) });
+        fetch(xurl)
+            .then((res) => res.json())
+            .then((res) => {
+                if (DEBUG) {
+                    console.log(res);
+                }
+                const queried_rides = res.map((ride) => ({
+                    startLoc: ride.startLoc,
+                    endLoc: ride.endLoc,
+                    time: ride.time,
+                    rideID: ride._id,
+                    driverID: ride.driverID,
+                }));
+                const newRides = this.state.rides;
+                newRides.outboundRides = queried_rides;
+                this.setState({
+                    rides: newRides,
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    queryReturn = (query) => {
+        const xurl =
+            '/api/rides?' +
+            querystring.stringify({ query: JSON.stringify(query) });
+        fetch(xurl)
+            .then((res) => res.json())
+            .then((res) => {
+                if (DEBUG) {
+                    console.log(res);
+                }
+                const queried_rides = res.map((ride) => ({
+                    startLoc: ride.startLoc,
+                    endLoc: ride.endLoc,
+                    time: ride.time,
+                    rideID: ride._id,
+                    driverID: ride.driverID,
+                }));
+                const newRides = this.state.rides;
+                newRides.returnRides = queried_rides;
+                this.setState({
+                    rides: newRides,
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     clearFilter = () => {
@@ -163,101 +185,73 @@ class Search extends Component {
             filteredRides: this.state.rides,
             beginDate: '',
             endDate: '',
-        })
+        });
     };
 
     changeRideType = (e, data) => {
         if (data.value === 'One Way') {
-            this.setState({ roundtrip: false })
+            this.setState({ roundtrip: false });
         } else {
-            this.setState({ roundtrip: true })
+            this.setState({ roundtrip: true });
+        }
+    };
+
+    getRideType = () => {
+        if (this.state.roundtrip) {
+            return "Roundtrip";
+        } else {
+            return "One Way";
         }
     };
 
     render() {
-        const { roundtrip } = this.state;
-        const renderReturnDate = () => {
-            if (roundtrip) {
-                return (
-                    <div className="search-field">
-                        <div className="field-desc">Return Date</div>
-                        <input
-                            className="date-picker-box input"
-                            type="text"
-                            ref={this.endDateRef}
-                            onChange={this.editEndDate}
-                            value={this.state.endDate}
-                            placeholder="Choose Date..."
-                        />
-                    </div>
-                );
-            }
+        const functions = {
+            editBeginDate: this.editBeginDate,
+            editEndDate: this.editEndDate,
+            query: this.queryRides,
+            changeRideType: this.changeRideType,
+            getRideType: this.getRideType,
+            handleGeoChange: this.handleGeoChange,
         };
+
+        const refs = {
+            beginDateRef: this.beginDateRef,
+            endDateRef: this.endDateRef,
+            roundtrip: this.state.roundtrip,
+        };
+
+        let searchPage;
+        let rideResults;
+        if (!this.state.searched) {
+            searchPage = <SearchLanding functions={functions} refs={refs} />
+        } else {
+            searchPage =
+                <SearchBox
+                    query={this.state.query}
+                    functions={functions}
+                    refs={refs}
+                />;
+            rideResults =
+                <div>
+                    <br />
+                    <h3>Available Rides</h3>
+                    <RideList roundtrip={this.state.roundtrip} rides={this.state.rides} />
+                </div>;
+        }
+
         return (
             <div className="search-wrapper">
-                <div className="search-subwrapper">
-                    <div className="ride-type-wrapper">
-                        <Dropdown className="ride-type-selector"
-                            defaultValue="One Way"
-                            selection
-                            compact
-                            onChange={this.changeRideType}
-                            options={rideOptions}
-                        />
-                    </div>
-                    <div className="search-box">
-                        <div className="search-field">
-                            <div className="field-desc">Start Location</div>
-                            <SearchBar
-                                className="input"
-                                text={this.state.start}
-                                editfn={this.editStart}
-                                placeholder="Choose Start Location..."
-                            />
-                        </div>
-                        <div className="search-field">
-                            <div className="field-desc">Destination</div>
-                            <SearchBar
-                                className="input"
-                                text={this.state.endDest}
-                                editfn={this.editEndDest}
-                                placeholder="Choose Destination..."
-                            />
-                        </div>
-                        <div className="search-field">
-                            <div className="field-desc">Depart Date</div>
-                            <input
-                                className="date-picker-box input"
-                                type="text"
-                                ref={this.beginDateRef}
-                                onChange={this.editBeginDate}
-                                value={this.state.beginDate}
-                                placeholder="Choose Date..."
-                            />
-                        </div>
-                        {renderReturnDate()}
-                        <div onClick={this.queryRides} className="search-button">Search Rides</div>
-                    </div>
-                </div>
-                <br />
-                {/*<button onClick={this.clearFilter}>Clear</button>*/}
-                {/*<button onClick={this.queryRides}>Search DB</button>*/}
-                <h3>Available Rides</h3>
-                <RideList rides={this.state.filteredRides} />
-
+                {searchPage}
+                {rideResults}
             </div>
         );
     }
 }
 
 const mapStateToProps = (state) => ({
-    start: state.start,
-    endDest: state.endDest,
+    query: state.query,
     rides: state.rides,
-    filteredRides: state.filteredRides,
-    beginDate: state.beginDate,
-    endDate: state.endDate,
+    roundtrip: state.roundtrip,
 });
 
-// export default Search;
 export default connect(mapStateToProps)(Search);

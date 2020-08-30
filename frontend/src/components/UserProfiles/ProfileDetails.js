@@ -1,12 +1,12 @@
 import React from 'react';
-import { Header, List } from 'semantic-ui-react';
+import { List } from 'semantic-ui-react';
 
 const ProfileDetails = ({ vehicles, email, contact }) => {
-    const vehicleList = vehicles.map((vehicle) => {
+    const vehicleList = vehicles.map((vehicle, index) => {
         const { color, make, model, plate } = vehicle;
         const vehicleString = `${color} ${make} ${model} (${plate})`;
         return (
-            <List.Item key="plate">
+            <List.Item key={index}>
                 <List.Icon name="car" />
                 <List.Content>{vehicleString}</List.Content>
             </List.Item>

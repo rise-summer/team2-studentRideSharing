@@ -7,9 +7,10 @@ mapboxgl.accessToken =
     'pk.eyJ1IjoicmlzZXRlYW0yIiwiYSI6ImNrZDIzdDJkbjBzcnEyc3E5YnViazdoYWEifQ.6O1AdDa4j5XR9qSRWMkcWQ';
 
 /* TODO:
+-Add custom proximity
+- Change wrapper to make it work with semantic- possibly use different library? (one without GUI)
 - Conceal api key
 -Add optional map display
--Add debouncing
 -Add ability to change value (for prefilling on round trip) (setInput)
 -add required prop
 -Make it look good with css
@@ -24,6 +25,35 @@ class GeoSearch extends React.Component {
         super(props);
         this.searchRef = React.createRef();
     }
+
+    processResponse = (resp) => {
+        const { context, place_type, place_name, center } = resp;
+
+        // Parses attribute types from resp.context
+        const getObj = (name) => context.find((obj) => obj.id.startsWith(name));
+
+        // Address can show up in various places, below searches all of them
+        const displayName =
+            resp.address && place_type[0] === 'address'
+                ? resp.address + ' ' + resp.text
+                : resp.text;
+        const address = place_name;
+
+        // If query is a place, place will not be in context
+        const city = place_type[0] === 'place' ? resp : getObj('place');
+        const zip = getObj('postcode');
+        const state = getObj('region');
+
+        return {
+            lng: center[0],
+            lat: center[1],
+            address: address,
+            city: city ? city.text : '',
+            state: state ? state.text : '',
+            zip: zip ? zip.text : '',
+            displayName: displayName || '',
+        }
+    };
 
     async componentDidMount() {
         // Code to retrieve location for proximity search
@@ -44,6 +74,8 @@ class GeoSearch extends React.Component {
                 console.log(error);
             }
         }
+
+        // Creates geocoder object
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             placeholder: this.props.placeholder,
@@ -52,27 +84,18 @@ class GeoSearch extends React.Component {
             minLength: 3,
             proximity: coords,
         });
+
+        // When a result is selected, it will send it via handleChange
         geocoder.on('result', () =>
             this.props.handleChange(
-                JSON.parse(geocoder.lastSelected),
+                this.processResponse(JSON.parse(geocoder.lastSelected)),
                 this.props.name
             )
         );
         geocoder.addTo(this.searchRef.current);
     }
     render() {
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    padding: '0.5em',
-                }}
-            >
-                <div ref={this.searchRef}></div>
-            </div>
-        );
+        return <div className={this.props.className} ref={this.searchRef}></div>;
     }
 }
 

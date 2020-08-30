@@ -10,6 +10,7 @@
 
 # production
 frontend/build
+frontend/src/semantic/dist
 frontend/.env
 
 # misc
@@ -32,6 +33,8 @@ Desktop.ini
 
 # Dependency directory
 node_modules/
+src/semantic/dist
+semantic/dist/
 .env/
 
 #environment vars

@@ -21,16 +21,28 @@
     margin-bottom: 5px;
 }
 
-
 .search-button {
     /*display: block;*/
     display: flex;
     height: 100%;
-    background-color: black;
+    background-color: #9C4A7A;
+    border-radius: 5px;
     padding: 0 10px;
     color: white;
     margin-left: -10px;
     white-space: nowrap;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
+}
+
+.search-button:hover {
+    background-color: #7f3d59;
+    cursor: pointer;
+}
+
+.date-picker-box {
+    /*font-size: 16px;*/
+    border: none;
+    outline: none;
+    border-bottom: 1px solid black;
 }

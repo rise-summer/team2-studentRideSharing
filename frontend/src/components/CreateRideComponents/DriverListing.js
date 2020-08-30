@@ -1,7 +1,8 @@
 import React from 'react';
-import TimePicker from '../../components/TimePicker/TimePicker';
-import NumberPicker from '../../components/NumberPicker/NumberPicker';
-import GeoSearch from '../../components/GeoSearch/GeoSearch';
+import TimePicker from '../TimePicker/TimePicker';
+import NumberPicker from '../NumberPicker/NumberPicker';
+import GeoSearch from '../GeoSearch/GeoSearch';
+import DriverInfo from './DriverInfo';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
@@ -12,6 +13,7 @@ class DriverListing extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            uid: '',
             startLocation: {},
             endLocation: {},
             startDate: '',
@@ -31,6 +33,8 @@ class DriverListing extends React.Component {
             onSelect: this.editStartDate,
             minDate: new Date(),
         });
+
+        this.setState({ uid: this.props.uid });
     }
 
     editStartDate = (d) => {
@@ -38,39 +42,15 @@ class DriverListing extends React.Component {
         this.setState({ startDate: date });
     };
 
-    handleGeoSubmit = (resp, fieldName) => {
-        const { context, place_type, place_name, center } = resp;
-
-        // Parses attribute types from resp.context
-        const getObj = (name) => context.find((obj) => obj.id.startsWith(name));
-
-        // Address can show up in various places, below searches all of them
-        const displayName =
-            resp.address && place_type[0] === 'address'
-                ? resp.address + ' ' + resp.text
-                : resp.text;
-        const address = place_name;
-
-        // If query is a place, place will not be in context
-        const city = place_type[0] === 'place' ? resp : getObj('place');
-        const zip = getObj('postcode');
-        const state = getObj('region');
-
+    handleGeoChange = (resp, fieldName) => {
         this.setState({
-            [fieldName]: {
-                lng: center[0],
-                lat: center[1],
-                address: address,
-                city: city ? city.text : '',
-                state: state ? state.text : '',
-                zip: zip ? zip.text : '',
-                displayName: displayName || '',
-            },
+            [fieldName]: resp,
         });
     };
 
     postData = async () => {
         const {
+            uid,
             startLocation,
             endLocation,
             startDate,
@@ -78,8 +58,7 @@ class DriverListing extends React.Component {
             price,
             capacity,
         } = this.state;
-        const userId = '5f31c5e09320783304b40d4e';
-        const url = `/api/rides/${userId}`;
+        const url = `/api/rides/${uid}`;
         const bodyData = {
             origin: {
                 address: startLocation.address,
@@ -162,21 +141,26 @@ class DriverListing extends React.Component {
     render() {
         return (
             <div>
+                {!this.props.haveCarInfo ? (
+                    <DriverInfo userId={this.props.uid} />
+                ) : (
+                        console.log('user have car info')
+                    )}
                 {this.state.step === 1 ? (
                     <h1>Create a ride</h1>
                 ) : (
-                    <h1>Create a return ride</h1>
-                )}
+                        <h1>Create a return ride</h1>
+                    )}
                 <form onSubmit={this.handleSubmit} autoComplete="off">
                     {/* Replace with location picker*/}
                     <GeoSearch
-                        handleChange={this.handleGeoSubmit}
+                        handleChange={this.handleGeoChange}
                         placeholder="Where from?"
                         name="startLocation"
                         types="postcode,district,locality,neighborhood,address,poi"
                     />
                     <GeoSearch
-                        handleChange={this.handleGeoSubmit}
+                        handleChange={this.handleGeoChange}
                         placeholder="Where to?"
                         name="endLocation"
                         types="postcode,district,locality,neighborhood,address,poi"
