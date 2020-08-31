@@ -48,7 +48,7 @@ class DriverListing extends React.Component {
         startDate.setHours(t[0]);
         startDate.setMinutes(t[1]);
 
-        const url = `/api/rides/${this.props.userId}`;
+        const url = `/api/rides/${this.props.uid}`;
         const bodyData = {
             origin: startLocation,
             destination: endLocation,
@@ -118,6 +118,7 @@ class DriverListing extends React.Component {
 
     render() {
         const today = new Date();
+        // TODO: fix geosearch width, destructure this.state, fix carInfo
         today.setDate(today.getDate() - 1);
         // {!this.props.haveCarInfo ? (
         //     <DriverInfo userId={this.props.userId} />

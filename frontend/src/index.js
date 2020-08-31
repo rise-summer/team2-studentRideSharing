@@ -8,33 +8,70 @@ import { createStore } from "redux";
 import { Provider } from "react-redux"
 import * as firebase from "firebase";
 import 'semantic-ui-less/semantic.less'
+require('dotenv').config();
 
 const initialState = {
-    start: '',
-    endDest: '',
-    rides: [
-        ['UCI', 'UCB', new Date(2020, 6, 21, 10, 0)],
-        ['UCLA', 'UCSD', new Date(2020, 6, 24, 12, 15)],
-        ['USC', 'Stanford', new Date(2020, 6, 27, 14, 30)],
-    ],
-    filteredRides: [],
-    startDate: '',
-    endDate: '',
+    rides: {
+        outboundRides: [],
+        returnRides: []
+    },
+    roundtrip: false,
+    searched: false,
+    query: {
+        start: null,
+        endDest: null,
+        beginDate: '',
+        endDate: '',
+        originCoords: '',
+        destCoords: '',
+        time: '',
+        distance: '',
+    },
+    loggedIn: null,
+    uid: ''
 };
 
 function reducer(state = initialState, action) {
+    // console.log(action);
     switch (action.type) {
-        case "SEARCH":
-            return {};
+        case 'EDIT_BEGIN_DATE':
+            return {
+                ...state,
+                query: action.value
+            };
+        case 'EDIT_END_DATE':
+            return {
+                ...state,
+                query: action.value
+            };
+        case 'UPDATE_RIDES':
+            return {
+                ...state,
+            };
+        case 'UPDATE_GEO':
+            return {
+                ...state,
+                query: action.value
+            };
+        case 'CHANGE_RIDE_TYPE':
+            return {
+                ...state,
+            };
+        case 'UPDATE_AUTH_STATUS':
+            return {
+                ...state,
+                loggedIn: action.loggedIn,
+                uid: action.uid,
+            };
         default:
             return state;
     }
 }
 
-const store = createStore(reducer);
+export const store = createStore(reducer);
 
 store.dispatch({
-    type: "SEARCH"
+    type: 'SEARCH'
 });
 
 ReactDOM.render(

@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ProfileTabs from '../../components/UserProfiles/ProfileTabs';
 import { Grid, Header, Image, Message } from 'semantic-ui-react';
+
+/* makes info from redux store available as prop for this component
+*   - loggedIn: accessible via this.props.loggedIn
+*   - uid: accessible via this.props.uid
+* */
+const mapStateToProps = (state) => ({
+    uid: state.uid,
+});
 
 class Profile extends Component {
     constructor(props) {
@@ -23,15 +32,15 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        const { userId } = this.props;
-        fetch(`/api/users/${userId}`)
-            .then((response) => response.json()) //TODO: error handling
-            .then((user) => {
+        const { uid } = this.props;
+        fetch(`/api/users/${uid}`)
+            .then((response) => response.json())//TODO: error handling
+            .then(user => {
                 this.setState({ user });
             })
             .catch((error) => console.log('error', error));
 
-        fetch(`/api/vehicles/${userId}`)
+        fetch(`/api/vehicles/${uid}`)
             .then((response) => response.json())
             .then((vehicles) =>
                 this.setState({
@@ -39,9 +48,8 @@ class Profile extends Component {
                 })
             )
             .catch((error) => console.log('error', error));
-
         // Would it be better to fetch the rides when ProfileListing is rendered?
-        fetch(`/api/rides/${userId}`)
+        fetch(`/api/rides/${uid}`)
             .then((response) => response.json())
             .then((rides) =>
                 this.setState({
@@ -59,7 +67,7 @@ class Profile extends Component {
     };
 
     render() {
-        const { userId } = this.props;
+        const { uid } = this.props;
         const {user, vehicles, rides, errorMessage} = this.state;
         const {
             firstName,
@@ -67,7 +75,9 @@ class Profile extends Component {
             school,
             contact,
             email,
+            photoURL,
         } = user;
+
         return (
             <div>
                 {errorMessage && (
@@ -89,13 +99,14 @@ class Profile extends Component {
                     }}
                     verticalAlign="middle"
                 >
-                    <Grid.Column style={{ width: '80%' }}>
+                    <Grid.Column style={{ width: '80%' }}>                
                         <Header as="h1" style={{ textAlign: 'center' }}>
+                            <Image src={photoURL} avatar/>
                             {firstName + ' ' + lastName}
                             <Header.Subheader>{school}</Header.Subheader>
                         </Header>
                         <ProfileTabs
-                            userID={userId}
+                            userID={uid}
                             vehicles={vehicles}
                             contact={contact}
                             email={email}
@@ -109,4 +120,4 @@ class Profile extends Component {
     }
 }
 
-export default Profile;
+export default connect(mapStateToProps)(Profile);

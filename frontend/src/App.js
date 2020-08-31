@@ -1,50 +1,98 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './App.css';
+import { Router, Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createBrowserHistory } from 'history';
 import CreateRide from './pages/CreateRide/CreateRide';
 import Search from './pages/Search/Search';
 import RideDetails from './pages/RideDetails/RideDetails';
 import LoginPage from './pages/LoginPage/LoginPage';
 import Profile from './pages/Profile/Profile';
 import Navbar from './components/Navbar/Navbar';
-import { Router, Switch, Route, } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import PrivateRoute from './components/Navigation/PrivateRoute';
 import SearchLanding from './components/SearchComponents/SearchLanding';
+import { auth } from './firebase';
 import ThemingLayout from './pages/Theme/Theme';
 
 const history = createBrowserHistory();
 
-function App() {
-    // TODO: Add private routing and specific routing for user, ride
+class App extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        this.listener = auth.onAuthStateChanged((data) => {
+            if (data) { //logged in
+                this.props.dispatch({
+                    type: 'UPDATE_AUTH_STATUS',
+                    loggedIn: true,
+                    uid: data.uid,
+                })
+            }
+            else {
+                this.props.dispatch({
+                    type: 'UPDATE_AUTH_STATUS',
+                    loggedIn: false,
+                    uid: '',
+                })
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        this.listener();
+    }
+
+    render() {
+        const { uid } = this.props;
+        return (
+            <div className="App">
+            {/* <Router initialEntries={['/']} initialIndex={0} history={history}> */}
+                <Router initialEntries={[]} initialIndex={0} history={history}>
+                    <Navbar />
+                    <Switch>
+                        <Route path="/search">
+                            <Search />
+                        </Route>
+                        <Route path="/login">
+                            <LoginPage />
+                        </Route>
+                        <PrivateRoute path="/ride/:driverID/:rideID">
+                            <RideDetails uid={uid} />
+                        </PrivateRoute>
+                        <PrivateRoute path="/profile">
+                            <Profile />
+                        </PrivateRoute>
+                        <PrivateRoute path="/newride">
+                            <CreateRide />
+                        </PrivateRoute>
+                        <Route path="/theme">
+                            <ThemingLayout />
+                        </Route>
+                        <Route path="/">
+                            <Search /> {/* should be search landing page */}
+                        </Route>
+                    </Switch>
+                </Router>
+            </div>
+        );
+    }
+    // TODO: Add private routing and specific routing for user
     // e.g. /user/5f29astecr0s965e
-    return (
-        <div className="App">
-            <Router initialEntries={['/']} initialIndex={0} history={history}>
-                {/* <Navbar isLoggedIn={true} /> */}
-                <Switch>
-                    {/* should be search if user logged in */}
-                    <Route exact path="/">
-                        <LoginPage />
-                    </Route>
-                    <Route path="/search">
-                        <Search />
-                    </Route>
-                    <Route path="/ride/:driverID/:rideID" component={RideDetails} />
-                    <Route path="/newride">
-                        <CreateRide userId="5f29a088bc6acb9e9da9e65e" />
-                    </Route>
-                    <Route path="/login">
-                        <LoginPage />
-                    </Route>
-                    <Route path="/profile">
-                        <Profile userId="5f29a088bc6acb9e9da9e65e" />
-                    </Route>
-                    <Route path="/theme">
-                        <ThemingLayout />
-                    </Route>
-                </Switch>
-            </Router>
-        </div>
-    );
 }
 
-export default App;
+/* makes info from redux store available as prop for this component
+*   - loggedIn: accessible via this.props.loggedIn
+*   - uid: accessible via this.props.uid
+* */
+const mapStateToProps = (state) => ({
+    loggedIn: state.loggedIn,
+    uid: state.uid,
+    query: state.query,
+    rides: state.rides,
+    searched: state.searched,
+    roundtrip: state.roundtrip,
+});
+
+export default connect(mapStateToProps)(App);
