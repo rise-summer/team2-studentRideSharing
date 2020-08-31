@@ -1,6 +1,12 @@
 /*******************************
     User Variable Overrides
 *******************************/
-@primaryTextColor   : @white;
+
+@background         : white;
 @borderRadius       : 50px;
+
+/*-------------------
+       Primary
+--------------------*/
+@primaryTextColor   : @white;
 @coloredBoxShadow   : 5px @black;

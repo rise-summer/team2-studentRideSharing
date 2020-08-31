@@ -1,0 +1,14 @@
+.noBorderBottom {
+    border-bottom: none !important;
+}
+.largeFont{
+    font-size: 25px;
+}
+.brand{
+    color: #EF724B;
+    font-weight: bolder;
+}
+.createRideBtn{
+    color: #EF724B !important;
+    box-shadow: 5px black inset !important;
+}
