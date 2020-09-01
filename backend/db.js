@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 // The database to use
-const dbName = "test-jules";
+const dbName = "test";
 const collegesDBName = "Colleges";
 var client;
 

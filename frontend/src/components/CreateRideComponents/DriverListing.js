@@ -4,6 +4,7 @@ import DriverInfo from './DriverInfo';
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import createRideSplash from './createRideSplash.png';
 import { Grid, Segment, Header, Form, Dropdown } from 'semantic-ui-react';
+import './DriverListing.css';
 
 // TODO: change so first ride is stored and everything is submitted at the end
 
@@ -125,23 +126,21 @@ class DriverListing extends React.Component {
         // ) : (
         //     console.log('user have car info')
         // )}
+        const {
+            isRoundtrip,
+            startDate,
+            startTime,
+            price,
+            capacity,
+            returnStartDate,
+            returnStartTime,
+            returnPrice,
+            returnCapacity,
+        } = this.state;
         return (
-            <Grid
-                style={{
-                    background: `url(${createRideSplash})`,
-                    backgroundSize: 'cover',
-                    height: '102vh', //TEMPORARY
-                }}
-            >
+            <Grid className="listingGrid" style={{ background: `url(${createRideSplash})` }}>
                 <Grid.Column
-                    style={{
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    }}
+                    className="mainColumn"
                     width={11}
                 >
                     <Form onSubmit={this.handleSubmit} autocomplete="off">
@@ -152,18 +151,19 @@ class DriverListing extends React.Component {
                         >
                             <Header as="h3">Create a Ride</Header>
                             <Dropdown
-                                style={{marginBottom: '1em'}}
+                                style={{ marginBottom: '1em' }}
                                 options={[
                                     { key: 0, text: 'One Way', value: false },
                                     { key: 1, text: 'Roundtrip', value: true },
                                 ]}
-                                value={this.state.isRoundtrip}
+                                value={isRoundtrip}
                                 name="isRoundtrip"
                                 onChange={this.handleChange}
                             />
                             <Form.Group widths="equal">
                                 <Form.Input fluid>
                                     <GeoSearch
+                                        className="geoSearch"
                                         handleChange={this.handleGeoChange}
                                         placeholder="Specific Address"
                                         name="startLocation"
@@ -172,6 +172,7 @@ class DriverListing extends React.Component {
                                 </Form.Input>
                                 <Form.Input fluid>
                                     <GeoSearch
+                                        className="geoSearch"
                                         handleChange={this.handleGeoChange}
                                         placeholder="Specific Address"
                                         name="endLocation"
@@ -191,7 +192,7 @@ class DriverListing extends React.Component {
                                 <SemanticDatepicker
                                     label="Departure Date"
                                     onChange={this.handleChange}
-                                    value={this.state.startDate}
+                                    value={startDate}
                                     name="startDate"
                                     format="MM/DD/YYYY"
                                     minDate={today}
@@ -202,7 +203,7 @@ class DriverListing extends React.Component {
                                 />
                                 <Form.Input
                                     name="startTime"
-                                    value={this.state.startTime}
+                                    value={startTime}
                                     onChange={this.handleChange}
                                     label="Departure Time"
                                     type="time"
@@ -212,7 +213,7 @@ class DriverListing extends React.Component {
                                     required
                                 />
                                 <Form.Input
-                                    value={this.state.price}
+                                    value={price}
                                     name="price"
                                     onChange={this.handleChange}
                                     label="Price"
@@ -226,7 +227,7 @@ class DriverListing extends React.Component {
                                     required
                                 />
                                 <Form.Input
-                                    value={this.state.capacity}
+                                    value={capacity}
                                     name="capacity"
                                     onChange={this.handleChange}
                                     label="Seats"
@@ -237,20 +238,22 @@ class DriverListing extends React.Component {
                                     step={1}
                                     required
                                 />
-                                {!this.state.isRoundtrip && (
+                                {!isRoundtrip && (
                                     <Form.Button
+                                        style={{ marginTop: '24px' }}
                                         primary
                                         content="Publish Ride"
                                     />
                                 )}
                             </Form.Group>
                         </Segment>
-                        {this.state.isRoundtrip && (
+                        {isRoundtrip && (
                             <Segment style={{ padding: '20px 50px' }}>
                                 <Header as="h3">Create a Return Ride</Header>
                                 <Form.Group widths="equal">
                                     <Form.Input fluid>
                                         <GeoSearch
+                                            className="geoSearch"
                                             handleChange={this.handleGeoChange}
                                             placeholder="Specific Address"
                                             name="returnStartLocation"
@@ -259,6 +262,7 @@ class DriverListing extends React.Component {
                                     </Form.Input>
                                     <Form.Input fluid>
                                         <GeoSearch
+                                            className="geoSearch"
                                             handleChange={this.handleGeoChange}
                                             placeholder="Specific Address"
                                             name="returnEndLocation"
@@ -270,7 +274,7 @@ class DriverListing extends React.Component {
                                     <SemanticDatepicker
                                         label="Departure Date"
                                         onChange={this.handleChange}
-                                        value={this.state.returnStartDate}
+                                        value={returnStartDate}
                                         name="returnStartDate"
                                         format="MM/DD/YYYY"
                                         minDate={today}
@@ -281,7 +285,7 @@ class DriverListing extends React.Component {
                                     />
                                     <Form.Input
                                         name="returnStartTime"
-                                        value={this.state.returnStartTime}
+                                        value={returnStartTime}
                                         onChange={this.handleChange}
                                         label="Departure Time"
                                         type="time"
@@ -291,7 +295,7 @@ class DriverListing extends React.Component {
                                         required
                                     />
                                     <Form.Input
-                                        value={this.state.returnPrice}
+                                        value={returnPrice}
                                         name="returnPrice"
                                         onChange={this.handleChange}
                                         label="Price"
@@ -305,7 +309,7 @@ class DriverListing extends React.Component {
                                         required
                                     />
                                     <Form.Input
-                                        value={this.state.returnCapacity}
+                                        value={returnCapacity}
                                         name="returnCapacity"
                                         onChange={this.handleChange}
                                         label="Seats"
@@ -317,6 +321,7 @@ class DriverListing extends React.Component {
                                         required
                                     />
                                     <Form.Button
+                                        style={{ marginTop: '24px' }}
                                         primary
                                         content="Publish Ride"
                                     />

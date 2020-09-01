@@ -98,6 +98,7 @@ class GeoSearch extends React.Component {
     render() {
         return (
             <div
+                style={{width: '100%'}}
                 className={this.props.className}
                 ref={this.searchRef}
             ></div>
