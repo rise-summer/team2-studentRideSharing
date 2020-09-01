@@ -17,11 +17,12 @@ router.get('/', async function (req, res, next) {
     //TODO: search logic for begin and end date
     const query = JSON.parse(req.query['query']);
     console.log(query);
-    const {originCoords, destCoords, beginDate, endDate, distance} = query;
+    const {originCoords, destCoords, beginDate, endDate, distance, sortTime, orderBy} = query;
     const collection = client.dbCollection(collectionName);
     // const METERS_PER_MILE = 1609.34;
     const distInRadians = distance / 3963.2;//converts the distance to radians by dividing by the approximate equatorial radius of the earth
     let filter;
+    let mySort;
     if (originCoords === '') {
         filter = {
             time: {$gte: new Date(beginDate), $lte: new Date(endDate)}
@@ -33,8 +34,11 @@ router.get('/', async function (req, res, next) {
             destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
         }
     }
+    if (sortTime && orderBy) {
+        mySort[sortTime] = orderBy === 'desc' ? -1 : 1
+    }
 
-    collection.find(filter)
+    collection.find(filter).sort(mySort)
         // collection.find({
         //   time: {$gte: beginDate, $lte: endDate},
         //   originCoords:
