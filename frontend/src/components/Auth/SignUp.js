@@ -1,14 +1,14 @@
 import React from 'react';
 import {
     Form,
-    Divider,
+    // Divider,
     Button,
-    Dropdown,
-    Input,
+    // Dropdown,
+    // Input,
     Image,
 } from 'semantic-ui-react';
 import firebase, { auth, uiConfig, storageRef } from '../../firebase';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import './SignUp.css';
 
 const querystring = require('querystring');
@@ -35,8 +35,6 @@ const initialState = {
 };
 
 class SignUp extends React.Component {
-    //TODO: Add preferred contact methods
-    //Combine into one component (see figma layout)
     constructor(props) {
         super(props);
         this.state = initialState;
@@ -114,7 +112,6 @@ class SignUp extends React.Component {
         // alert('Submitted ' + JSON.stringify(this.state));
         // add regex checking and password match
         // pass all info to mongoDB too
-        const { email, password } = this.state;
         if (this.validate()) {
             this.createUser();
         }

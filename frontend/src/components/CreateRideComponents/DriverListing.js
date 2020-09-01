@@ -8,32 +8,37 @@ import './DriverListing.css';
 
 // TODO: change so first ride is stored and everything is submitted at the end
 
+const initialState = {
+    startLocation: {},
+    endLocation: {},
+    startDate: null,
+    startTime: '',
+    price: '',
+    capacity: '',
+    returnStartLocation: {},
+    returnEndLocation: {},
+    returnStartDate: null,
+    returnStartTime: '',
+    returnPrice: '',
+    returnCapacity: '',
+    isRoundtrip: false,
+    errorMessage: '',
+};
+
 class DriverListing extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            startLocation: {},
-            endLocation: {},
-            startDate: null,
-            startTime: '',
-            price: '',
-            capacity: '',
-            returnStartLocation: {},
-            returnEndLocation: {},
-            returnStartDate: null,
-            returnStartTime: '',
-            returnPrice: '',
-            returnCapacity: '',
-            isRoundtrip: false,
-            errorMessage: '',
-        };
+        this.state = initialState;
         this.startDateRef = React.createRef();
     }
 
     handleGeoChange = (resp, fieldName) => {
-        this.setState({
-            [fieldName]: resp,
-        });
+        this.setState({ [fieldName]: resp });
+        if (fieldName === 'startLocation') {
+            this.setState({ returnEndLocation: resp });
+        } else if (fieldName === 'endLocation') {
+            this.setState({ returnStartLocation: resp });
+        }
     };
 
     postData = async (data) => {
@@ -114,6 +119,7 @@ class DriverListing extends React.Component {
                     capacity: returnCapacity,
                 });
             }
+            this.setState(initialState);
         }
     };
 
@@ -128,27 +134,27 @@ class DriverListing extends React.Component {
         // )}
         const {
             isRoundtrip,
+            startLocation,
+            endLocation,
             startDate,
             startTime,
             price,
             capacity,
+            returnStartLocation,
+            returnEndLocation,
             returnStartDate,
             returnStartTime,
             returnPrice,
             returnCapacity,
         } = this.state;
         return (
-            <Grid className="listingGrid" style={{ background: `url(${createRideSplash})` }}>
-                <Grid.Column
-                    className="mainColumn"
-                    width={11}
-                >
-                    <Form onSubmit={this.handleSubmit} autocomplete="off">
-                        <Segment
-                            style={{
-                                padding: '20px 50px',
-                            }}
-                        >
+            <Grid
+                className="listingGrid"
+                style={{ background: `url(${createRideSplash})` }}
+            >
+                <Grid.Column className="mainColumn" width={11}>
+                    <Form onSubmit={this.handleSubmit} autoComplete="off">
+                        <Segment style={{ padding: '20px 50px' }}>
                             <Header as="h3">Create a Ride</Header>
                             <Dropdown
                                 style={{ marginBottom: '1em' }}
@@ -164,6 +170,7 @@ class DriverListing extends React.Component {
                                 <Form.Input fluid>
                                     <GeoSearch
                                         className="geoSearch"
+                                        value={startLocation.address}
                                         handleChange={this.handleGeoChange}
                                         placeholder="Specific Address"
                                         name="startLocation"
@@ -173,6 +180,7 @@ class DriverListing extends React.Component {
                                 <Form.Input fluid>
                                     <GeoSearch
                                         className="geoSearch"
+                                        value={endLocation.address}
                                         handleChange={this.handleGeoChange}
                                         placeholder="Specific Address"
                                         name="endLocation"
@@ -254,6 +262,7 @@ class DriverListing extends React.Component {
                                     <Form.Input fluid>
                                         <GeoSearch
                                             className="geoSearch"
+                                            value={returnStartLocation.address}
                                             handleChange={this.handleGeoChange}
                                             placeholder="Specific Address"
                                             name="returnStartLocation"
@@ -263,6 +272,7 @@ class DriverListing extends React.Component {
                                     <Form.Input fluid>
                                         <GeoSearch
                                             className="geoSearch"
+                                            value={returnEndLocation.address}
                                             handleChange={this.handleGeoChange}
                                             placeholder="Specific Address"
                                             name="returnEndLocation"

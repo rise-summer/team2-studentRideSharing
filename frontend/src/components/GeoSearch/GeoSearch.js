@@ -25,6 +25,7 @@ class GeoSearch extends React.Component {
     constructor(props) {
         super(props);
         this.searchRef = React.createRef();
+        this.state = { geoObject: null };
     }
 
     processResponse = (resp) => {
@@ -56,6 +57,12 @@ class GeoSearch extends React.Component {
         };
     };
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.value !== this.props.value) {
+            this.state.geoObject.query(this.props.value);
+        }
+    }
+
     async componentDidMount() {
         // Code to retrieve location for proximity search
         let coords;
@@ -76,29 +83,36 @@ class GeoSearch extends React.Component {
             }
         }
 
+        const { placeholder, types, name, handleChange } = this.props;
+
         // Creates geocoder object
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
-            placeholder: this.props.placeholder,
+            placeholder: placeholder,
             countries: 'US',
-            types: this.props.types,
+            types: types,
             minLength: 3,
             proximity: coords,
         });
 
         // When a result is selected, it will send it via handleChange
-        geocoder.on('result', () =>
-            this.props.handleChange(
+        geocoder.on('result', () => {
+            handleChange(
                 this.processResponse(JSON.parse(geocoder.lastSelected)),
-                this.props.name
-            )
-        );
+                name
+            );
+        });
         geocoder.addTo(this.searchRef.current);
+        
+        if (this.props.value) {
+            geocoder.query(this.props.value);
+        }
+        this.setState({ geoObject: geocoder });
     }
     render() {
         return (
             <div
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 className={this.props.className}
                 ref={this.searchRef}
             ></div>
