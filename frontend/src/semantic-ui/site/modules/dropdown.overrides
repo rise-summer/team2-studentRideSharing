@@ -1,3 +1,21 @@
 /*******************************
         User Overrides
 *******************************/
+
+.ui.compact.selection.dropdown {
+    min-width: 0;
+    border: none;
+    border-radius: 15px;
+    background: none;
+}
+
+.ui.compact.selection.dropdown:hover {
+    background: white;
+}
+
+.ui.selection.active.dropdown .menu {
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border: 1px black
+}
+

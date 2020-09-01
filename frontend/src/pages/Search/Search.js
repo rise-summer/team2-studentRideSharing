@@ -20,7 +20,6 @@ class Search extends Component {
                 outboundRides: [],
                 returnRides: []
             },
-            filteredRides: [],
             roundtrip: false,
             searched: false,
             query: {
@@ -36,7 +35,6 @@ class Search extends Component {
             numberTime: 1,
             sortType: '',
         };
-        this.state.filteredRides = this.state.rides;
     }
 
     /* coords are the only thing needed for the API call */
@@ -60,15 +58,13 @@ class Search extends Component {
             type: 'UPDATE_GEO',
             value: newQuery
         });
-        console.log(this.props);
+        // console.log(this.props);
     };
 
-    editBeginDate = (d) => {
-        let date = moment(d).format('MM/DD/YYYY') + ' ';
-        // let newQuery = this.state.query;
+    editBeginDate = (event, d) => {
+        let date = moment(d.value).toDate();
         let newQuery = this.props.query;
         newQuery.beginDate = date;
-        // this.setState({ query: newQuery });
         this.props.dispatch({
             type: 'EDIT_BEGIN_DATE',
             value: newQuery,
@@ -76,18 +72,15 @@ class Search extends Component {
         // console.log(this.props);
     };
 
-    editEndDate = (d) => {
-        let date = moment(d).format('MM/DD/YYYY') + ' ';
-        // let newQuery = this.state.query;
+    editEndDate = (event, d) => {
+        let date = moment(d.value).toDate();
         let newQuery = this.props.query;
         newQuery.endDate = date;
-        // this.setState({ query: newQuery })
         this.props.dispatch({
             type: 'EDIT_BEGIN_DATE',
             value: newQuery,
         });
-        console.log(this.props);
-
+        // console.log(this.props);
     };
 
     queryRides = () => {
@@ -123,6 +116,7 @@ class Search extends Component {
             distance: dist,
         };
         this.queryReturn(returnQuery);
+        console.log(this.props);
     };
 
     queryOutbound = (query) => {
@@ -265,11 +259,10 @@ class Search extends Component {
         } else {
             searchPage =
                 <SearchBox
-                    query={this.state.query}
                     functions={functions}
                     refs={refs}
                 />;
-            sortBy = 
+            sortBy =
                 <SortBy sort={this.sort}/>
             rideResults =
                 <div>
