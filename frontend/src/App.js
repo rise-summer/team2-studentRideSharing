@@ -45,45 +45,6 @@ class App extends Component {
         this.listener();
     }
 
-    // const [uid, setUid] = useState("");
-    // const [isAuthenticated, setAuthStatus] = useState(false);
-
-    // useEffect(() => {
-    //     auth.onAuthStateChanged((data) => {
-    //         if (data) { //logged in
-    //             setUid(data.uid);
-    //             setAuthStatus(true);
-    //             console.log("true: " + isAuthenticated);
-    //         }
-    //         else {
-    //             setUid("");
-    //             setAuthStatus(false);
-    //             console.log("false: " + isAuthenticated);
-    //         }
-    //     });
-    // }, []);
-
-    signOut = () => {
-        auth.signOut().then(function() {
-            // Sign-out successful.
-            console.log("Sign-out successful.");
-            this.setState({
-                uid: "",
-                isAuthenticated: false
-            });
-        }).catch(function(error) {
-          // An error happened
-          console.log("error occurred when signing out");
-          console.log(error);
-        });
-    };
-
-    login = () => {
-        this.setState({
-            isAuthenticated: true
-        })
-    };
-
     render() {
         const { uid } = this.props;
         return (
