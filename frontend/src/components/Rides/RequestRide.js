@@ -142,10 +142,10 @@ class RequestRide extends Component {
 
     triggerButton() {
         if (this.props.disable === true) {
-            return <Button disabled>No Longer Accepting Requests</Button>;
+            return <Button basic color='orange'disabled>No Longer Accepting Requests</Button>;
         }
         else {
-            return <Button>Request a Ride</Button>;
+            return <Button primary>Request a Ride</Button>;
         }
     }
 
@@ -162,9 +162,9 @@ class RequestRide extends Component {
                 open={this.state.open}
             >
                 <Modal.Header>
-                <center>
+                {/* <Button primary>
                     Request a Ride
-                </center>
+                </Button> */}
                 </Modal.Header>
                 <Modal.Content>
                     <div className="name padding">{this.props.driver.firstName} {this.props.driver.lastName}</div>

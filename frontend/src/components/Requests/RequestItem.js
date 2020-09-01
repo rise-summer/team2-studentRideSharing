@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Button, Icon } from 'semantic-ui-react';
+import { List, Button, Icon, Image } from 'semantic-ui-react';
 import './RequestItem.css';
 
 class RequestItem extends Component {
@@ -189,10 +189,11 @@ class RequestItem extends Component {
                 return (
                     <List.Item>
                         <List.Content className="requester">
-                            <div>
+                            <Image src={requester.photoURL} size='mini' />
+                            <div className="requester-info">
                                 {requester.firstName} {requester.lastName[0]}.
+                                <div className="school">{requester.school}</div>
                             </div>
-                            <div className="school">{requester.school}</div>
                         </List.Content>
                     </List.Item>
                 );
@@ -221,7 +222,7 @@ class RequestItem extends Component {
                     <List.Content className="driver">
                         <div>
                             {' '}
-                            Pick up: {startLoc} -> Drop off: {endLoc}{' '}
+                            Pick up: {startLoc} -`{'>'}` Drop off: {endLoc}{' '}
                         </div>
                         <div className="rideInfo">
                             <List divided horizontal>

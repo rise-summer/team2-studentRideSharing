@@ -92,7 +92,7 @@ class Search extends Component {
         dateEnd.setHours(23, 59, 59);
         const { start, endDest, distance } = this.props.query;
         /* If no distance specified, default to 5 */
-        const dist = (distance) ? distance : 5;
+        const dist = (distance) ? distance : 10;
         const origin = (start) ? [start.lng, start.lat] : '';
         const dest = (endDest) ? [endDest.lng, endDest.lat] : '';
         const outboundQuery = {
