@@ -1,4 +1,24 @@
-.school {
-  font-weight: lighter;
-  color: rgba(0,0,0,.6);
+.requestInfo {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    color: #333333;
+}
+
+.estimatedTime {
+    display: flex;
+    align-items: center;
+}
+
+.requestActions {
+    margin-left: 25%;
+    margin-right: 15%;
+}
+
+.spaceBetweenButtons {
+    width: 15%;
+    height: auto;
+    display: inline-block;
 }

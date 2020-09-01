@@ -1,17 +1,4 @@
-#arrow {
-    margin: 2%;
-}
-
-a.ride-link {
-    color: black;
-}
-
-.ride-header {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.list.requestsList {
+.ride-listings {
     border-radius: 50px;
     /* background: #FDFDFD; */
     border: 1px solid #E5E5E5;
@@ -19,3 +6,8 @@ a.ride-link {
     box-shadow: 0px 4px 14px #D8D8F6;
     /* border-radius: 50px; */
 }
+
+.ride-list-item {
+    margin: 5%;
+}
+

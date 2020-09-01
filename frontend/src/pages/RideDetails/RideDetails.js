@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './RideDetails.css';
 import { Icon, Button, List } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import RequestRide from '../../components/Rides/RequestRide';
 import RequestItem from '../../components/Requests/RequestItem';
@@ -167,11 +167,11 @@ class RideDetails extends Component {
                     <div className="ride-detail-wrapper">
                         <Icon name="credit card" />
                         <div className="ride-detail indent">Preferred Methods of Payment</div>
-                        {/* <div className="indent2">
+                        <div className="indent2">
                             {driver.paymentMethods.map((value, index) => {
                                 return index === 0 ? <span key={index}>{value}</span> : <span key={index}>, {value}</span>
                             })}
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </div>

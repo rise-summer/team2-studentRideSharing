@@ -1,9 +1,7 @@
 import React from 'react';
-import { Form, Divider, Button, Dropdown, Input, Image } from 'semantic-ui-react';
+import { Form, Divider, Button, Image } from 'semantic-ui-react';
 import firebase, { auth, uiConfig, storageRef } from '../../firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-
-const querystring = require('querystring');
 
 const initialState = {
     uid: '',
@@ -103,7 +101,6 @@ class SignUp extends React.Component {
         // alert('Submitted ' + JSON.stringify(this.state));
         // add regex checking and password match
         // pass all info to mongoDB too
-        const {email, password} = this.state;
         if (this.validate()) {
             this.createUser();
         }

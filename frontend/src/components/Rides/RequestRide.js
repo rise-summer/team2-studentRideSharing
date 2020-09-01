@@ -197,7 +197,7 @@ class RequestRide extends Component {
                     <Button icon
                         labelPosition='right'
                         type="submit"
-                        positive>
+                        primary>
                         <Icon name='checkmark' />
                          Send Ride Request
                     </Button>
@@ -221,7 +221,7 @@ class RequestRide extends Component {
                     <Button icon
                         labelPosition='right'
                         onClick={() => this.setConfirmationOpen(false)}
-                        positive>
+                        primary>
                         <Icon name='checkmark' />
                         Okay
                     </Button>

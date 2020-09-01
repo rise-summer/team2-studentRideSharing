@@ -1,7 +1,8 @@
 import React from 'react';
-import { List } from 'semantic-ui-react';
+import { List, Button, Icon } from 'semantic-ui-react';
 
-const ProfileDetails = ({ vehicles, email, contact }) => {
+//TODO: change it to class component
+const ProfileDetails = ({ user: {email, contact, paymentMethods}, vehicles, isEditing }) => {
     const vehicleList = vehicles.map((vehicle, index) => {
         const { color, make, model, plate } = vehicle;
         const vehicleString = `${color} ${make} ${model} (${plate})`;
@@ -12,27 +13,39 @@ const ProfileDetails = ({ vehicles, email, contact }) => {
             </List.Item>
         );
     });
+    
+    const editPaymentMethods = () => {
+        //setstate -> editingPaymentMethods
+    }
 
     return (
         <div>
             <List relaxed>
                 <List.Item>
                     <List.Content>
-                        {/* <List.Header>Car and Payment Listed</List.Header> */}
-                        <List.Header>Cars</List.Header>
+                        <List.Header>Car and Payment Listed</List.Header>
                         <List.List>
                             {vehicleList}
-                            {/* <List.Item>
+                            <List.Item>
                                 <List.Icon name="credit card" />
                                 <List.Content>
                                     <List.Header>
                                         Accepts payment through
+                                        { 
+                                            isEditing && 
+                                            <Button icon style={{backgroundColor: 'white', borderRadius: 0}}
+                                            onClick={editPaymentMethods}>
+                                                <Icon name='pencil alternate' />
+                                            </Button>
+                                        }
                                     </List.Header>
                                     <List.Description>
-                                        Venmo, Cash
+                                    {paymentMethods && paymentMethods.map((value, index) => {
+                                        return index === 0 ? <span key={index}>{value}</span> : <span key={index}>, {value}</span>
+                                    })}
                                     </List.Description>
                                 </List.Content>
-                            </List.Item> */}
+                            </List.Item>
                         </List.List>
                     </List.Content>
                 </List.Item>

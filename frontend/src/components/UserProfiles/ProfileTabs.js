@@ -4,7 +4,7 @@ import ProfileListings from './ProfileListings';
 import ProfileRequests from './ProfileRequests';
 import { Tab, Menu, Label } from 'semantic-ui-react';
 
-const ProfileTabs = ({ userID, vehicles, contact, email, rides, handleError }) => {
+const ProfileTabs = ({ userID, vehicles, contact, email, rides, handleError, activeIndex, handleTabChange }) => {
     const panes = [
         {
             menuItem: (
@@ -33,7 +33,7 @@ const ProfileTabs = ({ userID, vehicles, contact, email, rides, handleError }) =
             menuItem: {content: 'My Profile', key: "profile"},
             render: () => (
                 <Tab.Pane attached={false}>
-                    <ProfileDetails vehicles={vehicles} contact={contact} email={email} />
+                    <ProfileDetails isEditing={isEditing} vehicles={vehicles} contact={contact} email={email} />
                 </Tab.Pane>
             ),
         },
@@ -49,7 +49,8 @@ const ProfileTabs = ({ userID, vehicles, contact, email, rides, handleError }) =
                     pointing: true,
                 }}
                 panes={panes}
-                defaultActiveIndex={0}
+                activeIndex={activeIndex}
+                onTabChange={handleTabChange}
             />
         </div>
     );

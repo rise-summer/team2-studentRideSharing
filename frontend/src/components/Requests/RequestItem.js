@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Button, Icon } from 'semantic-ui-react';
+import { List, Button, Icon, Image, Header } from 'semantic-ui-react';
 import './RequestItem.css';
 
 class RequestItem extends Component {
@@ -220,8 +220,7 @@ class RequestItem extends Component {
                     </List.Header>
                     <List.Content className="driver">
                         <div>
-                            {' '}
-                            Pick up: {startLoc} -> Drop off: {endLoc}{' '}
+                            Pick up: {startLoc} -{">"} Drop off: {endLoc}
                         </div>
                         <div className="rideInfo">
                             <List divided horizontal>
@@ -255,9 +254,87 @@ class RequestItem extends Component {
         const timeAdded = Math.round(
             (this.state.rideTime - this.props.baseRideTime) / 60
         );
-
+        
         return (
             <List.Item>
+                <List.Content>
+                    <Image floated="left" src={requester.photoURL} size="tiny" />
+                    {
+                        status === 0 &&
+                        <Button style={{ float: 'right' }}
+                            icon
+                            labelPosition="right"
+                            size="mini"
+                            onClick={this.handleMapClick}
+                        >
+                            <Icon name="map marker alternate" />
+                            Map View
+                        </Button>
+                    }
+                    
+                    <Header as="h5" className="requester">
+                        {requester.firstName} {requester.lastName[0]}.
+                    </Header>
+                    {
+                        status === 0 &&
+                        <List.Description 
+                        // style={{ fontWeight: "300", fontSize: "14px", color: "#333333" }}
+                        >
+                            {requester.school}
+                        </List.Description>
+                    }
+                                  
+                    <div className="requestInfo">
+                        Pick Up: {startLoc}
+                        <br/>
+                        Drop off: {endLoc}
+                        <br/>
+                        {
+                            comment && status === 0 && 
+                                <span>Comment: {comment}</span>
+                        }                           
+                    </div>
+                    <br/>
+                    <span className="estimatedTime">
+                    {Boolean(timeAdded) && (
+                        <List.Description>
+                            {`${
+                                requester.firstName
+                            }'s ride would add about ${timeAdded} ${
+                                timeAdded === 1 ? 'minute' : 'minutes'
+                            } to your trip`}
+                        </List.Description>
+                    )}
+                    </span>
+                </List.Content>       
+                {status === 0 &&
+                    <List.Content extra className="requestActions">
+                        <Button
+                            name="deny"
+                            size="tiny"
+                            onClick={this.handleClick}
+                        >
+                            Deny Request
+                        </Button>
+                        <div className="spaceBetweenButtons" />
+                        <Button
+                            name="confirm"
+                            size="tiny"
+                            primary
+                            onClick={this.handleClick}
+                        >
+                            Confirm Rider
+                        </Button>
+                    </List.Content>
+                }
+            </List.Item>
+
+        );
+        /*
+        return (
+            <List.Item>
+                <Image floated="left" src={requester.photoURL} size="tiny" />
+                <List.Content>
                 <List.Header className="requester">
                     <div className="name">
                         {requester.firstName} {requester.lastName[0]}.
@@ -275,7 +352,7 @@ class RequestItem extends Component {
                         </Button>
                     </span>
                 </List.Header>
-                <List.Content>
+                <List.Description>               
                     <div className="requestInfo">
                         <div>Pick Up: {startLoc}</div>
                         <div>Drop off: {endLoc}</div>
@@ -290,27 +367,32 @@ class RequestItem extends Component {
                             </div>
                         )}
                     </div>
-                    {status === 0 && (
+
+                </List.Description>
+                </List.Content>
+                <List.Content extra>
+                {status === 0 && (
                         <div className="requestActions">
                             <Button
                                 name="deny"
                                 negative
                                 onClick={this.handleClick}
                             >
-                                Deny
+                                Deny Request
                             </Button>
                             <Button
                                 name="confirm"
-                                positive
+                                primary
                                 onClick={this.handleClick}
                             >
-                                Confirm
+                                Confirm Rider
                             </Button>
                         </div>
                     )}
                 </List.Content>
             </List.Item>
         );
+        */
     }
 }
 

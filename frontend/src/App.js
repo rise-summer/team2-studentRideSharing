@@ -17,10 +17,6 @@ import ThemingLayout from './pages/Theme/Theme';
 const history = createBrowserHistory();
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         this.listener = auth.onAuthStateChanged((data) => {
             if (data) { //logged in

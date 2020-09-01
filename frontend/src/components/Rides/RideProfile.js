@@ -208,27 +208,27 @@ class RideProfile extends Component {
             />
         ));
         return (
-            <Segment>
-                <Header>
-                    <h5>
-                        {startLoc.city}, {startLoc.state}
-                        <Icon name="arrow right" />
-                        {endLoc.city}, {endLoc.state}
-                    </h5>
-                    <h6 style={{ float: 'right' }}>
-                        <a href={'/ride/' + driverID + '/' + _id}>View Ride</a>
-                        <span>
-                            {isActive && (
-                                <CancelRideButton
-                                    startName={startLoc.city}
-                                    destName={endLoc.city}
-                                    id={_id}
-                                    handleError={handleError}
-                                    driverID={driverID}
-                                />
-                            )}
-                        </span>
-                    </h6>
+            <div className="ride-profile">
+                <Header as="h5" className="ride-header">
+                    <span>
+                        {/* Click header to view ride */}
+                        <a className="ride-link" href={'/ride/' + driverID + '/' + _id}>
+                            {startLoc.city}, {startLoc.state}
+                            <Icon id="arrow" name="arrow right" />
+                            {endLoc.city}, {endLoc.state}
+                        </a>
+                    </span>
+                    {isActive && (
+                        <span className="header-span" style={{ float: "right", marginTop: "2%", marginBottom: "2%" }}>
+                            <CancelRideButton
+                                startName={startLoc.city}
+                                destName={endLoc.city}
+                                id={_id}
+                                handleError={handleError}
+                                driverID={driverID}
+                            />
+                        </span>    
+                    )}
                 </Header>
                 <div className="rideInfo">
                     <List divided horizontal>
@@ -245,7 +245,7 @@ class RideProfile extends Component {
                                 {confirmedCount} Confirmed{' '}
                                 {confirmedCount > 1 ? 'Riders' : 'Rider'}
                             </div>
-                            <List className="requestsList" divided animated>
+                            <List className="requestsList" divided>
                                 {confirmedRequestList}
                             </List>
                         </div>
@@ -260,13 +260,13 @@ class RideProfile extends Component {
                                 {pendingCount} Pending{' '}
                                 {pendingCount > 1 ? 'Requests' : 'Request'}
                             </div>
-                            <List className="requestsList" divided animated>
+                            <List className="requestsList" divided>
                                 {pendingRequestList}
                             </List>
                         </div>
                     )}
                 </div>
-            </Segment>
+            </div>
         );
     }
 }
