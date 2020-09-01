@@ -58,8 +58,12 @@ class GeoSearch extends React.Component {
     };
 
     componentDidUpdate(prevProps) {
-        if (prevProps.value !== this.props.value && this.props.value) {
-            this.state.geoObject.query(this.props.value);
+        if (prevProps.value !== this.props.value) {
+            if (this.props.value) {
+                this.state.geoObject.query(this.props.value);
+            } else {
+                this.state.geoObject.clear();
+            }
         }
     }
 
@@ -103,7 +107,7 @@ class GeoSearch extends React.Component {
             );
         });
         geocoder.addTo(this.searchRef.current);
-        
+
         if (this.props.value) {
             geocoder.query(this.props.value);
         }
