@@ -2,7 +2,6 @@
     User Variable Overrides
 *******************************/
 
-@background         : white;
 @borderRadius       : 50px;
 
 /*-------------------
