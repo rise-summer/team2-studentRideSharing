@@ -15,7 +15,7 @@ class CreateRide extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            haveInfo: true
+            haveInfo: false
         };
     }
 
@@ -24,8 +24,9 @@ class CreateRide extends React.Component {
     async componentDidMount() {
         await fetch(`/api/vehicles/${this.props.uid}`, {
             method: 'GET'
-        }).then(response => {
-            if (response.status === 200) {
+        }).then(response => response.json())
+        .then(response => {
+            if(response.length){
                 this.setState({ haveInfo: true });
             }
         });
