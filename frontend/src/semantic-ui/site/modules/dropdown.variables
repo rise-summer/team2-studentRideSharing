@@ -2,15 +2,6 @@
     User Variable Overrides
 *******************************/
 
-@selectionBorderRadius      : 20px 20px 0 0;
+@selectionBorderRadius      : 5px 20px 0 0;
 
 @selectionMenuBorderRadius  : 0 0 20px 20px;
-
-@menuBorderRadius           : 20px;
-@menuBorder                 : none;
-
-@menuHeaderColor            : @blue;
-@activeItemColor            : @blue;
-@itemColor                  : @blue;
-@activeItemColor            : @blue;
-@hoveredItemColor           : @primaryColor;

@@ -23,6 +23,7 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
     "react-scripts": "3.4.1",
+    "react-semantic-ui-datepickers": "^2.9.1",
     "redux": "^4.0.5",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^1.1.0"
@@ -32,7 +33,7 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
-    "prod" : "react-scripts start"
+    "prod": "react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"
