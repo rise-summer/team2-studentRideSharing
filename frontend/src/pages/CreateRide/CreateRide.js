@@ -20,8 +20,6 @@ class CreateRide extends React.Component {
         };
     }
 
-    //TODO: Check response instead of response status
-    //Check to see if Driver have vehicle infomation
     async componentDidMount() {
         await fetch(`/api/vehicles/${this.props.uid}`, {
             method: 'GET'
@@ -41,11 +39,12 @@ class CreateRide extends React.Component {
 
     render() {
         const { haveInfo } = this.state;
-        if(haveInfo){
-            return <DriverListing uid={this.props.uid} />;
-        }else {
-            return <DriverInfo userId={this.props.uid} changeCarInfo={this.changeCarInfo}/>
-        }
+        return <DriverListing uid={this.props.uid} haveInfo={haveInfo} changeCarInfo={this.changeCarInfo}/>
+        // if(haveInfo){
+        //     return <DriverListing uid={this.props.uid} haveInfo={haveInfo}/>;
+        // }else {
+        //     return <DriverInfo userId={this.props.uid} changeCarInfo={this.changeCarInfo}/>
+        // }
     }
 }
 

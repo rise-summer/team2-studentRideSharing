@@ -2,6 +2,7 @@ import React from 'react';
 import TimePicker from '../TimePicker/TimePicker';
 import NumberPicker from '../NumberPicker/NumberPicker';
 import GeoSearch from '../GeoSearch/GeoSearch';
+import DriverInfo from './DriverInfo';
 import Pikaday from 'pikaday';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
@@ -23,6 +24,7 @@ class DriverListing extends React.Component {
             isRoundTrip: false,
             errorMessage: '',
             step: 1,
+            driverCarInfo: true,
         };
         this.startDateRef = React.createRef();
     }
@@ -109,6 +111,16 @@ class DriverListing extends React.Component {
         }
     };
 
+    //TODO: implement redux, temporary way of validation
+    changeCarInfo = (carInfo) => {
+        if(carInfo){
+            this.props.changeCarInfo(carInfo)
+        }
+        this.setState({
+            driverCarInfo: true,
+        })
+    }
+
     handleChange = (event) => {
         const name = event.target.name;
         const value =
@@ -121,20 +133,26 @@ class DriverListing extends React.Component {
         const isRoundTrip = this.state.isRoundTrip;
         // const nextStartLocation = isRoundTrip ? this.state.endLocation : '';
         // const nextEndLocation = isRoundTrip ? this.state.startLocation : '';
-
-        if (this.state.errorMessage === '') {
-            this.postData();
-            // Do I need async/await here? to avoid setting state prematurely
+        console.log(this.props.haveInfo)
+        if (!this.props.haveInfo) {
             this.setState({
-                startLocation: {},
-                endLocation: {},
-                startDate: '',
-                startTime: '',
-                price: '',
-                capacity: '',
-                isRoundTrip: false,
-                step: isRoundTrip ? 2 : 1,
+                driverCarInfo: false,
             });
+        } else {
+            if (this.state.errorMessage === '') {
+                this.postData();
+                // Do I need async/await here? to avoid setting state prematurely
+                this.setState({
+                    startLocation: {},
+                    endLocation: {},
+                    startDate: '',
+                    startTime: '',
+                    price: '',
+                    capacity: '',
+                    isRoundTrip: false,
+                    step: isRoundTrip ? 2 : 1,
+                });
+            }
         }
     };
 
@@ -144,6 +162,7 @@ class DriverListing extends React.Component {
                 <Dimmer>
                     <Loader>Loading</Loader>
                 </Dimmer>
+                {!this.state.driverCarInfo ? <DriverInfo changeCarInfo={this.changeCarInfo} userId={this.props.uid}/> : console.log()}
                 {this.state.step === 1 ? (
                     <h1>Create a ride</h1>
                 ) : (

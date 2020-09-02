@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Icon, Button, Modal } from 'semantic-ui-react';
+import { Form, Icon, Button, Modal, Message } from 'semantic-ui-react';
 
 import './DriverInfo.css';
 
@@ -13,6 +13,9 @@ class DriverInfo extends React.Component {
             color: '',
             capacity: 4,
             showModal: true,
+            submitted: false,
+            success: '',
+            error: '',
         };
     }
 
@@ -26,7 +29,15 @@ class DriverInfo extends React.Component {
             body: JSON.stringify(this.state)
         }).then(response => {
             if(response.status === 201){
-                this.props.changeCarInfo(true);
+                this.setState({
+                    submitted: true,
+                    success: 'true',
+                });
+            } 
+            else {
+                this.setState({
+                    error: 'true',
+                })
             }
         })
     }
@@ -41,7 +52,8 @@ class DriverInfo extends React.Component {
                 make: '',
                 model: '',
                 color: '',
-            })
+                submitted: false,
+            });
 
         } catch (error) {
             console.log(error);
@@ -55,16 +67,21 @@ class DriverInfo extends React.Component {
 
     closeModal = () => {
         this.setState({ showModal: false })
-
+        this.props.changeCarInfo(this.state.submitted);
     }
 
     render() {
-        const { plate, make, model, color, showModal } = this.state;
+        const { plate, make, model, color, showModal, success, error } = this.state;
         return (
             <div>
-                <Modal open={showModal}>
+                <Modal 
+                    closeIcon
+                    size="tiny"
+                    onClose={this.closeModal}
+                    open={showModal}
+                >
                     <Modal.Content >
-                        <Form className="input-form" onSubmit={this.handleSubmit}>
+                        <Form className="input-form" onSubmit={this.handleSubmit} success={success} error={error}>
                             <Icon classname="car-icon" name="car" size="huge" />
                             <br />
                             <br />
@@ -96,6 +113,11 @@ class DriverInfo extends React.Component {
                                 label="Car Color"
                             />
                             <Form.Button to="/newride" type="submit">Submit</Form.Button>
+                            <Message
+                                success
+                                header="Car Information Recorded!"
+                                content="You're all set to create rides"
+                            />
                         </Form>
                     </Modal.Content>
                 </Modal>
