@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Button, Icon, Image, Header } from 'semantic-ui-react';
+import { List, Button, Icon, Image, Header, Label } from 'semantic-ui-react';
 import './RequestItem.css';
 
 class RequestItem extends Component {
@@ -13,13 +13,17 @@ class RequestItem extends Component {
             driver: {
                 lastName: '',
             },
-            ride: {},
+            ride: {
+                startLoc: {},
+                endLoc: {}
+            },
             errorMessage: '',
             timeLeft: '',
             intervalID: 0,
             rideTime: '',
             lineString: [],
             optimalRoute: [],
+            isCopied: false
         };
     }
 
@@ -70,7 +74,7 @@ class RequestItem extends Component {
                 })
                 .catch((error) => console.log('error', error));
             //fetch ride info
-            // is this redundant? since ride is a prop
+            // is this redundant? since ride is a prop - we don't have ride in the prop when the viewer is requester
             fetch(`/api/rides/${request.driverID}/${request.rideID}`)
                 .then((response) => {
                     return response.json();
@@ -132,6 +136,18 @@ class RequestItem extends Component {
         );
     };
 
+    copyToClipboard = (event) => {
+        const { ride } = this.state;
+        //TODO: make the url correct
+        const url =  window.location.hostname + '/ride/' + ride.driverID + '/' + ride._id;
+        window.navigator.clipboard.writeText(url).then(() => {
+            this.setState({isCopied: true});
+        }).catch(err => {
+            console.log('Something went wrong', err);
+            alert("Failed to copy the url to the clipboard. You might manually copy that and share the link!");
+        });
+    }
+
     sendEmailNotificationToRequester(action) {
         const { ride, dateString, timeString } = this.props;
         const { firstName, lastName, email } = this.state.requester;
@@ -177,7 +193,7 @@ class RequestItem extends Component {
 
         const { requester, driver, ride } = this.state;
         const { request, viewer, isPending } = this.props; //version controls what to display
-        const { comment, startLoc, endLoc, status } = request;
+        const { comment, status } = request;
 
         if (viewer === 'Other') {
             //from RideDetails Page
@@ -198,7 +214,9 @@ class RequestItem extends Component {
                 );
             }
         } else if (viewer === 'Requester') {
-            //from User Profile > 'My Requests' Tab
+            //from User Profile > 'Requests Sent' Tab
+            const { startLoc, endLoc } = ride;
+
             const dateObject = new Date(ride.time);
             const dateString = dateObject.toLocaleDateString('en-US');
             const timeString = dateObject.toLocaleTimeString('en-US');
@@ -209,28 +227,51 @@ class RequestItem extends Component {
             }
 
             return (
-                <List.Item>
-                    <List.Header>
+                <List.Item className="profile-requested-ride-li">
+                    <div className="flex-box">
+                        <div className="margin-right">
+                            <Image className="profile-pic" src={driver.photoURL} size="tiny"/>
+                            <Label style={{background: "white"}} as="a" onClick={this.copyToClipboard}>
+                                <Icon name="share" size="small"/>
+                                {this.state.isCopied === false ? 'Share' : 'Copied'}
+                            </Label>
+                        </div>
                         <div>
+                        {isPending && (
+                            <Button 
+                                size="small"
+                                name="cancel" 
+                                onClick={this.handleClick}
+                                style={{ float: 'right', padding: "0", border: "none", background: "none"}}>
+                               <span style={{color: "#DB4848"}}>Cancel Request</span>
+                            </Button>
+                        )}
+                        <div className="driver">
                             {driver.firstName} {driver.lastName[0]}.
                         </div>
-                        <div hidden className="school">
-                            {driver.school}
-                        </div>
-                    </List.Header>
-                    <List.Content className="driver">
-                        <div>
-                            Pick up: {startLoc} -{">"} Drop off: {endLoc}
-                        </div>
-                        <div className="rideInfo">
+                        <a
+                            style={{ color: "#351C75", fontWeight: "bold", fontSize: "18px"}}
+                            // className="ride-link" 
+                            href={'/ride/' + ride.driverID + '/' + ride._id}>
+                            {startLoc.city}, {startLoc.state}
+                            <Icon id="arrow" name="long arrow alternate right" />
+                            {endLoc.city}, {endLoc.state}
+                        </a>    
+                        <div className="rideInfo normal-font">
                             <List divided horizontal>
                                 <List.Item>{dateString}</List.Item>
                                 <List.Item>{timeString}</List.Item>
                                 <List.Item>Seats: {ride.capacity}</List.Item>
+                                <List.Item>${ride.price}</List.Item>
                             </List>
-                            <span style={{ paddingLeft: '5%' }}>
-                                ${ride.price}
-                            </span>
+                        </div>
+                        <div className="requestInfo">
+                            <span className="lighter-font-weight padding-right">Pick Up:</span>
+                            <span className="normal-font">{request.startLoc}</span>
+                            <br/>
+                            <span className="lighter-font-weight padding-right">Drop off:</span> 
+                            <span className="normal-font">{request.endLoc}</span>
+                            <br/>
                         </div>
                         {isPending && (
                             <div>
@@ -238,15 +279,13 @@ class RequestItem extends Component {
                                 {minutes}mins {seconds}s
                             </div>
                         )}
-                        <a href={'/ride/' + driver._id + '/' + ride._id}>
+                        {/* <a href={'/ride/' + driver._id + '/' + ride._id}>
                             View Ride
-                        </a>
-                        {isPending && (
-                            <Button name="cancel" onClick={this.handleClick}>
-                                Cancel Request
-                            </Button>
-                        )}
-                    </List.Content>
+                        </a> */}
+
+                    </div>
+                    </div>
+                    
                 </List.Item>
             );
         }
@@ -254,20 +293,23 @@ class RequestItem extends Component {
         const timeAdded = Math.round(
             (this.state.rideTime - this.props.baseRideTime) / 60
         );
-        
+        //From 'My Profile' > 'Created Rides' Tab
         return (
             <List.Item>
                 <List.Content>
-                    <Image floated="left" src={requester.photoURL} size="tiny" />
+                    <Image className="profile-pic" floated="left" src={requester.photoURL} size="tiny" />
                     {
                         status === 0 &&
-                        <Button style={{ float: 'right' }}
+                        <Button 
+                            className="map-view"
+                            basic
+                            // style={{ float: 'right', backgroundColor: "white" }}
                             icon
                             labelPosition="right"
                             size="mini"
                             onClick={this.handleMapClick}
                         >
-                            <Icon name="map marker alternate" />
+                            <Icon className="map-marker" name="map marker alternate" />
                             Map View
                         </Button>
                     }
@@ -275,124 +317,63 @@ class RequestItem extends Component {
                     <Header as="h5" className="requester">
                         {requester.firstName} {requester.lastName[0]}.
                     </Header>
-                    {
-                        status === 0 &&
-                        <List.Description 
-                        // style={{ fontWeight: "300", fontSize: "14px", color: "#333333" }}
-                        >
-                            {requester.school}
-                        </List.Description>
-                    }
+                    <List.Description 
+                        style={{ 
+                            fontWeight: "300", 
+                            fontSize: "14px", 
+                            paddingBottom: "1%",
+                            // color: "#333333" 
+                        }}
+                    >
+                        {requester.school}
+                    </List.Description>
                                   
-                    <div className="requestInfo">
-                        Pick Up: {startLoc}
+                    <div className="request-info-profile-ride-listing">
+                        Pick Up: {request.startLoc}
                         <br/>
-                        Drop off: {endLoc}
+                        Drop off: {request.endLoc}
                         <br/>
                         {
                             comment && status === 0 && 
                                 <span>Comment: {comment}</span>
-                        }                           
-                    </div>
-                    <br/>
-                    <span className="estimatedTime">
-                    {Boolean(timeAdded) && (
-                        <List.Description>
-                            {`${
-                                requester.firstName
-                            }'s ride would add about ${timeAdded} ${
-                                timeAdded === 1 ? 'minute' : 'minutes'
-                            } to your trip`}
-                        </List.Description>
-                    )}
-                    </span>
-                </List.Content>       
-                {status === 0 &&
-                    <List.Content extra className="requestActions">
-                        <Button
-                            name="deny"
-                            size="tiny"
-                            onClick={this.handleClick}
-                        >
-                            Deny Request
-                        </Button>
-                        <div className="spaceBetweenButtons" />
-                        <Button
-                            name="confirm"
-                            size="tiny"
-                            primary
-                            onClick={this.handleClick}
-                        >
-                            Confirm Rider
-                        </Button>
-                    </List.Content>
-                }
-            </List.Item>
-
-        );
-        /*
-        return (
-            <List.Item>
-                <Image floated="left" src={requester.photoURL} size="tiny" />
-                <List.Content>
-                <List.Header className="requester">
-                    <div className="name">
-                        {requester.firstName} {requester.lastName[0]}.
-                    </div>
-                    <div className="school">{requester.school}</div>
-                    <span style={{ float: 'right' }}>
-                        <Button
-                            icon
-                            labelPosition="right"
-                            size="tiny"
-                            onClick={this.handleMapClick}
-                        >
-                            <Icon name="map marker alternate" />
-                            Map View
-                        </Button>
-                    </span>
-                </List.Header>
-                <List.Description>               
-                    <div className="requestInfo">
-                        <div>Pick Up: {startLoc}</div>
-                        <div>Drop off: {endLoc}</div>
-                        {comment && <div>Comment: {comment}</div>}
+                        }                               
+                        <br/>
+                        <span className="estimatedTime">
                         {Boolean(timeAdded) && (
-                            <div>
+                            <List.Description>
                                 {`${
                                     requester.firstName
                                 }'s ride would add about ${timeAdded} ${
                                     timeAdded === 1 ? 'minute' : 'minutes'
                                 } to your trip`}
-                            </div>
+                            </List.Description>
                         )}
+                        </span>
                     </div>
-
-                </List.Description>
-                </List.Content>
-                <List.Content extra>
-                {status === 0 && (
-                        <div className="requestActions">
-                            <Button
-                                name="deny"
-                                negative
-                                onClick={this.handleClick}
-                            >
-                                Deny Request
-                            </Button>
-                            <Button
-                                name="confirm"
-                                primary
-                                onClick={this.handleClick}
-                            >
-                                Confirm Rider
-                            </Button>
-                        </div>
-                    )}
-                </List.Content>
+                </List.Content>       
+                {status === 0 &&
+                <div extra className="requestActions">
+                    <Button
+                        basic color="orange"
+                        name="deny"
+                        size="tiny"
+                        onClick={this.handleClick}
+                    >
+                        Deny Request
+                    </Button>
+                    <div className="spaceBetweenButtons" />
+                    <Button
+                        name="confirm"
+                        size="tiny"
+                        primary
+                        onClick={this.handleClick}
+                    >
+                        Confirm Rider
+                    </Button>
+                </div>
+                }
             </List.Item>
         );
-        */
     }
 }
 

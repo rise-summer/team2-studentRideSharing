@@ -213,9 +213,18 @@ class RideProfile extends Component {
                     <span>
                         {/* Click header to view ride */}
                         <a className="ride-link" href={'/ride/' + driverID + '/' + _id}>
+                            <h5 className="location">
                             {startLoc.city}, {startLoc.state}
-                            <Icon id="arrow" name="arrow right" />
+                            <br/>
+                            {/* <span className="lighter-font">Starting Location</span> */}
+                            </h5>
+                                <Icon id="arrow" size="big" name="long arrow alternate right" />
+                            <h5 className="location">
                             {endLoc.city}, {endLoc.state}
+                            <br/>
+                            {/* <span className="lighter-font">Ending Location</span> */}
+                            </h5>
+                            
                         </a>
                     </span>
                     {isActive && (
@@ -245,7 +254,7 @@ class RideProfile extends Component {
                                 {confirmedCount} Confirmed{' '}
                                 {confirmedCount > 1 ? 'Riders' : 'Rider'}
                             </div>
-                            <List className="requestsList" divided>
+                            <List className="requestsList" divided verticalAlign="middle">
                                 {confirmedRequestList}
                             </List>
                         </div>
@@ -260,7 +269,7 @@ class RideProfile extends Component {
                                 {pendingCount} Pending{' '}
                                 {pendingCount > 1 ? 'Requests' : 'Request'}
                             </div>
-                            <List className="requestsList" divided>
+                            <List className="requestsList" divided verticalAlign="middle">
                                 {pendingRequestList}
                             </List>
                         </div>

@@ -30,7 +30,7 @@ class Profile extends Component {
             vehicles: [],
             // The rides the user has posted
             rides: [],
-            activeIndex: 0,//TODO: change it back to 0
+            activeIndex: 0,
             isEditingProfile: false,
             errorMessage: '',
         };
@@ -109,7 +109,12 @@ class Profile extends Component {
                 menuItem: (
                     <Menu.Item key="listings">
                         Created Rides
-                        <Label circular size="mini" color="black">
+                        <Label 
+                            className="purple-cirle"
+                            circular
+                            color="purple"
+                            size="mini"
+                        >
                             {rides.filter((ride) => !ride.status || ride.status === 0).length}
                         </Label>
                     </Menu.Item>
@@ -151,8 +156,14 @@ class Profile extends Component {
                 )}
 
                 <Grid id="name-card" columns={3}>
-                    <Grid.Column className="avatar">
-                        <Image src={photoURL} size="tiny" bordered style={{ float: "right" }}/>               
+                    <Grid.Column>
+                        <Image 
+                            className="profile-pic" 
+                            src={photoURL} 
+                            size="tiny" 
+                            bordered 
+                            style={{ float: "right" }}
+                        />               
                     </Grid.Column>                       
                     <Grid.Column>
                         <Header as="h2" textAlign="center">

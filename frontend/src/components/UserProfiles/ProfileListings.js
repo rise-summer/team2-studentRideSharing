@@ -72,7 +72,7 @@ const ProfileListings = ({ rides, handleError }) => {
                     {completedRideList}
                 </List>
             </Grid.Column>
-            <Grid.Column style={{width: "40%", margin: "auto"}}>
+            <Grid.Column style={{width: "40%", margin: "auto", marginTop: "5%"}}>
                 <Map
                     waypoints={waypoints}
                     lineString={lineString}

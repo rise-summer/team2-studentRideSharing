@@ -1,9 +1,9 @@
-.requestInfo {
+.request-info-profile-ride-listing {
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 12px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     color: #333333;
 }
 
@@ -21,4 +21,56 @@
     width: 15%;
     height: auto;
     display: inline-block;
+}
+
+.profile-requested-ride-li {
+    margin: 2% 5%;
+}
+
+div.flex-box {
+    display: flex;
+    /* justify-content: center; */
+    margin-top: 1%;
+    /* flex-direction: column; */
+}
+
+span.lighter-font-weight {
+    font-weight: 100;
+    font-style: normal;
+    color: #524f4f;
+}
+
+div.normal-font, span.normal-font {
+    font-style: normal;
+    font-weight: normal;
+    color: #000000;
+}
+
+button.map-view {
+    float: right;
+    border: 1px solid #333333;
+    box-sizing: border-box;
+    border-radius: 10px;
+    background-color: white;
+}
+
+i.map-marker {
+    background-color: white;
+}
+
+.padding-right {
+    padding-right: 1%;
+}
+
+div.driver {
+    padding-bottom: 1%;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    color: #333333;
+}
+
+div.margin-right {
+    margin-left: 0%;
+    margin-right: 3%;
 }
