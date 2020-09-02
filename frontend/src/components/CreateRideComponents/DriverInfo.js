@@ -24,6 +24,10 @@ class DriverInfo extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(this.state)
+        }).then(response => {
+            if(response.status === 201){
+                this.props.changeCarInfo(true);
+            }
         })
     }
 
@@ -58,12 +62,7 @@ class DriverInfo extends React.Component {
         const { plate, make, model, color, showModal } = this.state;
         return (
             <div>
-                <Modal
-                    closeIcon
-                    size="tiny"
-                    onClose={this.closeModal}
-                    open={showModal}
-                >
+                <Modal open={showModal}>
                     <Modal.Content >
                         <Form className="input-form" onSubmit={this.handleSubmit}>
                             <Icon classname="car-icon" name="car" size="huge" />
@@ -74,18 +73,21 @@ class DriverInfo extends React.Component {
                                 value={plate}
                                 onChange={this.handleChange}
                                 label="Car License Plate"
+                                required
                             />
                             <Form.Input
                                 name="make"
                                 value={make}
                                 onChange={this.handleChange}
                                 label="Car Make"
+                                required
                             />
                             <Form.Input
                                 name="model"
                                 value={model}
                                 onChange={this.handleChange}
                                 label="Car Model"
+                                required
                             />
                             <Form.Input
                                 name="color"

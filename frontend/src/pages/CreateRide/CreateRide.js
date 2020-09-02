@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import DriverListing from '../../components/CreateRideComponents/DriverListing';
+import DriverInfo from '../../components/CreateRideComponents/DriverInfo';
 
 /* makes info from redux store available as prop for this component
 *   - loggedIn: accessible via this.props.loggedIn
@@ -15,7 +16,7 @@ class CreateRide extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            haveInfo: false
+            haveInfo: true
         };
     }
 
@@ -26,16 +27,25 @@ class CreateRide extends React.Component {
             method: 'GET'
         }).then(response => response.json())
         .then(response => {
-            if(response.length){
-                this.setState({ haveInfo: true });
+            if(!response.length){
+                this.setState({ haveInfo: false });
             }
         });
     }
 
+    changeCarInfo = (carInfo) => {
+        this.setState({
+            haveInfo: carInfo,
+        })
+    }
+
     render() {
         const { haveInfo } = this.state;
-        //sent check to DriverListing component as props
-        return < DriverListing uid={this.props.uid} haveCarInfo={haveInfo} />;
+        if(haveInfo){
+            return <DriverListing uid={this.props.uid} />;
+        }else {
+            return <DriverInfo userId={this.props.uid} changeCarInfo={this.changeCarInfo}/>
+        }
     }
 }
 

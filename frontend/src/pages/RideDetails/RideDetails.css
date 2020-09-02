@@ -29,7 +29,8 @@
 .itinerary {
     display: flex;
     flex-direction: row;
-    align-items: baseline;
+    margin-top: 10px;
+    margin-bottom: 8.5px
 }
 
 h5 {
@@ -42,8 +43,12 @@ h5 span{
 }
 
 .location {
-    display: inline-block;
-    margin-right: 5px;
+    font-size: 18px !important;
+    margin-bottom: 0em !important;
+    margin-top: 3px !important;
+}
+.arrow{
+    margin: 0px 0.7em !important;
 }
 
 .driver-name {

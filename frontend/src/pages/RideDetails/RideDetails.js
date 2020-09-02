@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './RideDetails.css';
-import { Icon, Button, List, Segment, Image, Label } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Icon, List, Segment, Image, Label } from 'semantic-ui-react';
+// import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import RequestRide from '../../components/Rides/RequestRide';
 import RequestItem from '../../components/Requests/RequestItem';
@@ -105,13 +105,13 @@ class RideDetails extends Component {
         const remainCapacity = ride.capacity - confirmedCount;
 
         return (
-            <div className='segment-wrapper'>
+            <div className="segment-wrapper">
                 <Segment very padded>
-                    <div hidden={!render} className='ride-info'>
+                    <div hidden={!render} className="ride-info">
                         <div className="left-column">
-                            <Image src={driver.photoURL} size='small'/>
+                            <Image src={driver.photoURL} size="small"/>
                             <Label className="label-white-background font-small">
-                                <Icon color="violet" name='chat'/>
+                                <Icon color="violet" name="chat"/>
                                 Contact Preference <br />
                                 <span className="indent">
                                     {Object.keys(driver.contact).map((key, index) => {
@@ -121,7 +121,7 @@ class RideDetails extends Component {
                                 </span>
                             </Label>
                             <Label className="label-white-background font-small">
-                                <Icon color="violet" name='credit card'/> 
+                                <Icon color="violet" name="credit card"/> 
                                 Accepts payment through <br />
                                 <span className="indent">
                                     {driver.paymentMethods.map((value, index) => {
@@ -130,7 +130,7 @@ class RideDetails extends Component {
                                 </span>
                             </Label>
                             <Label className="label-white-background font-small">
-                                <Icon color="violet" name='car'/> {ride.car.color} {ride.car.make} {ride.car.model}
+                                <Icon color="violet" name="car"/> {ride.car.color} {ride.car.make} {ride.car.model}
                             </Label>
                         </div>
                         <div className="center-column">
@@ -139,16 +139,16 @@ class RideDetails extends Component {
                                 <button className="view-button">Back</button>
                             </Link>
                             */}
-                            <h1 className='driver-name'>{driver.firstName} {driver.lastName}</h1>
+                            <h2 className="driver-name">{driver.firstName} {driver.lastName}</h2>
                             <span>{driver.school}</span>
                             <div className="itinerary">
-                                <h5>
+                                <h5 className="location">
                                     {ride.startLoc.city}, {ride.startLoc.state}
                                     <br/>
                                     <span>Starting Location</span>
                                 </h5>
-                                <Icon name="long arrow alternate right" size="big"/>
-                                <h5>
+                                <Icon className="arrow" name="long arrow alternate right" size="big"/>
+                                <h5 className="location">
                                     {ride.endLoc.city}, {ride.endLoc.state}
                                     <br />
                                     <span>Ending Location</span>
