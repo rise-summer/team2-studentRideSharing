@@ -168,15 +168,6 @@ class DriverListing extends React.Component {
                                 selection
                                 compact
                             />
-                            {/* <Dropdown
-                                // className="ride-type-selector"
-                                text={this.props.functions.getRideType()}
-                                value={this.props.functions.getRideType()}
-                                selection
-                                compact
-                                onChange={this.props.functions.changeRideType}
-                                options={rideOptions}
-                            /> */}
                             <Form.Group widths="equal">
                                 <Form.Input fluid>
                                     <GeoSearch
