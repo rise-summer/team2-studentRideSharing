@@ -121,7 +121,7 @@ https://github.com/mapbox/mapbox-gl-geocoder/blob/master/lib/mapbox-gl-geocoder.
   left: 12px;
   width: 23px;
   height: 23px;
-  top: 10px !important;
+  top: 5px !important;
 }
 
 .mapboxgl-ctrl-geocoder--button {
@@ -136,7 +136,7 @@ https://github.com/mapbox/mapbox-gl-geocoder/blob/master/lib/mapbox-gl-geocoder.
 .mapboxgl-ctrl-geocoder--icon-close {
   width: 20px;
   height: 20px;
-  margin-top: 5px !important;
+  margin-top: 1px !important;
   margin-right: 3px;
 }
 
@@ -145,6 +145,7 @@ https://github.com/mapbox/mapbox-gl-geocoder/blob/master/lib/mapbox-gl-geocoder.
 }
 
 .mapboxgl-ctrl-geocoder--icon-loading {
+  margin-top: 0px !important;
   width: 26px;
   height: 26px;
   margin-top: 5px;

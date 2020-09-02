@@ -5,6 +5,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 .geoSearch > div > input {
     width: 100% !important;
+    height: 32px !important;
 }
 
 .listingGrid {

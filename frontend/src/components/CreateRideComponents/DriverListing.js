@@ -157,7 +157,7 @@ class DriverListing extends React.Component {
                         <Segment style={{ padding: '20px 50px' }}>
                             <Header as="h3">Create a Ride</Header>
                             <Dropdown
-                                style={{ marginBottom: '1em' }}
+                                style={{ marginBottom: '1em', marginLeft: '-1em' }}
                                 options={[
                                     { key: 0, text: 'One Way', value: false },
                                     { key: 1, text: 'Roundtrip', value: true },
@@ -165,7 +165,18 @@ class DriverListing extends React.Component {
                                 value={isRoundtrip}
                                 name="isRoundtrip"
                                 onChange={this.handleChange}
+                                selection
+                                compact
                             />
+                            {/* <Dropdown
+                                // className="ride-type-selector"
+                                text={this.props.functions.getRideType()}
+                                value={this.props.functions.getRideType()}
+                                selection
+                                compact
+                                onChange={this.props.functions.changeRideType}
+                                options={rideOptions}
+                            /> */}
                             <Form.Group widths="equal">
                                 <Form.Input fluid>
                                     <GeoSearch
