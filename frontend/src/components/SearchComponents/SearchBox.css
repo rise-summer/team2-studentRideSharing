@@ -1,8 +1,7 @@
 .search-box {
     display: inline-flex;
-    border-width: 2px;
-    border-style: solid;
-    /*margin: 5px;*/
+    /*border-width: 2px;*/
+    /*border-style: solid;*/
     margin: 0 auto;
     height: 60px;
 }
@@ -10,7 +9,7 @@
 .search-field {
     display: inline-block;
     text-align: left;
-    border-right: 2px solid black;
+    /*border-right: 2px dotted red;*/
     margin: 5px;
     min-width: 180px;
     padding-right: 10px;
@@ -25,8 +24,9 @@
     /*display: block;*/
     display: flex;
     height: 100%;
-    background-color: #9C4A7A;
-    border-radius: 5px;
+    /*background-color: #9C4A7A;*/
+    background-color: #E58D71;
+    border-radius: 15px;
     padding: 0 10px;
     color: white;
     margin-left: -10px;
@@ -41,8 +41,5 @@
 }
 
 .date-picker-box {
-    /*font-size: 16px;*/
-    border: none;
-    outline: none;
-    border-bottom: 1px solid black;
+    /*border: 2px dotted red!important;*/
 }
