@@ -14,7 +14,7 @@ class DatePicker extends Component {
         today.setDate(today.getDate() - 1);
         return <div>
             <SemanticDatepicker
-                // label="Departure Date"
+                label={this.props.label}
                 className="date-picker-box"
                 onChange={this.props.onChange}
                 value={this.props.value}

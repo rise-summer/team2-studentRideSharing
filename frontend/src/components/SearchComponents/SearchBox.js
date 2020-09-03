@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './SearchBox.css';
-import { connect } from 'react-redux'
-import { Dropdown } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { Dropdown, Form } from 'semantic-ui-react';
 import DatePicker from './DatePicker';
 import GeoSearch from '../../components/GeoSearch/GeoSearch';
 
@@ -30,25 +30,13 @@ class SearchBox extends Component {
 
     changeRideType = (e, data) => {
         if (data.value === 'One Way') {
-            this.setState({roundtrip: false})
+            this.setState({ roundtrip: false });
         } else {
-            this.setState({roundtrip: true})
+            this.setState({ roundtrip: true });
         }
     };
 
     render() {
-        const renderReturnDate = () => {
-            if (this.props.refs.roundtrip) {
-                return (
-                    <div className="search-field">
-                        <div className="field-desc">Return Date</div>
-                        <DatePicker onChange={this.props.functions.editEndDate}
-                                    className="date-picker-box input"
-                                    value={this.props.query.endDate} />
-                    </div>
-                );
-            }
-        };
         return (
             <div>
                 <div className="ride-type-wrapper">
@@ -63,42 +51,58 @@ class SearchBox extends Component {
                     />
                 </div>
                 <div className="search-box">
-                    <div className="search-field">
-                        <div className="field-desc">Start Location</div>
-                        <GeoSearch
-                            handleChange={this.props.functions.handleGeoChange}
-                            placeholder="Choose Start location..."
-                            name="start"
-                            types="region,postcode,district,place,locality,neighborhood,address,poi"
-                        />
-                    </div>
-                    <div className="search-field">
-                        <div className="field-desc">Destination</div>
-                        <GeoSearch
-                            className="input"
-                            handleChange={this.props.functions.handleGeoChange}
-                            placeholder="Choose Destination..."
-                            name="endDest"
-                            types="region,postcode,district,place,locality,neighborhood,address,poi"
-                        />
-                    </div>
-                    <div className="search-field">
-                        <div className="field-desc">Depart Date</div>
-                        <DatePicker
-                            onChange={this.props.functions.editBeginDate}
-                            value={this.props.query.beginDate}
-                        />
-                    </div>
-                    {renderReturnDate()}
-                    <div onClick={this.props.functions.query} className="search-button">Search Rides</div>
+                    <Form onSubmit={this.props.functions.query}>
+                        <Form.Group>
+                            <Form.Input label="Start Location">
+                                <GeoSearch
+                                    className="geoSearch"
+                                    handleChange={
+                                        this.props.functions.handleGeoChange
+                                    }
+                                    placeholder="Choose Start location..."
+                                    name="start"
+                                    types="region,postcode,district,place,locality,neighborhood,address,poi"
+                                />
+                            </Form.Input>
+                            <Form.Input label="Destination">
+                                <GeoSearch
+                                    className="geoSearch"
+                                    handleChange={
+                                        this.props.functions.handleGeoChange
+                                    }
+                                    placeholder="Choose Destination..."
+                                    name="endDest"
+                                    types="region,postcode,district,place,locality,neighborhood,address,poi"
+                                />
+                            </Form.Input>
+                            <DatePicker
+                                label="Depart Date"
+                                onChange={this.props.functions.editBeginDate}
+                                value={this.props.query.beginDate}
+                            />
+                            {this.props.refs.roundtrip && (
+                                <DatePicker
+                                    label="Return Date"
+                                    onChange={this.props.functions.editEndDate}
+                                    className="date-picker-box input"
+                                    value={this.props.query.endDate}
+                                />
+                            )}
+                            <Form.Button
+                                style={{ marginTop: '20px' }}
+                                primary
+                                content="Search Rides"
+                            />
+                        </Form.Group>
+                    </Form>
                 </div>
             </div>
         );
     }
 }
 
-const mapStateToProps = state => ({
-    query: state.query
+const mapStateToProps = (state) => ({
+    query: state.query,
 });
 
 export default connect(mapStateToProps)(SearchBox);
