@@ -216,7 +216,7 @@ class RideProfile extends Component {
                             <div className="large-bold-font">{startLoc.city}, {startLoc.state}
                             {/* <br/> */}
                             {/* <span className="lighter-font">Starting Location</span> */}
-                                <Icon id="arrow" size="big" name="long arrow alternate right" />
+                                <Icon id="arrow" size="large" name="long arrow alternate right" />
                             {endLoc.city}, {endLoc.state}</div>
                             {/* <br/> */}
                             {/* <span className="lighter-font">Ending Location</span> */}
