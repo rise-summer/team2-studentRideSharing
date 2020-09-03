@@ -11,8 +11,6 @@ import firebase, { auth, uiConfig, storageRef } from '../../firebase';
 // import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import './SignUp.css';
 
-const querystring = require('querystring');
-
 const initialState = {
     uid: '',
     email: '',

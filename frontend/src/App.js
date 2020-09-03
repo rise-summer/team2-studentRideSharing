@@ -18,7 +18,6 @@ import ThemingLayout from './pages/Theme/Theme';
 const history = createBrowserHistory();
 
 class App extends Component {
-
     componentDidMount() {
         this.listener = auth.onAuthStateChanged((data) => {
             if (data) { //logged in
@@ -70,9 +69,6 @@ class App extends Component {
                         </Route>
                         <Route path="/">
                             <Search /> {/* should be search landing page */}
-                        </Route>
-                        <Route path="/theme">
-                            <ThemingLayout />
                         </Route>
                     </Switch>
                 </Router>
