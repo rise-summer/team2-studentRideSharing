@@ -16,14 +16,18 @@
 }
 
 .profile {
-    background-color: #99C9DB;
+    background-color: #cccccc;
     /*height: 90px;*/
     /*width: 90px;*/
     margin: 5px;
     flex: 0 0 90px;
 }
 
-.ride-info {
+.profile-pic {
+    /*width: 100%;*/
+}
+
+.info-wrapper {
     flex: 1;
 }
 

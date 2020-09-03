@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Ride from './Ride';
 import './RideList.css';
 import { Tab } from 'semantic-ui-react';
-import RideDetails from '../../pages/RideDetails/RideDetails';
 
 class RideList extends Component {
     render() {
@@ -52,10 +51,8 @@ class RideList extends Component {
 
         return (
             <div>
-                {/*<Ride start="San Francisco, CA" dest="Los Angeles, CA" time={new Date()} name="Jessica P." */}
-                {/*    school="UCLA" rideID={1} spots={2} />*/}
                 {/*<Ride start="San Francisco, CA" dest="Los Angeles, CA" time={new Date()} name="Jessica P."*/}
-                {/*    school="UCLA" rideID={1} spots={2} />*/}
+                {/*    school="UCLA" rideID={1} capaci={2} />*/}
                 {renderResults()}
             </div>
         );

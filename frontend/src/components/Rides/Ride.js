@@ -10,6 +10,7 @@ class Ride extends Component {
             driver: {
                 name: '',
                 school: '',
+                photoURL: ''
             }
         }
     }
@@ -31,6 +32,7 @@ class Ride extends Component {
                 let driverInfo = this.state.driver;
                 driverInfo.name = driver.firstName + " " + driver.lastName;
                 driverInfo.school = driver.school;
+                driverInfo.photoURL = driver.photoURL;
                 this.setState({ driver: driverInfo });
                 // console.log(driver);
             })
@@ -77,9 +79,15 @@ class Ride extends Component {
         const { start, dest, driverID, rideID } = this.props;
         return (
             <div className="ride">
-                <div className="profile">Picture</div>
-                <div className="ride-info">
+                <div className="profile">
+                    <img
+                        className="profile-pic"
+                        alt="Profile Picture"
+                        src={this.state.driver.photoURL} />
+                </div>
+                <div className="info-wrapper">
                     <div className="driver-name">{this.state.driver.name}</div>
+                    {/*<div className="driver-name">First Last</div>*/}
                     <div className="school">{this.state.driver.school}</div>
                     <div
                         className="ride-itinerary"
