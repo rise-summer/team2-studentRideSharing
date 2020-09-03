@@ -7,7 +7,8 @@ import yellow from './yellow.png';
 class SearchLanding extends Component {
     render() {
         return (
-            <div className="landing-wrapper">
+            <div >
+                <div className="landing-wrapper">
                 <div className="banner">
                     <div className="banner-text">
                         Connect with Students through
@@ -22,6 +23,7 @@ class SearchLanding extends Component {
                         functions={this.props.functions}
                         refs={this.props.refs}
                     />
+                </div>
                 </div>
                 <img alt="landing city" src={landing} className="landing-image" />
             </div>

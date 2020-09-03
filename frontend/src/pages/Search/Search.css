@@ -1,6 +1,10 @@
 .search-wrapper {
     text-align: center;
 }
+.search-wrapper2 {
+    text-align: center;
+    padding-top: 6.5%;
+}
 
 .search-subwrapper {
     /*width: 62vw;*/
@@ -11,6 +15,7 @@
 
 .ride-type-wrapper {
     display: flex;
+    /* padding-left: 11%; */
 }
 
 /* !important needed to override default semantic ui styles*/

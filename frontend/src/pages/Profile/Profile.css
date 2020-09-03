@@ -1,15 +1,23 @@
-.page {
-    margin-bottom: 5%;
+.profile-page-margin{
+    /* margin-bottom: 5%;
     margin-left: 5%;
     margin-right: 5%;
-    background-color: #FDFDFD;
+    position: absolute;
+    right: 0px;
+    left: 0px; */
+    padding: 10px 3em;
+}
+.profile-page {
+    margin-top: 10%;
     border-radius: 50px;
+    background-color: #FDFDFD;
 }
 
 #name-card {
     width: 80%;
     margin: auto;
     padding-top: 2%;
+    background-color: white !important;
     /* vertical-align: middle; */
 }
 
@@ -23,4 +31,8 @@ img.image.profile-pic {
 .tab-menu {
     width: 90%;
     margin: auto;
+}
+
+.grid-column{
+    position: unset !important;
 }

@@ -15,10 +15,15 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 .mainColumn {
+    position: unset !important;
     height: 100%;
     display: flex !important;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.sideColumn{
+    position: unset !important;
 }

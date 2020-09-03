@@ -38,7 +38,7 @@ class SearchBox extends Component {
 
     render() {
         return (
-            <div>
+            <div className="search-box-wrapper">
                 <div className="ride-type-wrapper">
                     <Dropdown
                         // className="ride-type-selector"

@@ -50,7 +50,7 @@ const ProfileListings = ({ rides, handleError }) => {
     //     />
     // ));
     return (
-        <Grid>
+        <Grid className="profile-listings">
             <Grid.Column style={{width: "60%", margin: "auto"}}>
                 <Header content="Active Listings" />
                 <List 

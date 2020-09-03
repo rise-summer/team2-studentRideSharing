@@ -106,7 +106,7 @@ class RideDetails extends Component {
 
         return (
             <div className="segment-wrapper">
-                <Segment very padded>
+                <Segment className="ride-detail-segment" very padded>
                     <div hidden={!render} className="ride-info">
                         <div className="left-column">
                             <Image src={driver.photoURL} size="small"/>

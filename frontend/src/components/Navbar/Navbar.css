@@ -10,7 +10,7 @@
 }
 .createRideBtn{
     color: #EF724B !important;
-    box-shadow: 5px black inset !important;
+    box-shadow: 15px -16px 0px 2px transparent inset, -1.5px -0.3em 0px 0px rgba(39, 41, 43, 0.15) inset !important;
     background: white !important;
 }
 .navbar{
