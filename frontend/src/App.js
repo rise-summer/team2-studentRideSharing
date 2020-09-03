@@ -69,9 +69,6 @@ class App extends Component {
                         <Route path="/">
                             <Search /> {/* should be search landing page */}
                         </Route>
-                        <Route path="/theme">
-                            <ThemingLayout />
-                        </Route>
                     </Switch>
                 </Router>
             </div>

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ProfileTabs from '../../components/UserProfiles/ProfileTabs';
-import { Grid, Header, Image, Message } from 'semantic-ui-react';
-
+// import ProfileTabs from '../../components/UserProfiles/ProfileTabs'; //TODO: remove the file
+import ProfileDetails from '../../components/UserProfiles/ProfileDetails';
+import ProfileListings from '../../components/UserProfiles/ProfileListings';
+import ProfileRequests from '../../components/UserProfiles/ProfileRequests';
+import { Segment, Grid, Header, Image, Message, Button, Icon,  Tab, Menu, Label, GridColumn } from 'semantic-ui-react';
+import './Profile.css';
 /* makes info from redux store available as prop for this component
 *   - loggedIn: accessible via this.props.loggedIn
 *   - uid: accessible via this.props.uid
@@ -27,6 +30,8 @@ class Profile extends Component {
             vehicles: [],
             // The rides the user has posted
             rides: [],
+            activeIndex: 0,
+            isEditingProfile: false,
             errorMessage: '',
         };
     }
@@ -37,6 +42,7 @@ class Profile extends Component {
             .then((response) => response.json())//TODO: error handling
             .then(user => {
                 this.setState({ user });
+                console.log(user);
             })
             .catch((error) => console.log('error', error));
 
@@ -59,6 +65,26 @@ class Profile extends Component {
             .catch((error) => console.log('error', error));
     }
 
+    
+    handleTabChange = (e, { activeIndex }) => {
+        this.setState({ activeIndex });
+    }
+
+    //When 'Edit Profile' Button is OnClick
+    handleEditProfile = () => {
+        this.setState( { isEditingProfile: true });
+    }
+  
+    //When 'Save Changes' Button is OnClick
+    handleSaveProfile = () => {
+        this.setState( { isEditingProfile: false });
+    }
+
+    //When 'Cancel' Button is OnClick - User cancelled profile editing
+    handleCancelEditing = () => {
+        this.setState( { isEditingProfile: false });
+    }
+
     handleError = (errorMessage) =>
         this.setState({ errorMessage: errorMessage });
 
@@ -68,7 +94,7 @@ class Profile extends Component {
 
     render() {
         const { uid } = this.props;
-        const {user, vehicles, rides, errorMessage} = this.state;
+        const {user, vehicles, rides, activeIndex, isEditingProfile, errorMessage} = this.state;
         const {
             firstName,
             lastName,
@@ -77,9 +103,52 @@ class Profile extends Component {
             email,
             photoURL,
         } = user;
-
+        //Three Panes: 'My Listings', 'My Requests', and 'My Profile'
+        const panes = [
+            {
+                menuItem: (
+                    <Menu.Item key="listings">
+                        Created Rides
+                        <Label 
+                            className="purple-cirle"
+                            circular
+                            color="purple"
+                            size="mini"
+                        >
+                            {
+                                rides.filter(
+                                    (ride) => !ride.status || ride.status === 0
+                                ).length
+                            }
+                        </Label>
+                    </Menu.Item>
+                ),
+                render: () =>
+                    <Tab.Pane basic attached={false}>
+                        <ProfileListings rides={rides} handleError={this.handleError} />
+                    </Tab.Pane>
+                ,
+            },
+            {
+                menuItem: {content: "Requests Sent", key: "requests"},
+                render: () => (
+                    <Tab.Pane basic attached={false}>
+                        <ProfileRequests userID={uid} />
+                    </Tab.Pane>
+                ),
+            },
+            {
+                menuItem: {content: "My Profile", key: "profile"},
+                render: () => (
+                    <Tab.Pane basic attached={false}>
+                        <ProfileDetails isEditing={isEditingProfile} vehicles={vehicles} user={user} />
+                    </Tab.Pane>
+                ),
+            },
+        ];
+    
         return (
-            <div>
+            <div className="page">
                 {errorMessage && (
                     <Message
                         negative
@@ -90,31 +159,59 @@ class Profile extends Component {
                     />
                 )}
 
-                <Grid
-                    style={{
-                        height: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                    verticalAlign="middle"
-                >
-                    <Grid.Column style={{ width: '80%' }}>                
-                        <Header as="h1" style={{ textAlign: 'center' }}>
-                            <Image src={photoURL} avatar/>
-                            {firstName + ' ' + lastName}
+                <Grid id="name-card" columns={3}>
+                    <Grid.Column>
+                        <Image 
+                            className="profile-pic" 
+                            src={photoURL} 
+                            size="tiny" 
+                            bordered 
+                            style={{ float: "right" }}
+                        />               
+                    </Grid.Column>                       
+                    <Grid.Column>
+                        <Header as="h2" textAlign="center">
+                            {firstName + " " + lastName}
                             <Header.Subheader>{school}</Header.Subheader>
                         </Header>
-                        <ProfileTabs
-                            userID={uid}
-                            vehicles={vehicles}
-                            contact={contact}
-                            email={email}
-                            rides={rides}
-                            handleError={this.handleError}
-                        />
                     </Grid.Column>
+                    <Grid.Column>
+                        {/* Display the "Edit Profile" Button when "My Profile" Tab is active */
+                            false && activeIndex === 2 && !isEditingProfile &&
+                            <Button primary icon labelPosition="left" style={{ float: "right" }}
+                                onClick={this.handleEditProfile}>
+                                <Icon name="pencil alternate" />
+                                Edit Profile
+                            </Button>
+                        }
+                        {/* Display the "Save Change" Button when the user is in editing mode */
+                            false && activeIndex === 2 && isEditingProfile &&
+                            <div className="button-group" style={{ float: "right" }}>   
+                                <Button primary
+                                    onClick={this.handleSaveProfile}>
+                                    Save Changes
+                                </Button>
+                                <Button 
+                                    onClick={this.handleCancelEditing}>
+                                    Cancel                           
+                                </Button>
+                            </div>
+                        }
+                    </Grid.Column>       
                 </Grid>
+                <div className="tab-menu">
+                    <Tab
+                        menu={{
+                            fluid: true,
+                            widths: 4,
+                            secondary: true,
+                            pointing: true,
+                        }}
+                        panes={panes}
+                        activeIndex={activeIndex}
+                        onTabChange={this.handleTabChange}
+                    />
+                </div>
             </div>
         );
     }

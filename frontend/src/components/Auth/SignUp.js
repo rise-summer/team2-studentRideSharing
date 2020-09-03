@@ -3,8 +3,6 @@ import { Form, Button, Image } from 'semantic-ui-react';
 import { auth, storageRef } from '../../firebase';
 import './SignUp.css';
 
-const querystring = require('querystring');
-
 const initialState = {
     uid: '',
     email: '',
