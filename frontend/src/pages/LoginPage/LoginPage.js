@@ -15,7 +15,6 @@ class LoginPage extends Component {
         this.state = { activeIndex: 0 };
     }
     handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex });
-
     componentWillUnmount() {
         if (typeof this.listener === 'function') {
             this.listener();

@@ -4,4 +4,11 @@
 .mapContainer {
   height: 100%;
   width: 100%;
+  border-radius: 25px;
 }
+
+/* div.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+} */
