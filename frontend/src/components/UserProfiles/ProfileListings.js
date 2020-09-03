@@ -20,7 +20,7 @@ const ProfileListings = ({ rides, handleError }) => {
     );
     // const cancelledRides = rides.filter((ride) => ride.status && ride.status === 2);
     const activeRideList = activeRides.map((ride, index) => (
-        <List.Item className='ride-list-item'>
+        <List.Item className="ride-list-item">
             <RideProfile
                 key={index}
                 ride={ride}
@@ -32,7 +32,7 @@ const ProfileListings = ({ rides, handleError }) => {
         </List.Item>
     ));
     const completedRideList = completedRides.map((ride, index) => (
-        <List.Item className='ride-list-item'>
+        <List.Item className="ride-list-item">
             <RideProfile
                 key={index}
                 ride={ride}

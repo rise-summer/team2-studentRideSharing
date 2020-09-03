@@ -49,7 +49,7 @@ class ProfileRequests extends Component {
                     confirmedCount > 0 &&
                     <div className='confirmedRides'>
                         <div>{confirmedCount} Confirmed {confirmedCount > 1 ? "Rides": "Ride"}</div>
-                        <List className='requestsList-profile' divided verticalAlign="middle">
+                        <List className="requestsList-profile" divided verticalAlign="middle">
                             {confirmedRequests.map((request, index) =>
                                 <RequestItem
                                     key={index} request={request} viewer={viewer} parentRefetch={ () => this.fetchUserRequests() }
@@ -66,7 +66,7 @@ class ProfileRequests extends Component {
                     pendingCount > 0 &&
                     <div className='pendingRequests'>
                         <div>{pendingCount} Pending {pendingCount > 1 ? "Requests": "Request"}</div>
-                        <List className='requestsList-profile' divided verticalAlign="middle">
+                        <List className="requestsList-profile" divided verticalAlign="middle">
                             {pendingRequests.map((request,index) =>
                                 <RequestItem
                                     key={index} request={request} viewer={viewer} parentRefetch={ () => this.fetchUserRequests() } isPending='true'
