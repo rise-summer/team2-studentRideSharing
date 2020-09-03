@@ -3,3 +3,29 @@
     height: 50vh;
     width: 50vw;
 }
+
+.modal-header{
+   text-align: center !important;
+   color: #686EFD !important;
+}
+.no-margin{
+    margin: 0px !important;
+}
+.subtitle{
+    font-size: 13px;
+    font-weight: lighter !important;
+}
+.padding-left{
+    padding-left: 20px !important;
+}
+.padding{
+    padding: 1px !important;
+}
+.location{
+    font-size: 18px !important;
+    margin-bottom: 0em !important;
+    margin-top: 3px !important;
+}
+.arrow{
+    margin: 0px 0.7em !important;
+}

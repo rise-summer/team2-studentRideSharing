@@ -3,7 +3,7 @@ import GeoSearch from '../GeoSearch/GeoSearch';
 import DriverInfo from './DriverInfo';
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import createRideSplash from './createRideSplash.png';
-import { Grid, Segment, Header, Form, Dropdown } from 'semantic-ui-react';
+import { Grid, Segment, Header, Form, Dropdown, Dimmer, Loader } from 'semantic-ui-react';
 import './DriverListing.css';
 
 // TODO: change so first ride is stored and everything is submitted at the end
@@ -23,6 +23,7 @@ const initialState = {
     returnCapacity: '',
     isRoundtrip: false,
     errorMessage: '',
+    driverCarInfo: true,
 };
 
 class DriverListing extends React.Component {
@@ -87,6 +88,16 @@ class DriverListing extends React.Component {
         }
     };
 
+    //TODO: implement redux, temporary way of validation
+    changeCarInfo = (carInfo) => {
+        if(carInfo){
+            this.props.changeCarInfo(carInfo)
+        }
+        this.setState({
+            driverCarInfo: true,
+        })
+    }
+
     handleChange = (event, { name, value }) => {
         this.setState({ [name]: value });
     };
@@ -99,27 +110,33 @@ class DriverListing extends React.Component {
         // TODO: Add more validation (including minDate/maxDate)
         // TODO: Add confirmation and reset state
         event.preventDefault();
-        if (this.state.errorMessage === '') {
-            this.postData(this.state);
-            if (this.state.isRoundtrip) {
-                const {
-                    returnStartLocation,
-                    returnEndLocation,
-                    returnStartDate,
-                    returnStartTime,
-                    returnPrice,
-                    returnCapacity,
-                } = this.state;
-                this.postData({
-                    startLocation: returnStartLocation,
-                    endLocation: returnEndLocation,
-                    startDate: returnStartDate,
-                    startTime: returnStartTime,
-                    price: returnPrice,
-                    capacity: returnCapacity,
-                });
+        if (!this.props.haveInfo) {
+            this.setState({
+                driverCarInfo: false,
+            });
+        } else {
+            if (this.state.errorMessage === '') {
+                this.postData(this.state);
+                if (this.state.isRoundtrip) {
+                    const {
+                        returnStartLocation,
+                        returnEndLocation,
+                        returnStartDate,
+                        returnStartTime,
+                        returnPrice,
+                        returnCapacity,
+                    } = this.state;
+                    this.postData({
+                        startLocation: returnStartLocation,
+                        endLocation: returnEndLocation,
+                        startDate: returnStartDate,
+                        startTime: returnStartTime,
+                        price: returnPrice,
+                        capacity: returnCapacity,
+                    });
+                }
+                this.setState(initialState);
             }
-            this.setState(initialState);
         }
     };
 
@@ -152,6 +169,10 @@ class DriverListing extends React.Component {
                 className="listingGrid"
                 style={{ background: `url(${createRideSplash})` }}
             >
+                <Dimmer>
+                    <Loader>Loading</Loader>
+                </Dimmer>
+                {!this.state.driverCarInfo ? <DriverInfo changeCarInfo={this.changeCarInfo} userId={this.props.uid} /> : console.log()}
                 <Grid.Column className="mainColumn" width={11}>
                     <Form onSubmit={this.handleSubmit} autoComplete="off">
                         <Segment style={{ padding: '20px 50px' }}>
