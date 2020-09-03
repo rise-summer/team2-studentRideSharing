@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import DriverListing from '../../components/CreateRideComponents/DriverListing';
+import DriverInfo from '../../components/CreateRideComponents/DriverInfo';
 
 /* makes info from redux store available as prop for this component
 *   - loggedIn: accessible via this.props.loggedIn
@@ -19,22 +20,31 @@ class CreateRide extends React.Component {
         };
     }
 
-    //TODO: Check response instead of response status
-    //Check to see if Driver have vehicle infomation
     async componentDidMount() {
         await fetch(`/api/vehicles/${this.props.uid}`, {
             method: 'GET'
-        }).then(response => {
-            if (response.status === 200) {
-                this.setState({ haveInfo: true });
+        }).then(response => response.json())
+        .then(response => {
+            if(!response.length){
+                this.setState({ haveInfo: false });
             }
         });
     }
 
+    changeCarInfo = (carInfo) => {
+        this.setState({
+            haveInfo: carInfo,
+        })
+    }
+
     render() {
         const { haveInfo } = this.state;
-        //sent check to DriverListing component as props
-        return < DriverListing uid={this.props.uid} haveCarInfo={haveInfo} />;
+        return <DriverListing uid={this.props.uid} haveInfo={haveInfo} changeCarInfo={this.changeCarInfo}/>
+        // if(haveInfo){
+        //     return <DriverListing uid={this.props.uid} haveInfo={haveInfo}/>;
+        // }else {
+        //     return <DriverInfo userId={this.props.uid} changeCarInfo={this.changeCarInfo}/>
+        // }
     }
 }
 

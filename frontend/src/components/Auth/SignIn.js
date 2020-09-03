@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 import { auth } from '../../firebase';
 
 class SignIn extends React.Component {
@@ -60,12 +60,11 @@ class SignIn extends React.Component {
                         required
                     />
                     <Form.Button
-                        id="submit"
-                        control={Button}
-                        fluid
-                        color="black"
-                        content="Log In"
-                    />
+                            primary
+                            id="submit"
+                            fluid
+                            content="Log In"
+                        />
                 </Form>
                 {/*
                     {/* Alternative login methods /}

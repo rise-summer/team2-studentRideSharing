@@ -12,7 +12,7 @@
         Labels
 ---------------------*/
 
-@labelFontWeight    : regular;
+@labelFontWeight    : normal;
 @labelFontSize      : 1em;
 
 /*--------------------
@@ -20,3 +20,9 @@
 ---------------------*/
 @inputFont          : 'Open Sans';
 @inputBorderRadius  : 12px;
+
+/*--------------------
+    Required Field
+---------------------*/
+
+@requiredContent    : none;

@@ -142,10 +142,10 @@ class RequestRide extends Component {
 
     triggerButton() {
         if (this.props.disable === true) {
-            return <Button disabled>No Longer Accepting Requests</Button>;
+            return <Button basic color="orange"disabled>No Longer Accepting Requests</Button>;
         }
         else {
-            return <Button>Request a Ride</Button>;
+            return <Button primary>Request a Ride</Button>;
         }
     }
 
@@ -160,19 +160,22 @@ class RequestRide extends Component {
                 onClose={() => this.setOpen(false)}
                 onOpen={() => this.setOpen(true)}
                 open={this.state.open}
+                size="tiny"
+                dimmer="blurring"
             >
-                <Modal.Header>
-                <center>
-                    Request a Ride
-                </center>
+                <Modal.Header className="modal-header">
+                Request A Ride
                 </Modal.Header>
                 <Modal.Content>
-                    <div className="name padding">{this.props.driver.firstName} {this.props.driver.lastName}</div>
-                    <div className="subtitle padding">{this.props.driver.school} </div>
+                        <h3 className="no-margin">
+                            {this.props.driver.firstName} {this.props.driver.lastName} 
+                            <span className="subtitle padding-left">{this.props.driver.school} </span>
+                        </h3>
+                    
                     <div className="itinerary">
-                        <div className="location">{this.props.ride.startLoc.city}, {this.props.ride.startLoc.state}</div>
-                        <Icon name="arrow right" />
-                        <div className="location">{this.props.ride.endLoc.city}, {this.props.ride.endLoc.state}</div>
+                        <h5 className="location">{this.props.ride.startLoc.city}, {this.props.ride.startLoc.state}</h5>
+                        <Icon className="arrow" name="long arrow alternate right" size="large"/>
+                        <h5 className="location">{this.props.ride.endLoc.city}, {this.props.ride.endLoc.state}</h5>
                     </div>
                     <div className="subtitle padding">Date: {this.props.dateString}</div>
                     <div className="subtitle padding">Departure Time: {this.props.timeString}</div>
@@ -189,16 +192,19 @@ class RequestRide extends Component {
                         types="address"
                     />
                     <Form.Input value={this.state.comment} name="comment" label="Additional Comments" type="text" onChange={this.handleChange}/>
+                    <span>
+                        This information will be sent to the requested driver. They will have 24 hours to repond
+                        to your request via your contact perferences.
+                    </span>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button onClick={() => this.setOpen(false)}>
+                    <Button basic color="orange" onClick={() => this.setOpen(false)}>
                         Cancel
                     </Button>
-                    <Button icon
-                        labelPosition='right'
-                        type="submit"
-                        positive>
-                        <Icon name='checkmark' />
+                    <Button primary icon
+                        labelPosition="right"
+                        type="submit">
+                        <Icon name="checkmark" />
                          Send Ride Request
                     </Button>
                 </Modal.Actions>
@@ -213,16 +219,16 @@ class RequestRide extends Component {
                 </Modal.Content>
                 <Modal.Actions>
                     <center>
-                    <div hidden='true'>
+                    <div hidden="true">
                     <Button onClick={() => this.setConfirmationOpen(false)}>
                         Cancel Request
                     </Button>
                     </div>
                     <Button icon
-                        labelPosition='right'
+                        labelPosition="right"
                         onClick={() => this.setConfirmationOpen(false)}
-                        positive>
-                        <Icon name='checkmark' />
+                        primary>
+                        <Icon name="checkmark" />
                         Okay
                     </Button>
                     </center>
