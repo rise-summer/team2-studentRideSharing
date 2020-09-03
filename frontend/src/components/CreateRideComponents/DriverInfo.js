@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Icon, Button, Modal } from 'semantic-ui-react';
+import { Form, Icon, Modal } from 'semantic-ui-react';
 
 import './DriverInfo.css';
 

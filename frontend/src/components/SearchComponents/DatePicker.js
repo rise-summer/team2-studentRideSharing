@@ -2,8 +2,6 @@
 * prop 'placeholder' has a default value */
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Pikaday from 'pikaday';
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import moment from 'moment';
 import './SearchBox.css';

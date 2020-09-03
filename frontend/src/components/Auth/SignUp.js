@@ -1,7 +1,6 @@
 import React from 'react';
-import { Form, Divider, Button, Dropdown, Input, Image } from 'semantic-ui-react';
-import firebase, { auth, uiConfig, storageRef } from '../../firebase';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { Form, Button, Image } from 'semantic-ui-react';
+import { auth, storageRef } from '../../firebase';
 
 const querystring = require('querystring');
 
@@ -23,7 +22,7 @@ const initialState = {
     searchQuery: '',
     photo: null,
     photoURL: 'https://firebasestorage.googleapis.com/v0/b/studentridesharing-a50e3.appspot.com/o/default-avatar.png?alt=media&token=38291e03-8906-4cf2-920b-02926aced6e8'
-}
+};
 
 class SignUp extends React.Component {
     //TODO: Add preferred contact methods
@@ -36,11 +35,11 @@ class SignUp extends React.Component {
     //----For profile picture uploading and previewing---------
     uploadPhoto = e => {
         const photo = e.target.files[0];
-        if(typeof photo === "object") {
+        if (typeof photo === "object") {
             const photoURL = URL.createObjectURL(photo); // this points to the File object we just created
-            this.setState({photoURL, photo});
+            this.setState({ photoURL, photo });
         }
-    }
+    };
     //-------------------------------------------
 
     handleContactMethodAddition = (e, { value }) => {
@@ -64,22 +63,22 @@ class SignUp extends React.Component {
         this.setState({ searchQuery: value, school: value });
     };
 
-    handleChange = (event, {name, value}) => {
-        this.setState({[name]: value});
-        if(name === "email") {
-            this.setState({personalEmail: value});
-        } else if(name === "phoneNumber") {
-            this.setState({personalText: value, personalPhone: value});
+    handleChange = (event, { name, value }) => {
+        this.setState({ [name]: value });
+        if (name === "email") {
+            this.setState({ personalEmail: value });
+        } else if (name === "phoneNumber") {
+            this.setState({ personalText: value, personalPhone: value });
         }
     };
 
     validate = () => {
         let errorMsg = '';
-        const {email, password, school} = this.state;
+        const { email, password, school } = this.state;
         const reEmail = RegExp('([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.([a-zA-Z]{2,5})$');
         const reEdu = RegExp('([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.edu$');
         const validEmail = reEmail.test(email) && reEdu.test(email);
-        if(school === '') {
+        if (school === '') {
             errorMsg += 'The field "school" is required.\n';
         }
         if (!reEmail) {
@@ -103,7 +102,7 @@ class SignUp extends React.Component {
         // alert('Submitted ' + JSON.stringify(this.state));
         // add regex checking and password match
         // pass all info to mongoDB too
-        const {email, password} = this.state;
+        const { email, password } = this.state;
         if (this.validate()) {
             this.createUser();
         }
@@ -112,11 +111,11 @@ class SignUp extends React.Component {
     createUserInMongoDB = () => {
         const {
             uid,
-            email, 
-            password, 
-            firstName, lastName, 
-            phoneNumber, 
-            school, 
+            email,
+            password,
+            firstName, lastName,
+            phoneNumber,
+            school,
             personalEmail, personalText, personalPhone, facebook,
             photoURL
         } = this.state;
@@ -138,7 +137,7 @@ class SignUp extends React.Component {
         };
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newUserInfo)
         };
         const xurl = '/api/users/signup';
@@ -154,15 +153,15 @@ class SignUp extends React.Component {
             .then(data => {
                 console.log(data); //TODO: NEED CLEAN UP => Printing inserted user document
                 this.props.redirect();
-            });        
+            });
 
     };
 
     createUser = () => {
         const {
-            email, 
-            password, 
-            confirmPassword, 
+            email,
+            password,
+            confirmPassword,
             photo
         } = this.state;
 
@@ -172,17 +171,16 @@ class SignUp extends React.Component {
         }
         //Register the user in Firebase
         auth.createUserWithEmailAndPassword(email, password)
-            .then((data) => {     
-                //Register the user in MongoDB based on the uid and photo           
+            .then((data) => {
+                //Register the user in MongoDB based on the uid and photo
                 if (photo === null) { //User didn't provide photo
-                    this.setState({ 
+                    this.setState({
                         uid: data.user.uid,
                         // photoURL: null
                     }, () => {
                         this.createUserInMongoDB();
                     });
-                }
-                else { //User provides a profile picture
+                } else { //User provides a profile picture
                     var metadata = {//Create file metadata including the content type
                         contentType: 'image/jpeg',
                     };
@@ -196,19 +194,19 @@ class SignUp extends React.Component {
                             // Update user profile in firebase
                             user.updateProfile({
                                 photoURL: url
-                            }).then(function() {
+                            }).then(function () {
                                 // Update successful.
-                            }).catch(function(error) {
-                            // An error happened.
+                            }).catch(function (error) {
+                                // An error happened.
                             });
                             // Register the user in MongoDB
-                            this.setState({ 
+                            this.setState({
                                 uid: user.uid,
                                 photoURL: url
                             }, () => {
                                 this.createUserInMongoDB();
-                            }); 
-                        }).catch(function(error) {
+                            });
+                        }).catch(function (error) {
                             console.log(error);
                         });
                     });
@@ -242,16 +240,16 @@ class SignUp extends React.Component {
                 {/* TODO: setup redirect after new user created */}
                 <Form onSubmit={this.handleSubmit}>
                     <center>
-                    <Button as="label" htmlFor="file" type="button" size="tiny" circular>
-                        <Image src={photoURL} size="tiny" circular />
-                    </Button>
-                    <input
-                        type="file"
-                        id="file"
-                        hidden
-                        accept="image/*"
-                        onChange={this.uploadPhoto}
-                    />
+                        <Button as="label" htmlFor="file" type="button" size="tiny" circular>
+                            <Image src={photoURL} size="tiny" circular />
+                        </Button>
+                        <input
+                            type="file"
+                            id="file"
+                            hidden
+                            accept="image/*"
+                            onChange={this.uploadPhoto}
+                        />
                     </center>
                     <Form.Input
                         id="first-name"

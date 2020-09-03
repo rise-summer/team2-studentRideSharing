@@ -8,10 +8,6 @@ import { Grid, Tab } from 'semantic-ui-react';
 import './LoginPage.css';
 
 class LoginPage extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentWillUnmount() {
         if(typeof this.listener === "function"){
             this.listener();

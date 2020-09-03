@@ -9,7 +9,7 @@ import SearchBox from '../../components/SearchComponents/SearchBox';
 import SortBy from '../../components/SortBy/SortBy';
 
 const querystring = require('querystring');
-const DEBUG = false;
+const DEBUG = true;
 
 class Search extends Component {
     constructor(props) {
@@ -116,7 +116,7 @@ class Search extends Component {
             distance: dist,
         };
         this.queryReturn(returnQuery);
-        console.log(this.props);
+        // console.log(this.props);
     };
 
     queryOutbound = (query) => {
@@ -135,6 +135,7 @@ class Search extends Component {
                     time: ride.time,
                     rideID: ride._id,
                     driverID: ride.driverID,
+                    capacity: ride.capacity,
                 }));
                 const newRides = this.state.rides;
                 newRides.outboundRides = queried_rides;
@@ -266,8 +267,7 @@ class Search extends Component {
                 <SortBy sort={this.sort}/>
             rideResults =
                 <div>
-                    <br />
-                    <h3>Available Rides</h3>
+                    {/*<h3>Available Rides</h3>*/}
                     <RideList roundtrip={this.state.roundtrip} rides={this.state.rides} />
                 </div>;
         }
