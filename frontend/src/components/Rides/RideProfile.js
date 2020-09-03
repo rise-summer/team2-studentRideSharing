@@ -213,18 +213,14 @@ class RideProfile extends Component {
                     <span>
                         {/* Click header to view ride */}
                         <a className="ride-link" href={'/ride/' + driverID + '/' + _id}>
-                            <h5 className="location">
-                            {startLoc.city}, {startLoc.state}
-                            <br/>
+                            <div className="large-bold-font">{startLoc.city}, {startLoc.state}
+                            {/* <br/> */}
                             {/* <span className="lighter-font">Starting Location</span> */}
-                            </h5>
                                 <Icon id="arrow" size="big" name="long arrow alternate right" />
-                            <h5 className="location">
-                            {endLoc.city}, {endLoc.state}
-                            <br/>
+                            {endLoc.city}, {endLoc.state}</div>
+                            {/* <br/> */}
                             {/* <span className="lighter-font">Ending Location</span> */}
-                            </h5>
-                            
+
                         </a>
                     </span>
                     {isActive && (

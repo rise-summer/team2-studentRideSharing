@@ -205,10 +205,11 @@ class RequestItem extends Component {
                 return (
                     <List.Item>
                         <List.Content className="requester">
-                            <div>
+                            <Image src={requester.photoURL} size='mini' />
+                            <div className="requester-info">
                                 {requester.firstName} {requester.lastName[0]}.
+                                <div className="school">{requester.school}</div>
                             </div>
-                            <div className="school">{requester.school}</div>
                         </List.Content>
                     </List.Item>
                 );
@@ -314,7 +315,7 @@ class RequestItem extends Component {
                         </Button>
                     }
                     
-                    <Header as="h5" className="requester">
+                    <Header as="h5">
                         {requester.firstName} {requester.lastName[0]}.
                     </Header>
                     <List.Description 

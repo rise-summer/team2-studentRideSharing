@@ -74,3 +74,17 @@ div.margin-right {
     margin-left: 0%;
     margin-right: 3%;
 }
+
+.school {
+  font-weight: lighter;
+  color: rgba(0,0,0,.6);
+}
+
+.requester{
+  display: flex;
+  flex-direction: row;
+}
+
+.requester-info{
+  margin-left: 10px;
+}

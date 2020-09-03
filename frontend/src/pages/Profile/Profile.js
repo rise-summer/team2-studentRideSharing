@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ProfileDetails from '../../components/UserProfiles/ProfileDetails';
 import ProfileListings from '../../components/UserProfiles/ProfileListings';
 import ProfileRequests from '../../components/UserProfiles/ProfileRequests';
-import { Grid, Header, Image, Message, Button, Icon,  Tab, Menu, Label, GridColumn } from 'semantic-ui-react';
+import { Segment, Grid, Header, Image, Message, Button, Icon,  Tab, Menu, Label, GridColumn } from 'semantic-ui-react';
 import './Profile.css';
 /* makes info from redux store available as prop for this component
 *   - loggedIn: accessible via this.props.loggedIn
@@ -115,12 +115,16 @@ class Profile extends Component {
                             color="purple"
                             size="mini"
                         >
-                            {rides.filter((ride) => !ride.status || ride.status === 0).length}
+                            {
+                                rides.filter(
+                                    (ride) => !ride.status || ride.status === 0
+                                ).length
+                            }
                         </Label>
                     </Menu.Item>
                 ),
                 render: () =>
-                    <Tab.Pane basic attached={false} >
+                    <Tab.Pane basic attached={false}>
                         <ProfileListings rides={rides} handleError={this.handleError} />
                     </Tab.Pane>
                 ,
@@ -129,7 +133,7 @@ class Profile extends Component {
                 menuItem: {content: "Requests Sent", key: "requests"},
                 render: () => (
                     <Tab.Pane basic attached={false}>
-                        <ProfileRequests userID={uid}/>
+                        <ProfileRequests userID={uid} />
                     </Tab.Pane>
                 ),
             },

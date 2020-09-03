@@ -1,7 +1,8 @@
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+// import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import './GeoSearch.css';
 
 mapboxgl.accessToken =
     'pk.eyJ1IjoicmlzZXRlYW0yIiwiYSI6ImNrZDIzdDJkbjBzcnEyc3E5YnViazdoYWEifQ.6O1AdDa4j5XR9qSRWMkcWQ';
@@ -24,6 +25,7 @@ class GeoSearch extends React.Component {
     constructor(props) {
         super(props);
         this.searchRef = React.createRef();
+        this.state = { geoObject: null };
     }
 
     processResponse = (resp) => {
@@ -52,8 +54,18 @@ class GeoSearch extends React.Component {
             state: state ? state.text : '',
             zip: zip ? zip.text : '',
             displayName: displayName || '',
-        }
+        };
     };
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.value !== this.props.value) {
+            if (this.props.value) {
+                this.state.geoObject.query(this.props.value);
+            } else {
+                this.state.geoObject.clear();
+            }
+        }
+    }
 
     async componentDidMount() {
         // Code to retrieve location for proximity search
@@ -75,27 +87,40 @@ class GeoSearch extends React.Component {
             }
         }
 
+        const { placeholder, types, name, handleChange } = this.props;
+
         // Creates geocoder object
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
-            placeholder: this.props.placeholder,
+            placeholder: placeholder,
             countries: 'US',
-            types: this.props.types,
+            types: types,
             minLength: 3,
             proximity: coords,
         });
 
         // When a result is selected, it will send it via handleChange
-        geocoder.on('result', () =>
-            this.props.handleChange(
+        geocoder.on('result', () => {
+            handleChange(
                 this.processResponse(JSON.parse(geocoder.lastSelected)),
-                this.props.name
-            )
-        );
+                name
+            );
+        });
         geocoder.addTo(this.searchRef.current);
+
+        if (this.props.value) {
+            geocoder.query(this.props.value);
+        }
+        this.setState({ geoObject: geocoder });
     }
     render() {
-        return <div className={this.props.className} ref={this.searchRef}></div>;
+        return (
+            <div
+                style={{ width: '100%' }}
+                className={this.props.className}
+                ref={this.searchRef}
+            ></div>
+        );
     }
 }
 

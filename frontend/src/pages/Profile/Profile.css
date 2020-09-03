@@ -1,14 +1,7 @@
 .page {
-    width: 95%;
-    height: 95%;
-    margin-top: 5%;
     margin-bottom: 5%;
-    /* display: flex; */
-    /* justify-content: center;
-    align-items: center; */
-    margin-left: auto;
-    margin-right: auto;
-    /* vertical-align: middle; */
+    margin-left: 5%;
+    margin-right: 5%;
     background-color: #FDFDFD;
     border-radius: 50px;
 }
