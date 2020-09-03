@@ -132,7 +132,7 @@ class Profile extends Component {
             {
                 menuItem: {content: "Requests Sent", key: "requests"},
                 render: () => (
-                    <Tab.Pane basic attached={false}>
+                    <Tab.Pane style={{ backgroundColor: "white" }} basic attached={false}>
                         <ProfileRequests userID={uid} />
                     </Tab.Pane>
                 ),
@@ -140,7 +140,7 @@ class Profile extends Component {
             {
                 menuItem: {content: "My Profile", key: "profile"},
                 render: () => (
-                    <Tab.Pane basic attached={false}>
+                    <Tab.Pane style={{backgroundColor: "white"}} basic attached={false}>
                         <ProfileDetails isEditing={isEditingProfile} vehicles={vehicles} user={user} />
                     </Tab.Pane>
                 ),
@@ -148,7 +148,8 @@ class Profile extends Component {
         ];
     
         return (
-            <div className="page">
+            <div className="profile-page-margin">
+            <div className="profile-page">
                 {errorMessage && (
                     <Message
                         negative
@@ -160,7 +161,7 @@ class Profile extends Component {
                 )}
 
                 <Grid id="name-card" columns={3}>
-                    <Grid.Column>
+                    <Grid.Column className="grid-column">
                         <Image 
                             className="profile-pic" 
                             src={photoURL} 
@@ -169,13 +170,13 @@ class Profile extends Component {
                             style={{ float: "right" }}
                         />               
                     </Grid.Column>                       
-                    <Grid.Column>
+                    <Grid.Column className="grid-column">
                         <Header as="h2" textAlign="center">
                             {firstName + " " + lastName}
                             <Header.Subheader>{school}</Header.Subheader>
                         </Header>
                     </Grid.Column>
-                    <Grid.Column>
+                    <Grid.Column className="grid-column">
                         {/* Display the "Edit Profile" Button when "My Profile" Tab is active */
                             false && activeIndex === 2 && !isEditingProfile &&
                             <Button primary icon labelPosition="left" style={{ float: "right" }}
@@ -212,6 +213,7 @@ class Profile extends Component {
                         onTabChange={this.handleTabChange}
                     />
                 </div>
+            </div>
             </div>
         );
     }

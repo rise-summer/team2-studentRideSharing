@@ -1,11 +1,17 @@
 .segment-wrapper{
-    margin: 20px 7em;
+    padding: 20px 7em;
 }
+
+.ride-detail-segment{
+    margin-top: 10% !important;
+}
+
 .ride-info{
     display: flex;
     flex-direction: row;
     position: relative;
 }
+
 .left-column {
     display: flex;
     flex-direction: column;

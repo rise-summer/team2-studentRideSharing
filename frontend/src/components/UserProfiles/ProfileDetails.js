@@ -19,7 +19,7 @@ const ProfileDetails = ({ user: {email, contact, paymentMethods}, vehicles, isEd
     }
 
     return (
-        <div style={{width: "70%", margin: "auto"}}>
+        <div style={{ width: "70%", margin: "auto" }}>
             <Grid columns={2} relaxed centered>
                 <Grid.Column>
                     <Header>Car and Payment Listed</Header>

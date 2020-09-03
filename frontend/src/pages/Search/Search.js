@@ -255,9 +255,12 @@ class Search extends Component {
         let searchPage;
         let rideResults;
         let sortBy;
+        let searchWrapper = '';
         if (!this.state.searched) {
             searchPage = <SearchLanding functions={functions} refs={refs} />
+            searchWrapper = 'search-wrapper'
         } else {
+            searchWrapper = 'search-wrapper2'
             searchPage =
                 <SearchBox
                     functions={functions}
@@ -273,7 +276,7 @@ class Search extends Component {
         }
 
         return (
-            <div className="search-wrapper">
+            <div className={searchWrapper}>
                 {searchPage}
                 {sortBy}
                 {rideResults}

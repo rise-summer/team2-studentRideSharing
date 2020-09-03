@@ -363,7 +363,7 @@ class DriverListing extends React.Component {
                         )}
                     </Form>
                 </Grid.Column>
-                <Grid.Column width={5} />
+                <Grid.Column className="sideColumn" width={5}/>
             </Grid>
         );
     }

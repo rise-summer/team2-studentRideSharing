@@ -36,7 +36,7 @@ const Navbar = (props) => {
     };
 
     return (
-        <Segment vertical className='noBorderBottom'>
+        <Segment vertical className='navbar noBorderBottom'>
             {props.loggedIn ? (
                 <Menu text secondary pointing size="large" className='noBorderBottom'>
                     <Link to="/search">

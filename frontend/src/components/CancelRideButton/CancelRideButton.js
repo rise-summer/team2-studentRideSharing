@@ -48,8 +48,8 @@ const CancelRideButton = ({
                 {destName} ride?
             </Modal.Content>
             <Modal.Actions>
-                <Button onClick={handleClose}>Go Back</Button>
-                <Button negative onClick={handleCancelButton}>
+                <Button basic color="orange" onClick={handleClose}>Go Back</Button>
+                <Button primary onClick={handleCancelButton}>
                     Cancel Ride
                 </Button>
             </Modal.Actions>
