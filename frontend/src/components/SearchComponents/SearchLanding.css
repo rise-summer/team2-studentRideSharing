@@ -1,12 +1,58 @@
 .landing {
     padding: 30px;
-    border: 2px solid black;
     text-align: center;
-    margin: 20px 40px;
+    margin: 20px auto;
+    background-color: #FDFDFD;
+    border-radius: 15px;
+    border: 2px solid #D8D8F6;
+    box-shadow: 2px 2px #adadc5;
+    position: relative;
+    z-index: 2;
+    max-width: 65vw;
+}
+
+.banner {
+    display: flex;
+    max-width: 60vw;
+    margin: 10px auto;
+}
+
+.orange {
+    color: #EF724B;
+    display: inline
+}
+
+.banner-text {
+    font-size: 36px;
+    text-align: left;
+    flex: 2;
+    margin-top: 20px;
+    font-weight: bold   ;
+}
+
+.banner-img {
+    flex: 1;
+    position: relative;
+    z-index: 3;
+    max-width: 40%;
+    align-items: center;
+}
+
+.landing-wrapper {
+    background-color: white;
+    padding: 6.5% 0px;
 }
 
 .landing-title {
     font-size: 26px;
     font-weight: bold;
     margin: 10px 0;
+}
+
+.landing-image {
+    width: 100vw;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
 }

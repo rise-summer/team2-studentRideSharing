@@ -1,0 +1,29 @@
+/* TODO: This is hacky and could probably break */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    background: none;
+    transform: translateX(-115px);
+}
+.geoSearch > div > input {
+    width: 100% !important;
+    height: 32px !important;
+}
+
+.listingGrid {
+    /* background-size: cover !important; */
+    height: 100%;
+    margin: 0 !important;
+}
+
+.mainColumn {
+    position: unset !important;
+    height: 100%;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.sideColumn{
+    position: unset !important;
+}

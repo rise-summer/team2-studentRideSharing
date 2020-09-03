@@ -20,7 +20,7 @@ export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 export const storageRef = firebase.storage().ref();
 
-const redirectUrl = '/profile';
+// const redirectUrl = '/profile';
 // Configure FirebaseUI.
 export const uiConfig = {
     callbacks: {
@@ -111,8 +111,8 @@ const getUserDocument = async uid => {
     }
 };
 
-function createUser(email, password) {
-    firebase.auth.createUserWithEmailAndPassword(email, password);
-}
+// function createUser(email, password) {
+//     firebase.auth.createUserWithEmailAndPassword(email, password);
+// }
 
 export default firebase;

@@ -1,6 +1,9 @@
 .search-wrapper {
-    padding: 10px;
     text-align: center;
+}
+.search-wrapper2 {
+    text-align: center;
+    padding-top: 6.5%;
 }
 
 .search-subwrapper {
@@ -12,6 +15,7 @@
 
 .ride-type-wrapper {
     display: flex;
+    /* padding-left: 11%; */
 }
 
 /* !important needed to override default semantic ui styles*/
@@ -36,57 +40,4 @@
     outline: 5px solid green!important;
 }
 
-.transition {
-    /*border: 1px solid black!important;*/
-    border: none!important;
-    outline: 1px solid black!important;
-}
-
-.search-box {
-    display: inline-flex;
-    border-width: 2px;
-    border-style: solid;
-    /*margin: 5px;*/
-    margin: 0 auto;
-    height: 60px;
-}
-
-.search-field {
-    display: inline-block;
-    text-align: left;
-    border-right: 2px solid black;
-    margin: 5px;
-    /*min-width: 180px;*/
-    padding-right: 10px;
-}
-
-.field-desc {
-    display: block;
-    margin-bottom: 5px;
-}
-
-
-.search-button {
-    display: flex;
-    height: 100%;
-    background-color: black;
-    padding: 0 10px;
-    color: white;
-    margin-left: -10px;
-    white-space: nowrap;
-    justify-content: center; /* align horizontal */
-    align-items: center; /* align vertical */
-}
-
-.search-button:hover {
-    background-color: #3a4a49;
-    cursor: pointer;
-}
-
-.date-picker-box {
-    /*font-size: 16px;*/
-    border: none;
-    outline: none;
-    border-bottom: 1px solid black;
-}
 

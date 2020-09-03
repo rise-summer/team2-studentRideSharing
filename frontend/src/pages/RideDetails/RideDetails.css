@@ -1,67 +1,68 @@
-.left-column {
-    display: block;
-    position: absolute;
-    left: 10vw;
-    margin-top: 25px;
-    width: 20vw;
-    height: 250px;
-    background-color: #b6b3bf;
+.segment-wrapper{
+    padding: 20px 7em;
 }
-.left-section {
-    position: absolute;
-    margin-top: 300px;
-    left: 10vw;
-    width: 20vw;
-    font-weight: bold;
+
+.ride-detail-segment{
+    margin-top: 10% !important;
+}
+
+.ride-info{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
 }
 
 .center-column {
-    top: 25px;
-    width: 35vw;
-    background-color: #ecffdc;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1.5;
     margin-left: auto;
     margin-right: auto;
-    text-align: left;
-    padding: 15px;
+    padding: 15px 2em;
 }
 
 .right-column {
-    display: block;
-    position: absolute;
-    right: 10vw;
-    margin-top: 25px;
-    width: 20vw;
-    text-align: center;
-    background-color: #ecffdc;
-    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 15px 1em;
 }
 
 .itinerary {
-    /*width: 100%;*/
-    background-color: #c5f8f5;
-    display: block;
-    margin: 0 -15px;
-    padding: 5px 15px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    margin-bottom: 8.5px
+}
+
+h5 {
+    margin: 8px 0px !important;
+}
+
+h5 span{
+    font-size: 12px !important;
+    font-weight: lighter !important;
 }
 
 .location {
-    display: inline-block;
-    margin-right: 5px;
+    font-size: 18px !important;
+    margin-bottom: 0em !important;
+    margin-top: 3px !important;
+}
+.ride-details-arrow{
+    margin: 0px 0.7em !important;
 }
 
-.name {
-    font-size: 28px;
-    font-weight: bold;
+.driver-name {
+    margin-bottom: 0px !important;
 }
 
 .padding {
     padding: 5px 0px;
-}
-
-.subtitle {
-    font-size: 16px;
-    font-weight: lighter;
 }
 
 .ride-detail-wrapper {
@@ -73,13 +74,14 @@
 }
 
 .ride-detail {
-    font-size: 16px;
+    margin-top: 7px;
+    font-size: 18px;
     font-weight: normal;
-    display: inline;
+    color: #EF724B;
 }
 
 .indent {
-    padding-left: 8px;
+    padding-left: 22px;
     padding-top: 5px;
 }
 .indent2 {
@@ -87,12 +89,28 @@
     padding-top: 5px;
 }
 
-ul li{
-    /*display: inline;*/
-}
 .price {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
     font-size: 16px;
     margin: 5px 0;
 }
 
+.label-white-background{
+    margin-top: 13px !important;
+    background: white !important;
+}
 
+.label-white-background span {
+    font-size: 12px !important;
+    font-weight: lighter !important;
+}
+
+.font-medium{
+    font-size: 14.5px !important;
+}
+
+.font-small{
+    font-size: 12.5px !important;
+}

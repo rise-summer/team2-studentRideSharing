@@ -1,0 +1,39 @@
+#arrow {
+    margin-right: 1%;
+    margin-left: 1%;
+}
+
+a.ride-link {
+    color: black;
+}
+
+.ride-header {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+span.lighter-font {
+    font-weight: 100;
+    font-size: 15px;
+    font-style: normal;
+    color: #333333;
+}
+
+div.location {
+    margin-bottom: 0em;
+    margin-top: 3px;
+}
+
+h5 {
+    margin: 8px 0px !important;
+}
+
+h5 span{
+    font-size: 12px !important;
+    font-weight: lighter !important;
+}
+
+div.large-bold-font {
+    font-size: 18px; 
+    font-weight: bolder;
+}

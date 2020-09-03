@@ -6,6 +6,7 @@ import moment from 'moment';
 import './Search.css';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
+import SortBy from '../../components/SortBy/SortBy';
 
 const querystring = require('querystring');
 const DEBUG = false;
@@ -19,7 +20,6 @@ class Search extends Component {
                 outboundRides: [],
                 returnRides: []
             },
-            filteredRides: [],
             roundtrip: false,
             searched: false,
             query: {
@@ -32,8 +32,9 @@ class Search extends Component {
                 time: '',
                 distance: '',
             },
+            numberTime: 1,
+            sortType: '',
         };
-        this.state.filteredRides = this.state.rides;
     }
 
     /* coords are the only thing needed for the API call */
@@ -57,15 +58,13 @@ class Search extends Component {
             type: 'UPDATE_GEO',
             value: newQuery
         });
-        console.log(this.props);
+        // console.log(this.props);
     };
 
-    editBeginDate = (d) => {
-        let date = moment(d).format('MM/DD/YYYY') + ' ';
-        // let newQuery = this.state.query;
+    editBeginDate = (event, d) => {
+        let date = moment(d.value).toDate();
         let newQuery = this.props.query;
         newQuery.beginDate = date;
-        // this.setState({ query: newQuery });
         this.props.dispatch({
             type: 'EDIT_BEGIN_DATE',
             value: newQuery,
@@ -73,18 +72,15 @@ class Search extends Component {
         // console.log(this.props);
     };
 
-    editEndDate = (d) => {
-        let date = moment(d).format('MM/DD/YYYY') + ' ';
-        // let newQuery = this.state.query;
+    editEndDate = (event, d) => {
+        let date = moment(d.value).toDate();
         let newQuery = this.props.query;
         newQuery.endDate = date;
-        // this.setState({ query: newQuery })
         this.props.dispatch({
             type: 'EDIT_BEGIN_DATE',
             value: newQuery,
         });
-        console.log(this.props);
-
+        // console.log(this.props);
     };
 
     queryRides = () => {
@@ -95,8 +91,8 @@ class Search extends Component {
         const dateEnd = new Date(date);
         dateEnd.setHours(23, 59, 59);
         const { start, endDest, distance } = this.props.query;
-        /* If no distance specified, default to 5 */
-        const dist = (distance) ? distance : 5;
+        /* If no distance specified, default to 10 */
+        const dist = (distance) ? distance : 10;
         const origin = (start) ? [start.lng, start.lat] : '';
         const dest = (endDest) ? [endDest.lng, endDest.lat] : '';
         const outboundQuery = {
@@ -120,6 +116,7 @@ class Search extends Component {
             distance: dist,
         };
         this.queryReturn(returnQuery);
+        // console.log(this.props);
     };
 
     queryOutbound = (query) => {
@@ -138,6 +135,7 @@ class Search extends Component {
                     time: ride.time,
                     rideID: ride._id,
                     driverID: ride.driverID,
+                    capacity: ride.capacity,
                 }));
                 const newRides = this.state.rides;
                 newRides.outboundRides = queried_rides;
@@ -204,6 +202,40 @@ class Search extends Component {
         }
     };
 
+    //TODO: implement redux and move sort function to SortBy.js
+    sort = (sortType) => {
+        let sortOutbound;
+        let sortReturn;
+        if (sortType === '-1') {
+            sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
+                return Date.parse(b.time) - Date.parse(a.time);
+            })
+            sortReturn = this.state.rides.returnRides.sort((a, b) => {
+                return Date.parse(b.time) - Date.parse(a.time);
+            })
+            this.setState({
+                rides: {
+                    outboundRides: sortOutbound,
+                    returnRides: sortReturn,
+                }
+            })
+        }
+        else if (sortType === '1') {
+            sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
+                return Date.parse(a.time) - Date.parse(b.time);
+            })
+            sortReturn = this.state.rides.returnRides.sort((a, b) => {
+                return Date.parse(a.time) - Date.parse(b.time);
+            })
+            this.setState({
+                rides: {
+                    outboundRides: sortOutbound,
+                    returnRides: sortReturn,
+                }
+            })
+        }
+    };
+
     render() {
         const functions = {
             editBeginDate: this.editBeginDate,
@@ -222,26 +254,31 @@ class Search extends Component {
 
         let searchPage;
         let rideResults;
+        let sortBy;
+        let searchWrapper = '';
         if (!this.state.searched) {
             searchPage = <SearchLanding functions={functions} refs={refs} />
+            searchWrapper = 'search-wrapper'
         } else {
+            searchWrapper = 'search-wrapper2'
             searchPage =
                 <SearchBox
-                    query={this.state.query}
                     functions={functions}
                     refs={refs}
                 />;
+            sortBy =
+                <SortBy sort={this.sort}/>
             rideResults =
                 <div>
-                    <br />
-                    <h3>Available Rides</h3>
+                    {/*<h3>Available Rides</h3>*/}
                     <RideList roundtrip={this.state.roundtrip} rides={this.state.rides} />
                 </div>;
         }
 
         return (
-            <div className="search-wrapper">
+            <div className={searchWrapper}>
                 {searchPage}
+                {sortBy}
                 {rideResults}
             </div>
         );

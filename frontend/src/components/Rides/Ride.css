@@ -1,39 +1,84 @@
 .ride {
-    border-style: solid;
-    border-width: medium;
-    width: 450px;
-    height: 90px;
-    margin-bottom: 5px;
-    margin-left: auto;
-    margin-right: auto;
+    background-color: #FDFDFD;
+    border-radius: 15px;
+    border: 2px solid #D8D8F6;
+    box-shadow: 2px 2px #adadc5;
+    max-width: 900px;
+    width: 100%;
+    min-width: 475px;
+    height: 110px;
+    margin: 10px auto;
     text-align: left;
+    padding: 5px 10px;
+    display: flex;
+    /*flex-direction: column;*/
+    flex-wrap: wrap;
 }
 
-.accordion {
-
+.profile {
+    background-color: #cccccc;
+    /*height: 90px;*/
+    /*width: 90px;*/
+    margin: 5px;
+    flex: 0 0 90px;
 }
 
-.accordion-title {
+.profile-pic {
+    /*width: 100%;*/
+}
+
+.info-wrapper {
+    flex: 1;
+}
+
+.driver-name {
+    font-size: 20px;
+    font-weight: bold;
+    display: inline;
+}
+
+.school {
+    display: inline;
+    margin: 0 7px;
+}
+
+.ride-itinerary {
+    font-weight: bold;
+    font-size: 16px;
     position: relative;
-    background-color: beige;
+    color: #5b5b93
 }
 
-.accordion-dropdown {
+.ride-arrow {
+    margin-left: 5px!important;
+}
+
+.ride-time {
     margin: 0;
-    background-color: #ffe8b3;
-    display: block;
     position: relative;
     height: 50px;
 }
 
-.dropdown-icon {
-    position: absolute;
-    right: 5px;
-    top: 10px;
+.ride-info-item {
+    margin-right: 20px;
+    font-weight: bold;
+    display: inline;
 }
 
 .view-button {
     position: absolute;
+    /*background-color: #E58D71;*/
+    background-color: #ef8158;
     right: 5px;
     bottom: 5px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    filter: drop-shadow(0 0 1px #864831);
+}
+
+.view-button:hover {
+    background-color: #d07148;
+    cursor: pointer;
 }

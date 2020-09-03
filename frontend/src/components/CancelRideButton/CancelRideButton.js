@@ -13,8 +13,11 @@ const CancelRideButton = ({
     const handleClose = () => setOpen(false);
     const handleOpen = () => setOpen(true);
     const button = (
-        <Button size="tiny" basic color="red">
-            Cancel Ride
+        <Button size="tiny" 
+        // basic 
+        //color="red"
+        style={{padding: "0", border: "none", background: "none"}}>
+            <span style={{color: "#DB4848"}}>Cancel Ride</span>
         </Button>
     );
 
@@ -45,8 +48,8 @@ const CancelRideButton = ({
                 {destName} ride?
             </Modal.Content>
             <Modal.Actions>
-                <Button onClick={handleClose}>Go Back</Button>
-                <Button negative onClick={handleCancelButton}>
+                <Button basic color="orange" onClick={handleClose}>Go Back</Button>
+                <Button primary onClick={handleCancelButton}>
                     Cancel Ride
                 </Button>
             </Modal.Actions>
