@@ -191,21 +191,23 @@ class DriverListing extends React.Component {
                             />
                             <Form.Group widths="equal">
                                 <Form.Input fluid>
+                                    {/* <Form.Label>Starting Location</Form.Label> */}
                                     <GeoSearch
                                         className="geoSearch"
                                         value={startLocation.address}
                                         handleChange={this.handleGeoChange}
-                                        placeholder="Specific Address"
+                                        placeholder="Starting Location"
                                         name="startLocation"
                                         types="postcode,district,locality,neighborhood,address,poi"
                                     />
                                 </Form.Input>
                                 <Form.Input fluid>
+                                    {/* <Form.Label>Ending Location</Form.Label> */}
                                     <GeoSearch
                                         className="geoSearch"
                                         value={endLocation.address}
                                         handleChange={this.handleGeoChange}
-                                        placeholder="Specific Address"
+                                        placeholder="Ending Location"
                                         name="endLocation"
                                         types="postcode,district,locality,neighborhood,address,poi"
                                     />
