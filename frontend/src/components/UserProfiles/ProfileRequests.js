@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { List, Divider } from 'semantic-ui-react';
 import RequestItem from '../Requests/RequestItem';
-
+import './ProfileRequests.css';
 class ProfileRequests extends Component {
     _isMounted = false;
 
@@ -44,12 +44,12 @@ class ProfileRequests extends Component {
         const confirmedCount = confirmedRequests.length;
 
         return(
-            <div>
+            <div style={{width: "70%", margin: "auto"}}>
                 {
                     confirmedCount > 0 &&
                     <div className='confirmedRides'>
                         <div>{confirmedCount} Confirmed {confirmedCount > 1 ? "Rides": "Ride"}</div>
-                        <List className='requestsList' divided animated>
+                        <List className="requestsList-profile" divided verticalAlign="middle">
                             {confirmedRequests.map((request, index) =>
                                 <RequestItem
                                     key={index} request={request} viewer={viewer} parentRefetch={ () => this.fetchUserRequests() }
@@ -66,7 +66,7 @@ class ProfileRequests extends Component {
                     pendingCount > 0 &&
                     <div className='pendingRequests'>
                         <div>{pendingCount} Pending {pendingCount > 1 ? "Requests": "Request"}</div>
-                        <List className='requestsList' divided animated>
+                        <List className="requestsList-profile" divided verticalAlign="middle">
                             {pendingRequests.map((request,index) =>
                                 <RequestItem
                                     key={index} request={request} viewer={viewer} parentRefetch={ () => this.fetchUserRequests() } isPending='true'

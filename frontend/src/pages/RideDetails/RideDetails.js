@@ -147,7 +147,7 @@ class RideDetails extends Component {
                                     <br/>
                                     <span>Starting Location</span>
                                 </h5>
-                                <Icon className="arrow" name="long arrow alternate right" size="big"/>
+                                <Icon className="ride-details-arrow" name="long arrow alternate right" size="big"/>
                                 <h5 className="location">
                                     {ride.endLoc.city}, {ride.endLoc.state}
                                     <br />

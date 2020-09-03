@@ -174,7 +174,7 @@ class RequestRide extends Component {
                     
                     <div className="itinerary">
                         <h5 className="location">{this.props.ride.startLoc.city}, {this.props.ride.startLoc.state}</h5>
-                        <Icon className="arrow" name="long arrow alternate right" size="large"/>
+                        <Icon className="ride-request-arrow" name="long arrow alternate right" size="large"/>
                         <h5 className="location">{this.props.ride.endLoc.city}, {this.props.ride.endLoc.state}</h5>
                     </div>
                     <div className="subtitle padding">Date: {this.props.dateString}</div>
