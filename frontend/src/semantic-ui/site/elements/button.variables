@@ -3,9 +3,4 @@
 *******************************/
 
 @borderRadius       : 50px;
-
-/*-------------------
-       Primary
---------------------*/
-@primaryTextColor   : @white;
-@coloredBoxShadow   : 5px @black;
+@coloredBoxShadow   : 0px 2px 4px rgba(0, 0, 0, 0.25);

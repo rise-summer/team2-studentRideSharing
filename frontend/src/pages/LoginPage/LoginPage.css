@@ -1,4 +1,15 @@
-.login-wrapper {
-    padding: 10px;
-    text-align: center;
+.splashImage {
+    width: 100%;
+    position: bottom;
+    vertical-align: bottom;
+}
+.splashColumn {
+    background-size: cover;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: flex-end;
+}
+.mainGrid {
+    height: calc(100% - 72px) !important;
+    margin: 0 !important;
 }

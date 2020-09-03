@@ -38,6 +38,7 @@
 @purple: #686EFD;
 @violet: #7F82C7;
 @brown: #E58D71;
+@blue: #686EFD;
 
 /*---  Brand Colors  ---*/
 @primaryColor: @orange;
