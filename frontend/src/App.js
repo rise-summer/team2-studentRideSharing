@@ -10,7 +10,6 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import Profile from './pages/Profile/Profile';
 import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/Navigation/PrivateRoute';
-// import SearchLanding from './components/SearchComponents/SearchLanding';
 import { auth } from './firebase';
 import './App.css';
 import ThemingLayout from './pages/Theme/Theme';

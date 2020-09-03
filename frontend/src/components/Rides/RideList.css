@@ -3,6 +3,8 @@
 }
 
 .results-tabs {
-    width: 60vw!important;
+    max-width: 55vw!important;
+    min-width: 510px;
     margin: 0 auto;
+    border: none!important;
 }

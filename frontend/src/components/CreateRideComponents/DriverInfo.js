@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Icon, Button, Modal, Message } from 'semantic-ui-react';
+import { Form, Icon, Modal, Message } from 'semantic-ui-react';
 
 import './DriverInfo.css';
 
@@ -33,7 +33,7 @@ class DriverInfo extends React.Component {
                     submitted: true,
                     success: 'true',
                 });
-            } 
+            }
             else {
                 this.setState({
                     error: 'true',
@@ -74,7 +74,7 @@ class DriverInfo extends React.Component {
         const { plate, make, model, color, showModal, success, error } = this.state;
         return (
             <div>
-                <Modal 
+                <Modal
                     closeIcon
                     size="tiny"
                     onClose={this.closeModal}

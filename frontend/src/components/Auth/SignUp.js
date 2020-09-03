@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-    Form,
-    // Divider,
-    Button,
-    // Dropdown,
-    // Input,
-    Image,
-} from 'semantic-ui-react';
-import firebase, { auth, uiConfig, storageRef } from '../../firebase';
-// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { Form, Button, Image } from 'semantic-ui-react';
+import { auth, storageRef } from '../../firebase';
 import './SignUp.css';
 
 const initialState = {
@@ -41,6 +33,7 @@ class SignUp extends React.Component {
     //----For profile picture uploading and previewing---------
     uploadPhoto = (e) => {
         const photo = e.target.files[0];
+
         if (typeof photo === 'object') {
             const photoURL = URL.createObjectURL(photo); // this points to the File object we just created
             this.setState({ photoURL, photo });
@@ -81,6 +74,7 @@ class SignUp extends React.Component {
     validate = () => {
         let errorMsg = '';
         const { email, password, school } = this.state;
+
         const reEmail = RegExp(
             '([a-zA-Z0-9_\\-.]+)@([a-zA-Z0-9_\\-.]+)\\.([a-zA-Z]{2,5})$'
         );
@@ -170,7 +164,6 @@ class SignUp extends React.Component {
 
     createUser = () => {
         const { email, password, confirmPassword, photo } = this.state;
-
         if (password !== confirmPassword) {
             alert('Passwords do not match.');
             return;
