@@ -49,11 +49,12 @@ class SortBy extends React.Component {
                 <br />
                 Sort by: <b>{' '}</b>
                 <Dropdown
+                    className="sort-dropdown"
                     inline
                     options={sortByOptions}
                     defaultValue={sortByOptions[0].value}
                     selection
-                    value={value} 
+                    value={value}
                     onChange={this.handleChange}
                 />
             </span>

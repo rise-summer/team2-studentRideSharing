@@ -15,7 +15,7 @@ class Ride extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.getUserInfo(this.props.driverID);
     }
 
@@ -24,17 +24,15 @@ class Ride extends Component {
         const requestOptions = {
             method: 'GET',
         };
-        fetch(userURL, requestOptions)
-            .then(res => {
-                res.json()
-            })
-            .then(driver => {
+        fetch(userURL)
+            .then((res) => res.json())
+            .then((driver) => {
+                console.log(driver);
                 let driverInfo = this.state.driver;
                 driverInfo.name = driver.firstName + " " + driver.lastName;
                 driverInfo.school = driver.school;
                 driverInfo.photoURL = driver.photoURL;
                 this.setState({ driver: driverInfo });
-                // console.log(driver);
             })
             .catch(error => console.log('error: ', error));
     };
