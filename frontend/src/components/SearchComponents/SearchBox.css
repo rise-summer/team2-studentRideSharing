@@ -44,3 +44,7 @@
 .date-picker-box {
     /*border: 2px dotted red!important;*/
 }
+
+.geosearch {
+    height: 32px!important;
+}

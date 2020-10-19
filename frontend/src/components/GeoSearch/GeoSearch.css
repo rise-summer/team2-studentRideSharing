@@ -6,7 +6,7 @@ https://github.com/mapbox/mapbox-gl-geocoder/blob/master/lib/mapbox-gl-geocoder.
   font-size: 18px;
   line-height: 24px;
   position: relative;
-  background-color: #fff;
+  background-color: transparent!important;
   width: 100% !important;
   max-width: none !important;
   min-width: 100% !important;
@@ -21,7 +21,7 @@ https://github.com/mapbox/mapbox-gl-geocoder/blob/master/lib/mapbox-gl-geocoder.
   width: 100%;
   border: 0;
   background-color: transparent;
-  height: 50px;
+  height: 32px!important;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

@@ -1,3 +1,4 @@
+// RideList: list of rides that match query on search page
 import React, { Component } from 'react';
 import Ride from './Ride';
 import './RideList.css';
@@ -51,8 +52,6 @@ class RideList extends Component {
 
         return (
             <div>
-                {/*<Ride start="San Francisco, CA" dest="Los Angeles, CA" time={new Date()} name="Jessica P."*/}
-                {/*    school="UCLA" rideID={1} capaci={2} />*/}
                 {renderResults()}
             </div>
         );

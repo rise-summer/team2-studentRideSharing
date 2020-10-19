@@ -53,6 +53,7 @@ class Search extends Component {
             default:
                 break;
         }
+        console.log(newQuery);
 
         this.props.dispatch({
             type: 'UPDATE_GEO',

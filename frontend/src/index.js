@@ -31,7 +31,8 @@ const initialState = {
 };
 
 function reducer(state = initialState, action) {
-    // console.log(action);
+    console.log('action: ' + action);
+    console.log(state.query);
     switch (action.type) {
         case 'EDIT_BEGIN_DATE':
             return {

@@ -1,3 +1,4 @@
+/* GeoSearch.js (a wrapped <Input> component) */
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -119,7 +120,7 @@ class GeoSearch extends React.Component {
                 style={{ width: '100%' }}
                 className={this.props.className}
                 ref={this.searchRef}
-            ></div>
+            />
         );
     }
 }
