@@ -106,7 +106,10 @@ class GeoSearch extends React.Component {
                 name
             );
         });
-        geocoder.addTo(this.searchRef.current);
+        // TODO: use a callback
+        if (this.searchRef.current) {
+            geocoder.addTo(this.searchRef.current);
+        }
 
         if (this.props.value) {
             geocoder.query(this.props.value);

@@ -12,12 +12,12 @@ router.delete('/', async function (req, res, next) {
 });
 
 //search rides
-router.get('/', async function (req, res, next) {
+router.get('/', function (req, res, next) {
     //TODO: validate login state - login user = given userid
     //TODO: search logic for begin and end date
-    const query = JSON.parse(req.query['query']);
-    console.log(query);
-    const {originCoords, destCoords, beginDate, endDate, distance, sortTime, orderBy} = query;
+    //TODO: validate all params
+
+    const {originCoords, destCoords, beginDate, endDate, distance, sortTime, orderBy} = req.query;
     const collection = client.dbCollection(collectionName);
     // const METERS_PER_MILE = 1609.34;
     const distInRadians = distance / 3963.2;//converts the distance to radians by dividing by the approximate equatorial radius of the earth
@@ -30,8 +30,8 @@ router.get('/', async function (req, res, next) {
     } else {
         filter = {
             time: {$gte: new Date(beginDate), $lte: new Date(endDate)},
-            originCoords: {$geoWithin: {$centerSphere: [originCoords, distInRadians]}},
-            destCoords: {$geoWithin: {$centerSphere: [destCoords, distInRadians]}}
+            originCoords: {$geoWithin: {$centerSphere: [JSON.parse(`[${originCoords}]`), distInRadians]}},
+            destCoords: {$geoWithin: {$centerSphere: [JSON.parse(`[${destCoords}]`), distInRadians]}}
         }
     }
     if (sortTime && orderBy) {

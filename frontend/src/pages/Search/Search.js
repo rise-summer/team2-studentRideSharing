@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import RideList from '../../components/Rides/RideList';
 import 'pikaday/css/pikaday.css';
 import moment from 'moment';
+import { withRouter } from 'react-router';
 import './Search.css';
 import SearchLanding from '../../components/SearchComponents/SearchLanding';
 import SearchBox from '../../components/SearchComponents/SearchBox';
@@ -18,7 +19,7 @@ class Search extends Component {
         this.state = {
             rides: {
                 outboundRides: [],
-                returnRides: []
+                returnRides: [],
             },
             roundtrip: false,
             searched: false,
@@ -36,7 +37,19 @@ class Search extends Component {
             sortType: '',
         };
     }
-
+    componentDidMount() {
+        const { search } = this.props.location;
+        this.setState({ searched: search !== '' });
+        this.queryRide(search);
+    }
+    componentDidUpdate(prevProps) {
+        const { search } = this.props.location;
+        if (prevProps.location.search !== search) {
+            if (search === '') this.setState({ searched: false });
+            // ?query=%7B%22originCoords%22%3A%5B-119.159392%2C34.164958%5D%2C%22destCoords%22%3A%5B-117.221505%2C32.873788%5D%2C%22beginDate%22%3A%222020-07-23T17%3A00%3A00.000Z%22%2C%22endDate%22%3A%222020-07-23T18%3A00%3A00.000Z%22%2C%22distance%22%3A5%2C%22orderBy%22%3A-1%7D
+            this.queryRide(search);
+        }
+    }
     /* coords are the only thing needed for the API call */
     handleGeoChange = (resp, fieldName) => {
         this.setState({
@@ -56,7 +69,7 @@ class Search extends Component {
 
         this.props.dispatch({
             type: 'UPDATE_GEO',
-            value: newQuery
+            value: newQuery,
         });
         // console.log(this.props);
     };
@@ -85,67 +98,78 @@ class Search extends Component {
 
     queryRides = () => {
         /* dates are stored as strings in this.state, must convert to Date object */
-        this.setState({ searched: true });
         // const date = new Date(this.state.query.beginDate);
         const date = new Date(this.props.query.beginDate);
         const dateEnd = new Date(date);
         dateEnd.setHours(23, 59, 59);
         const { start, endDest, distance } = this.props.query;
         /* If no distance specified, default to 10 */
-        const dist = (distance) ? distance : 10;
-        const origin = (start) ? [start.lng, start.lat] : '';
-        const dest = (endDest) ? [endDest.lng, endDest.lat] : '';
-        const outboundQuery = {
+        const dist = distance ? distance : 10;
+        const origin = start ? [start.lng, start.lat] : '';
+        const dest = endDest ? [endDest.lng, endDest.lat] : '';
+        const currentQuery = {
             originCoords: origin,
             destCoords: dest,
             beginDate: date,
             endDate: dateEnd,
             distance: dist,
         };
-        this.queryOutbound(outboundQuery);
 
-        // if roundtrip selected
-        const returnDate = new Date(this.props.query.endDate);
-        const returnDateEnd = new Date(returnDate);
-        returnDateEnd.setHours(23, 59, 59);
-        const returnQuery = {
-            originCoords: dest,
-            destCoords: origin,
-            beginDate: returnDate,
-            endDate: returnDateEnd,
-            distance: dist,
-        };
-        this.queryReturn(returnQuery);
-        // console.log(this.props);
+        if (this.props.query.endDate) {
+            const returnDate = new Date(this.props.query.endDate);
+            const returnDateEnd = new Date(returnDate);
+            returnDateEnd.setHours(23, 59, 59);
+
+            currentQuery.returnBeginDate = returnDate;
+            currentQuery.returnEndDate = returnDateEnd;
+        }
+
+        const encodedQuery = new URLSearchParams(currentQuery).toString();
+        this.props.history.push(`/search?${encodedQuery}`);
     };
 
-    queryOutbound = (query) => {
-        const xurl =
-            '/api/rides?' +
-            querystring.stringify({ query: JSON.stringify(query) });
-        fetch(xurl)
-            .then((res) => res.json())
-            .then((res) => {
-                if (DEBUG) {
-                    console.log(res);
-                }
-                const queried_rides = res.map((ride) => ({
-                    startLoc: ride.startLoc,
-                    endLoc: ride.endLoc,
-                    time: ride.time,
-                    rideID: ride._id,
-                    driverID: ride.driverID,
-                    capacity: ride.capacity,
-                }));
-                const newRides = this.state.rides;
-                newRides.outboundRides = queried_rides;
-                this.setState({
-                    rides: newRides,
+    queryRide = (query) => {
+        /*
+    3. Configure api to support return rides ("return")
+    6. Mantain state in form input fields
+
+    */
+        // Query is already encoded as query string with '?' in front
+                    // const returnQuery = {
+            //     originCoords: dest,
+            //     destCoords: origin,
+            //     beginDate: returnDate,
+            //     endDate: returnDateEnd,
+            //     distance: dist,
+            // };
+
+        if (query) {
+            this.setState({ searched: true });
+            const xurl = '/api/rides' + query;
+            fetch(xurl)
+                .then((res) => res.json())
+                .then((res) => {
+                    if (DEBUG) {
+                        console.log(res);
+                    }
+                    const queried_rides = res.map((ride) => ({
+                        startLoc: ride.startLoc,
+                        endLoc: ride.endLoc,
+                        time: ride.time,
+                        rideID: ride._id,
+                        driverID: ride.driverID,
+                        capacity: ride.capacity,
+                    }));
+                    const newRides = this.state.rides;
+                    newRides.outboundRides = queried_rides;
+                    this.setState({
+                        rides: newRides,
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
                 });
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        }
     };
 
     queryReturn = (query) => {
@@ -196,9 +220,9 @@ class Search extends Component {
 
     getRideType = () => {
         if (this.state.roundtrip) {
-            return "Roundtrip";
+            return 'Roundtrip';
         } else {
-            return "One Way";
+            return 'One Way';
         }
     };
 
@@ -209,30 +233,29 @@ class Search extends Component {
         if (sortType === '-1') {
             sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
                 return Date.parse(b.time) - Date.parse(a.time);
-            })
+            });
             sortReturn = this.state.rides.returnRides.sort((a, b) => {
                 return Date.parse(b.time) - Date.parse(a.time);
-            })
+            });
             this.setState({
                 rides: {
                     outboundRides: sortOutbound,
                     returnRides: sortReturn,
-                }
-            })
-        }
-        else if (sortType === '1') {
+                },
+            });
+        } else if (sortType === '1') {
             sortOutbound = this.state.rides.outboundRides.sort((a, b) => {
                 return Date.parse(a.time) - Date.parse(b.time);
-            })
+            });
             sortReturn = this.state.rides.returnRides.sort((a, b) => {
                 return Date.parse(a.time) - Date.parse(b.time);
-            })
+            });
             this.setState({
                 rides: {
                     outboundRides: sortOutbound,
                     returnRides: sortReturn,
-                }
-            })
+                },
+            });
         }
     };
 
@@ -257,22 +280,21 @@ class Search extends Component {
         let sortBy;
         let searchWrapper = '';
         if (!this.state.searched) {
-            searchPage = <SearchLanding functions={functions} refs={refs} />
-            searchWrapper = 'search-wrapper'
+            searchPage = <SearchLanding functions={functions} refs={refs} />;
+            searchWrapper = 'search-wrapper';
         } else {
-            searchWrapper = 'search-wrapper2'
-            searchPage =
-                <SearchBox
-                    functions={functions}
-                    refs={refs}
-                />;
-            sortBy =
-                <SortBy sort={this.sort}/>
-            rideResults =
+            searchWrapper = 'search-wrapper2';
+            searchPage = <SearchBox functions={functions} refs={refs} />;
+            sortBy = <SortBy sort={this.sort} />;
+            rideResults = (
                 <div>
                     {/*<h3>Available Rides</h3>*/}
-                    <RideList roundtrip={this.state.roundtrip} rides={this.state.rides} />
-                </div>;
+                    <RideList
+                        roundtrip={this.state.roundtrip}
+                        rides={this.state.rides}
+                    />
+                </div>
+            );
         }
 
         return (
@@ -291,4 +313,4 @@ const mapStateToProps = (state) => ({
     roundtrip: state.roundtrip,
 });
 
-export default connect(mapStateToProps)(Search);
+export default connect(mapStateToProps)(withRouter(Search));

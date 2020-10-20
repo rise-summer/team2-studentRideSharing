@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import CreateRide from './pages/CreateRide/CreateRide';
@@ -66,8 +66,8 @@ class App extends Component {
                         <Route path="/theme">
                             <ThemingLayout />
                         </Route>
-                        <Route path="/">
-                            <Search /> {/* should be search landing page */}
+                        <Route exact path="/">
+                            <Redirect to="/search" /> {/* should be search landing page */}
                         </Route>
                     </Switch>
                 </Router>
