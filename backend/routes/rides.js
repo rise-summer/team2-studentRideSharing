@@ -78,32 +78,36 @@ router.post('/:userID', async function (req, res, next) {
     //TODO: validate input data - userID/rideID not existed in db, req body must include certain data
     const driverID = req.params.userID;
     // const rideID = req.params.rideID;
-    const {origin, destination, originCoords, destCoords, time, price, capacity, car} = req.body;
-    let rideDocument = {
-        "driverID": driverID,
-        "status": 0,
-        "startLoc": origin,//{"address": "4000 S Rose Ave", "city": "Oxnard", "state": "CA", "zip": 93033, "school": "", "display":""}
-        "endLoc": destination,
-        "originCoords": originCoords,
-        "destCoords": destCoords,
-        "time": new Date(time),//new Date(year, month (0 to 11), date, hours, minutes)
-        "price": price,
-        "capacity": capacity,
-        "car": car,
-        "requests": []
-    }
-    const collection = client.dbCollection(collectionName);
-    collection.insertOne(rideDocument, function (err, record) {
-        if (err) {//insert a record with an existing _id value
-            console.log("New Ride Error");
-            res.sendStatus(400);
-        } else {
-            console.log("Record added as " + JSON.stringify(record.ops[0]));
-            res.setHeader("Location", "/api/rides/" + driverID + "/" + record.ops[0]["_id"]);
-            res.status(201).send(JSON.stringify(record.ops[0]));//Created
-            //TODO: location header -> link to the generated ride
+    if (req.body["car"] === undefined) {//validate that the car info has been provided
+        res.status(400).send("Missing car info.");
+    } else {
+        const {origin, destination, originCoords, destCoords, time, price, capacity, car} = req.body;
+        let rideDocument = {
+            "driverID": driverID,
+            "status": 0,
+            "startLoc": origin,//{"address": "4000 S Rose Ave", "city": "Oxnard", "state": "CA", "zip": 93033, "school": "", "display":""}
+            "endLoc": destination,
+            "originCoords": originCoords,
+            "destCoords": destCoords,
+            "time": new Date(time),//new Date(year, month (0 to 11), date, hours, minutes)
+            "price": price,
+            "capacity": capacity,
+            "car": car,
+            "requests": []
         }
-    });
+        const collection = client.dbCollection(collectionName);
+        collection.insertOne(rideDocument, function (err, record) {
+            if (err) {//insert a record with an existing _id value
+                console.log("New Ride Error");
+                res.sendStatus(400);
+            } else {
+                console.log("Record added as " + JSON.stringify(record.ops[0]));
+                res.setHeader("Location", "/api/rides/" + driverID + "/" + record.ops[0]["_id"]);
+                res.status(201).send(JSON.stringify(record.ops[0]));//Created
+                //TODO: location header -> link to the generated ride
+            }
+        });
+    }
 });
 
 //get a single ride
