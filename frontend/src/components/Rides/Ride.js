@@ -27,7 +27,6 @@ class Ride extends Component {
         fetch(userURL)
             .then((res) => res.json())
             .then((driver) => {
-                console.log(driver);
                 let driverInfo = this.state.driver;
                 driverInfo.name = driver.firstName + " " + driver.lastName;
                 driverInfo.school = driver.school;

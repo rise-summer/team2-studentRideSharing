@@ -59,7 +59,6 @@ class Search extends Component {
             type: 'UPDATE_GEO',
             value: newQuery
         });
-        // console.log(this.props);
     };
 
     editBeginDate = (event, d) => {
