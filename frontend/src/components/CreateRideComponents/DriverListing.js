@@ -24,6 +24,12 @@ const initialState = {
     isRoundtrip: false,
     errorMessage: '',
     driverCarInfo: true,
+    car: {
+        make: '',
+        model: '',
+        color: '',
+        plate: '',
+    }
 };
 
 class DriverListing extends React.Component {
@@ -50,6 +56,7 @@ class DriverListing extends React.Component {
             startTime,
             price,
             capacity,
+            car,
         } = data;
         const t = startTime.split(':');
         startDate.setHours(t[0]);
@@ -70,6 +77,7 @@ class DriverListing extends React.Component {
             time: startDate, //year, month (0 to 11), date, hours, minutes
             price: price,
             capacity: capacity,
+            car: car,
         };
         try {
             const response = await fetch(url, {
