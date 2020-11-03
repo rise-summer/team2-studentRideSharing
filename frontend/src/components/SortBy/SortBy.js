@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
+import './SortBy.css';
 
 const sortByOptions = [
     {
@@ -39,21 +40,20 @@ class SortBy extends React.Component {
     handleChange = (e, { value }) => {
         this.setState({ value });
         this.props.sort(value);
-    }
+    };
 
     render() {
         const { value } = this.state;
         return (
             <span>
-                <br />
-                <br />
                 Sort by: <b>{' '}</b>
                 <Dropdown
-                    inline
+                    className="sort-dropdown"
                     options={sortByOptions}
                     defaultValue={sortByOptions[0].value}
                     selection
-                    value={value} 
+                    compact
+                    value={value}
                     onChange={this.handleChange}
                 />
             </span>

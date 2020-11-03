@@ -11,6 +11,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "autoprefixer": "^9.8.5",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "firebase": "^7.17.1",
     "firebaseui": "^4.6.1",

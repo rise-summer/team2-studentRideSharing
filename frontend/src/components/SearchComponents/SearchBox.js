@@ -55,23 +55,21 @@ class SearchBox extends Component {
                         <Form.Group>
                             <Form.Input label="Start Location">
                                 <GeoSearch
-                                    className="geoSearch"
-                                    handleChange={
-                                        this.props.functions.handleGeoChange
-                                    }
+                                    className="geosearch"
+                                    handleChange={this.props.functions.handleGeoChange}
                                     placeholder="Choose Start location..."
                                     name="start"
+                                    value={this.props.query.start ? this.props.query.start.address : ''}
                                     types="region,postcode,district,place,locality,neighborhood,address,poi"
                                 />
                             </Form.Input>
                             <Form.Input label="Destination">
                                 <GeoSearch
-                                    className="geoSearch"
-                                    handleChange={
-                                        this.props.functions.handleGeoChange
-                                    }
+                                    className="geosearch"
+                                    handleChange={this.props.functions.handleGeoChange}
                                     placeholder="Choose Destination..."
                                     name="endDest"
+                                    value={this.props.query.endDest ? this.props.query.endDest.address : ''}
                                     types="region,postcode,district,place,locality,neighborhood,address,poi"
                                 />
                             </Form.Input>

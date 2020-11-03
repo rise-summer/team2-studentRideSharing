@@ -16,7 +16,7 @@
 }
 
 .profile {
-    background-color: #cccccc;
+    /*background-color: #cccccc;*/
     /*height: 90px;*/
     /*width: 90px;*/
     margin: 5px;
@@ -25,6 +25,8 @@
 
 .profile-pic {
     /*width: 100%;*/
+    width: 90px;
+    object-fit: contain;
 }
 
 .info-wrapper {
